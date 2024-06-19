@@ -1,42 +1,22 @@
-// const express = require("express");
-// const cors = require("cors");
+const express = require("express");
+import cors from "cors";
+// const friendsRouter = require("../src/controllers/friends.ts");
 
-// const app = express();
+const app = express();
 
-// app.use(cors);
-// app.use(express.json());
-
-// const PORT = process.env.PORT || 3001;
-
-// app.listen(PORT, () => {
-//   console.log(`Server listening on port ${PORT}`);
-// });
+app.use(cors);
+app.use(express.json());
 
 import { PrismaClient } from "@prisma/client";
 
-const prisma = new PrismaClient();
+export const prisma = new PrismaClient();
 
-async function main() {
-  const newUser = await prisma.user.create({
-    data: {
-      name: "Alice",
-      email: "alice@prisma.io",
-      posts: {
-        create: {
-          title: "Hello World",
-        },
-      },
-    },
-  });
-  console.log("Created new user: ", newUser);
+app.get("/", async (_req: any, res: any) => {
+  res.send("<h1>Hello World!</h1>");
+});
 
-  const allUsers = await prisma.user.findMany({
-    include: { posts: true },
-  });
-  console.log("All users: ");
-  console.dir(allUsers, { depth: null });
-}
+const PORT = 3002;
 
-main()
-  .catch((e) => console.error(e))
-  .finally(async () => await prisma.$disconnect());
+app.listen(PORT, () => {
+  console.log(`Server listening on port ${PORT}`);
+});
