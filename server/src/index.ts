@@ -1,22 +1,20 @@
-const express = require("express");
+import express from "express";
 import cors from "cors";
-// const friendsRouter = require("../src/controllers/friends.ts");
+import friendsRouter from "./controllers/friends";
 
 const app = express();
 
-app.use(cors);
+app.use(cors());
 app.use(express.json());
 
-import { PrismaClient } from "@prisma/client";
-
-export const prisma = new PrismaClient();
-
-app.get("/", async (_req: any, res: any) => {
-  res.send("<h1>Hello World!</h1>");
+app.get("/", (_req, res) => {
+  res.send("Home page");
 });
 
-const PORT = 3002;
+app.use("/api/friends", friendsRouter);
 
-app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
-});
+const PORT = 3001;
+
+app.listen(PORT, () =>
+  console.log(`REST API server ready at: http://localhost:${PORT}`)
+);

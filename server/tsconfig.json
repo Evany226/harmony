@@ -1,13 +1,11 @@
 {
   "compilerOptions": {
-    "target": "ES6",
-    "outDir": "./build/",
-    "module": "commonjs",
+    "sourceMap": true,
+    "outDir": "dist",
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
+    "lib": ["esnext"],
     "esModuleInterop": true
-  }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }
