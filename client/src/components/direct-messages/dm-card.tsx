@@ -3,7 +3,7 @@ import { PlusIcon } from "@heroicons/react/16/solid";
 
 export function DirectMessage({ name }: { name: string }) {
   return (
-    <div className="flex items-center w-full h-10">
+    <div className="flex items-center w-full bg-zinc-900 px-2 py-1 rounded-sm hover:bg-zinc-800 cursor-pointer">
       <Avatar>
         <AvatarImage src="https://github.com/shadcn.png" />
         <AvatarFallback>EY</AvatarFallback>
@@ -32,8 +32,8 @@ export default function DirectMessageWrapper() {
   ];
 
   return (
-    <div>
-      <article className="flex-col w-full max-h-full p-2 mt-4">
+    <>
+      <section className="flex-col w-full max-h-full p-1 mt-4">
         <div className="flex justify-between">
           <h2 className="text-gray-400 text-sm font-medium">Direct Messages</h2>
           <PlusIcon className="w-4 text-gray-400" />
@@ -44,7 +44,7 @@ export default function DirectMessageWrapper() {
             return <DirectMessage key={user.userName} name={user.userName} />;
           })}
         </div>
-      </article>
-    </div>
+      </section>
+    </>
   );
 }

@@ -41,7 +41,7 @@ export default function NavLinks() {
             <Link
               key={link.name}
               href={link.href}
-              className={`px-2.5 py-1 rounded-md ${
+              className={`px-2.5 py-1 rounded-md hover:bg-zinc-800 ${
                 pathname === link.href ? "bg-zinc-700" : ""
               }`}
             >

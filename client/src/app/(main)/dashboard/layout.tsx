@@ -9,8 +9,8 @@ export default function DashboardLayout({
 }) {
   return (
     <section className="flex w-full h-full bg-zinc-900">
-      <div className="flex flex-col w-64 h-full bg-neutral-900 border-x border-zinc-700">
-        <header className="flex items-center justify-center w-full h-12 bg-neutral-900 border-b border-zinc-700 px-3">
+      <div className="flex flex-col w-64 h-full bg-neutral-900 border-x border-zinc-800">
+        <header className="flex items-center justify-center w-full h-12 bg-neutral-900 border-b border-zinc-800 px-3">
           <input
             className="outline-0 rounded-sm w-full bg-zinc-800 text-xs py-1 px-2"
             placeholder="Find or start a conversation"
@@ -28,7 +28,7 @@ export default function DashboardLayout({
       </div>
 
       <div className="flex flex-col w-full h-full bg-zinc-900">
-        <header className="flex w-full h-12 bg-zinc-900 border-b border-zinc-700 px-2 py-3 space-x-3 items-center">
+        <header className="flex w-full h-12 bg-zinc-900 border-b border-zinc-800 px-2 py-3 space-x-3 items-center">
           <NavLinks />
         </header>
         {children}
