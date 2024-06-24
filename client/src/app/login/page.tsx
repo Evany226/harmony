@@ -10,7 +10,7 @@ export default async function Login() {
       <form
         action={async () => {
           "use server";
-          await signIn("google", { callbackUrl: "/dashboard" });
+          await signIn("google", { redirectTo: "/dashboard" });
         }}
       >
         <button type="submit" className="bg-red-100">
