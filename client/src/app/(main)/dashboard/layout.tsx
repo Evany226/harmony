@@ -1,7 +1,7 @@
 import { UserIcon } from "@heroicons/react/16/solid";
-import DirectMessageWrapper from "@/components/direct-messages/dm-card";
-import NavLinks from "@/components/nav/nav-links";
-import ProfileCard from "@/components/profile/profile-card";
+import DirectMessageWrapper from "@/components/direct-messages/DmCard";
+import NavLinks from "@/components/nav/NavLinks";
+import ProfileCard from "@/components/profile/ProfileCard";
 
 export default function DashboardLayout({
   children,

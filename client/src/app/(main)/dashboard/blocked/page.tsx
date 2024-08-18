@@ -1,4 +1,4 @@
-import FriendsWrapper from "@/components/friends/friends-card";
+import FriendsWrapper from "@/components/friends/FriendsCard";
 
 export default function Blocked() {
   return (

@@ -1,5 +1,5 @@
 import React from "react";
-import SideNav from "@/components/nav/side-nav";
+import SideNav from "@/components/nav/SideNav";
 
 export default function DashboardLayout({
   children,
