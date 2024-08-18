@@ -1,37 +1,38 @@
-datasource db {
-  provider          = "postgresql"
-  url               = env("DATABASE_URL")
-  directUrl         = env("DIRECT_URL")
-}
-
 generator client {
   provider = "prisma-client-js"
 }
 
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
 model User {
-  id    Int     @default(autoincrement()) @id
-  email String  @unique
-  name  String?
+  id      Int      @id @default(autoincrement())
+  email   String   @unique
+  name    String?
   servers Server[]
 }
 
 model Friend {
-  id    Int   @default(autoincrement()) @id
+  id      Int     @id @default(autoincrement())
   userId1 Int
   userId2 Int
+  status  String?
 }
 
 model Server {
-  id        Int     @default(autoincrement()) @id
-  name     String
+  id           Int           @id @default(autoincrement())
+  name         String
+  ownerId      Int?
+  owner        User?         @relation(fields: [ownerId], references: [id])
   textChannels TextChannel[]
-  owner    User?   @relation(fields: [ownerId], references: [id])
-  ownerId  Int?
 }
 
 model TextChannel {
-  id    Int   @default(autoincrement()) @id
-  name    String
-  server    Server? @relation(fields: [serverId], references: [id])
-  serverId    Int?
+  id       Int     @id @default(autoincrement())
+  name     String
+  serverId Int?
+  server   Server? @relation(fields: [serverId], references: [id])
 }

@@ -4,10 +4,11 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { UserIcon } from "@heroicons/react/16/solid";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function NavLinks() {
   const pathname = usePathname();
+  const router = useRouter();
 
   const links = [
     {
@@ -50,7 +51,13 @@ export default function NavLinks() {
           );
         })}
 
-        <Button variant="outline" size="default">
+        <Button
+          onClick={() => {
+            router.push("/dashboard/add-friends");
+          }}
+          variant="outline"
+          size="default"
+        >
           Add Friend
         </Button>
       </div>
