@@ -16,9 +16,7 @@ export default function ProfileCard() {
             <AvatarFallback>EY</AvatarFallback>
           </Avatar>
           <div className="flex-col ml-2">
-            <h2 className="text-gray-300 font-medium text-sm">
-              {user.username}
-            </h2>
+            <h2 className="text-gray-300 font-medium text-sm">{user.id}</h2>
             <div className="flex items-center">
               <p className="text-xs font-normal text-gray-400">Online</p>
               <SignOutButton>
