@@ -12,11 +12,17 @@ export default function ProfileCard() {
       {isSignedIn ? (
         <div className="flex items-center w-full h-14 px-3 bg-stone-900 border-t border-zinc-800 bottom-0 absolute">
           <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" />
+            <AvatarImage
+              src={
+                user.hasImage ? user.imageUrl : "https://github.com/shadcn.png"
+              }
+            />
             <AvatarFallback>EY</AvatarFallback>
           </Avatar>
           <div className="flex-col ml-2">
-            <h2 className="text-gray-300 font-medium text-sm">{user.id}</h2>
+            <h2 className="text-gray-300 font-medium text-sm">
+              {user.username}
+            </h2>
             <div className="flex items-center">
               <p className="text-xs font-normal text-gray-400">Online</p>
               <SignOutButton>

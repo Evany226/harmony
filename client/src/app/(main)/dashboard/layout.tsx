@@ -29,7 +29,6 @@ export default function DashboardLayout({
 
         <ProfileCard />
       </div>
-
       <div className="flex flex-col w-full h-full bg-zinc-900">
         <header className="flex w-full h-12 bg-zinc-900 border-b border-zinc-800 px-2 py-3 space-x-3 items-center">
           <NavLinks />

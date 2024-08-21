@@ -9,17 +9,17 @@ datasource db {
 }
 
 model User {
-  id      Int      @id @default(autoincrement())
-  email   String   @unique
-  name    String?
-  servers Server[]
+  id       Int      @id
+  email    String   @unique
+  username String
+  servers  Server[]
 }
 
 model Friend {
-  id      Int     @id @default(autoincrement())
-  userId1 Int
-  userId2 Int
-  status  String?
+  id         Int     @id @default(autoincrement())
+  fromUserId Int
+  toUserId   Int
+  status     String?
 }
 
 model Server {
