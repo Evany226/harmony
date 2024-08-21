@@ -3,6 +3,8 @@ const friendsRouter = express.Router();
 
 import prisma from "../lib/prisma";
 
+import { ClerkExpressRequireAuth } from "@clerk/clerk-sdk-node";
+
 friendsRouter.get("/", async (_req, res) => {
   const users = await prisma.friend.findMany();
   console.log(users);
@@ -12,8 +14,8 @@ friendsRouter.get("/", async (_req, res) => {
 friendsRouter.post("/", async (_req, res) => {
   const friend = await prisma.friend.create({
     data: {
-      userId1: 1,
-      userId2: 5,
+      id: "123",
+      userId: "abc",
       status: "pending",
     },
   });

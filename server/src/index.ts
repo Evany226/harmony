@@ -3,7 +3,7 @@
 
 import cors from "cors";
 import friendsRouter from "./controllers/friends";
-import friendRequestsRouter from "./controllers/friendRequests";
+
 import "dotenv/config"; // To read CLERK_SECRET_KEY and CLERK_PUBLISHABLE_KEY
 import {
   ClerkExpressRequireAuth,
@@ -37,8 +37,6 @@ app.get(
 );
 
 app.use("/api/friends", friendsRouter);
-
-app.use("/api/friend-requests", friendRequestsRouter);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   if (err instanceof Error) {
