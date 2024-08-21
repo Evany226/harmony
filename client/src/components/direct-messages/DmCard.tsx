@@ -3,7 +3,7 @@ import { PlusIcon } from "@heroicons/react/16/solid";
 
 export function DirectMessage({ name }: { name: string }) {
   return (
-    <div className="flex items-center w-full bg-zinc-900 px-2 py-1 rounded-sm hover:bg-zinc-800 cursor-pointer">
+    <div className="flex items-center w-full bg-neutral-900 px-2 py-1 rounded-sm hover:bg-zinc-900 cursor-pointer">
       <Avatar>
         <AvatarImage src="https://github.com/shadcn.png" />
         <AvatarFallback>EY</AvatarFallback>

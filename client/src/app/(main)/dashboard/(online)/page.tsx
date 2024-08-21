@@ -1,22 +1,16 @@
-"use client";
 import FriendsWrapper from "@/components/friends/FriendsCard";
-import { useAuth } from "@clerk/nextjs";
-export default function Dashboard() {
-  const { getToken } = useAuth();
+import { getPending } from "@/services/friendRequests";
 
-  const testFetch = async () => {
-    const authObject = await fetch("http://localhost:3001/", {
-      method: "GET",
-      headers: { Authorization: `Bearer ${await getToken()}` },
-    }).then((res) => res.json());
+export default async function Dashboard() {
+  const friends = await getPending();
 
-    console.log(authObject.userId);
-  };
   return (
     <div className="w-full h-full">
       <div className="flex flex-col items-center w-3/4 h-full px-4 py-3 border-r border-zinc-800">
-        <button onClick={() => testFetch()}>hello</button>
-        <FriendsWrapper />
+        {/* <button onClick={() => testFetch()}>hello</button> */}
+        {friends.map((friend: any) => (
+          <p key={friend.id}>{friend.id}</p>
+        ))}
       </div>
     </div>
   );

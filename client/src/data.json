@@ -1,0 +1,24 @@
+[
+  {
+    "serverName": "Evan Server",
+    "href": "/guilds/abc",
+    "textChannels": [
+      {
+        "channelName": "general",
+        "href": "/guilds/abc/general"
+      },
+      {
+        "channelName": "random",
+        "href": "/guilds/abc/random"
+      }
+    ]
+  },
+  {
+    "serverName": "Raid Guild",
+    "href": "/guilds/123"
+  },
+  {
+    "serverName": "Chiess Klaub",
+    "href": "/guilds/xyz"
+  }
+]

@@ -2,14 +2,9 @@ import Image from "next/image";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { PlusCircleIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
+import data from "../../data.json";
 
 export default function SideNav() {
-  const servers = [
-    { href: "/guilds/abc" },
-    { href: "/guilds/123" },
-    { href: "/guilds/xyz" },
-  ];
-
   return (
     <ScrollArea className="flex-col h-full w-[5.5rem] fixed top-0 left-0 bg-zinc-900">
       <section className="flex flex-col items-center w-full justify-center mt-2 -b">
@@ -26,8 +21,8 @@ export default function SideNav() {
       </section>
 
       <section className="flex flex-col h-full w-full items-center mt-2">
-        {servers.map((server) => (
-          <Link href={server.href}>
+        {data.map((server) => (
+          <Link href={server.href} key={server.href}>
             <Image src="/harmony-logo.png" width={60} height={60} alt="Logo" />
           </Link>
         ))}
