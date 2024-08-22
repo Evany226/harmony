@@ -1,8 +1,7 @@
 "use client";
-
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
-import { SignOutButton } from "@clerk/nextjs";
 import { useUser } from "@clerk/nextjs";
+import { SignOutButton } from "@clerk/nextjs";
 
 export default function ProfileCard() {
   const { isSignedIn, user } = useUser();
@@ -23,7 +22,8 @@ export default function ProfileCard() {
             <h2 className="text-gray-300 font-medium text-sm">{user.id}</h2>
             <div className="flex items-center">
               <p className="text-xs font-normal text-gray-400">Online</p>
-              <SignOutButton>
+
+              <SignOutButton redirectUrl={"/"}>
                 <button className="bg-white text-black rounded-sm px-1 ml-1 text-sm">
                   Logout
                 </button>
