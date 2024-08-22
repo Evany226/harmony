@@ -1,13 +1,30 @@
-const baseUrl = "http://localhost:3001/api/friends";
 import { auth } from "@clerk/nextjs/server";
 
-export async function getPending() {
-  const { getToken } = auth();
+//client side methods that gets data from route handlers in the server
 
-  const request = await fetch(baseUrl + "/requests", {
-    method: "GET",
-    headers: { Authorization: `Bearer ${await getToken()}` },
-  }).then((res) => res.json());
+// export async function getPending() {
+//   const { getToken } = auth();
 
-  return request;
+//   const request = await fetch(baseUrl + "/requests", {
+//     method: "GET",
+//     headers: { Authorization: `Bearer ${await getToken()}` },
+//   }).then((res) => res.json());
+
+//   return request;
+// }
+
+export async function sendFriendRequest(username: string) {
+  try {
+    const response = await fetch("/api/friendRequest", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username }),
+    });
+
+    return response.json();
+  } catch (error) {
+    console.log("Failed to send friend request", error);
+  }
 }

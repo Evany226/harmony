@@ -1,21 +1,40 @@
-import { Button } from "../ui/button";
+"use client";
 
-export default function AddFriendsInput() {
+import { Button } from "../ui/button";
+import React, { useState } from "react";
+import { sendFriendRequest } from "@/services/friends";
+
+export default function AddFriendsForm() {
+  const [username, setUsername] = useState<string>("");
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUsername(e.target.value);
+    console.log(e.target.value);
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      await sendFriendRequest(username);
+      setUsername("");
+    } catch (error) {
+      console.log("Failed to send friend request", error);
+    }
+  };
+
   return (
-    <div className="w-full flex flex-col space-y-3 px-3">
-      <h1 className="text-base text-gray-300 font-semibold">Add Friends</h1>
-      <p className="text-sm text-gray-300">
-        You can add friends using their Harmony username.
-      </p>
+    <form className="space-y-3" onSubmit={handleSubmit}>
       <input
         className="outline-0 rounded-md w-full text-sm bg-zinc-800 py-3 px-3 text-gray-300"
         placeholder="Add friends by entering their username."
+        onChange={(e) => handleChange(e)}
+        value={username}
       ></input>
       <div className="w-full flex justify-end">
-        <Button variant="outline" size="sm">
+        <Button variant="outline" size="sm" type="submit">
           Send friend request
         </Button>
       </div>
-    </div>
+    </form>
   );
 }
