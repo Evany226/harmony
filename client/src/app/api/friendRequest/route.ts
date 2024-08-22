@@ -18,11 +18,20 @@ export async function POST(request: Request) {
       },
     });
 
+    if (!response.ok) {
+      const errorData = await response.json();
+      return NextResponse.json(
+        { error: errorData.error },
+        { status: response.status }
+      );
+    }
+
     const data = await response.json();
     return NextResponse.json(data);
   } catch (error) {
+    console.error("Error in friend request route handler:", error);
     return NextResponse.json(
-      { error: "Failed to send friend request" },
+      { error: "Error in friend request route handler:" + error },
       { status: 500 }
     );
   }

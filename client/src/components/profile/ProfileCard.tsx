@@ -1,7 +1,8 @@
 "use client";
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 import { useUser } from "@clerk/nextjs";
-import { SignOutButton } from "@clerk/nextjs";
+import { SignOutButton, UserButton } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
 export default function ProfileCard() {
   const { isSignedIn, user } = useUser();
@@ -10,14 +11,17 @@ export default function ProfileCard() {
     <>
       {isSignedIn ? (
         <div className="flex items-center w-full h-14 px-3 bg-stone-900 border-t border-zinc-800 bottom-0 absolute">
-          <Avatar>
+          {/* <Avatar>
             <AvatarImage
               src={
                 user.hasImage ? user.imageUrl : "https://github.com/shadcn.png"
               }
             />
             <AvatarFallback>EY</AvatarFallback>
-          </Avatar>
+          </Avatar> */}
+
+          <UserButton />
+
           <div className="flex-col ml-2">
             <h2 className="text-gray-300 font-medium text-sm">{user.id}</h2>
             <div className="flex items-center">

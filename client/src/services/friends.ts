@@ -14,17 +14,19 @@ import { auth } from "@clerk/nextjs/server";
 // }
 
 export async function sendFriendRequest(username: string) {
-  try {
-    const response = await fetch("/api/friendRequest", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ username }),
-    });
+  const response = await fetch("/api/friendRequest", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ username }),
+  });
 
-    return response.json();
-  } catch (error) {
-    console.log("Failed to send friend request", error);
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.error);
   }
+
+  return data;
 }

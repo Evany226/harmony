@@ -62,10 +62,16 @@ friendsRouter.post("/", ClerkExpressRequireAuth({}), async (req, res) => {
     console.log(users);
 
     if (!users || users.length === 0) {
-      return res.status(404).json({ error: "User not found" });
+      return res
+        .status(404)
+        .json({
+          error: "The username you are trying to send a request does not exist",
+        });
     }
 
     const friendObject = users[0];
+
+    console.log(friendObject);
 
     const friend = await prisma.friend.create({
       data: {
@@ -77,7 +83,7 @@ friendsRouter.post("/", ClerkExpressRequireAuth({}), async (req, res) => {
     res.json(friend);
   } catch (error) {
     console.error("Error processing friend request:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: "Error processing friend request:" + error });
   }
 });
 

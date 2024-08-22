@@ -38,14 +38,6 @@ app.get(
 
 app.use("/api/friends", friendsRouter);
 
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  if (err instanceof Error) {
-    res.status(401).json({ error: err.message });
-  } else {
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
-
 const PORT = 3001;
 
 app.listen(PORT, () =>
