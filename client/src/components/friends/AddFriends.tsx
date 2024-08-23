@@ -4,9 +4,11 @@ import { Button } from "../ui/button";
 import React, { useState } from "react";
 import { sendFriendRequest } from "@/services/friends";
 import { useToast } from "../ui/use-toast";
+import { LoadingIcon } from "../ui/loading";
 
 export default function AddFriendsForm() {
   const [username, setUsername] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const { toast } = useToast();
 
@@ -17,6 +19,18 @@ export default function AddFriendsForm() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!username) {
+      toast({
+        variant: "destructive",
+        title: "Failed to send friend request",
+        description:
+          "The username field cannot be empty. Please enter a valid username to send a friend request.",
+      });
+      return;
+    }
+
+    setIsLoading(true);
+
     try {
       const result = await sendFriendRequest(username);
       setUsername("");
@@ -35,6 +49,8 @@ export default function AddFriendsForm() {
           error.message ||
           "An error occurred while sending your friend request. Please try again later",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -45,11 +61,10 @@ export default function AddFriendsForm() {
         placeholder="Add friends by entering their username."
         onChange={(e) => handleChange(e)}
         value={username}
-        required
       ></input>
       <div className="w-full flex justify-end">
-        <Button variant="outline" size="sm" type="submit">
-          Send friend request
+        <Button variant="outline" size="sm" type="submit" className="w-40">
+          {isLoading ? <LoadingIcon /> : "Send friend request"}
         </Button>
       </div>
     </form>

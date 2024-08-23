@@ -1,17 +1,22 @@
-[
-  {
-    "userId": 2,
-    "username": "flyingpizza226",
-    "servers": []
-  },
-  {
-    "userId": 3,
-    "username": "johntheman2",
-    "servers": []
-  },
-  {
-    "userId": 4,
-    "username": "yoloswag14",
-    "servers": []
-  }
-]
+{
+  "users": [
+    {
+      "id": "abc",
+      "username": "flyingpizza226",
+      "hasImage": true,
+      "imageUrl": "https://github.com/shadcn.png"
+    },
+    {
+      "id": "abc",
+      "username": "flyingpizza226",
+      "hasImage": true,
+      "imageUrl": "https://github.com/shadcn.png"
+    },
+    {
+      "id": "abc",
+      "username": "flyingpizza226",
+      "hasImage": true,
+      "imageUrl": "https://github.com/shadcn.png"
+    }
+  ]
+}

@@ -4,14 +4,22 @@ import {
   EllipsisVerticalIcon,
 } from "@heroicons/react/16/solid";
 import { Separator } from "../ui/separator";
+import { User } from "@/types/index";
+import Image from "next/image";
+import { getPending } from "@/services/friends";
 
-export function Friends({ name }: { name: string }) {
+interface FriendsProps {
+  name: string;
+  src: string;
+}
+
+export function Friends({ name, src }: FriendsProps) {
   return (
     <div className="flex flex-col w-full bg-zinc-900 rounded-sm hover:bg-zinc-800 group cursor-pointer">
       <main className="flex items-center w-full justify-between">
         <div className="flex items-center w-full py-3 px-2">
           <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" />
+            <AvatarImage src={src} />
             <AvatarFallback>EY</AvatarFallback>
           </Avatar>
           <div>
@@ -33,26 +41,13 @@ export function Friends({ name }: { name: string }) {
   );
 }
 
-export default function FriendsWrapper() {
-  const users = [
-    {
-      userName: "Evan Yang",
-      picture: "https://github.com/shadcn.png",
-    },
-    {
-      userName: "Donald Trump",
-      picture: "https://github.com/shadcn.png",
-    },
-    {
-      userName: "Bubblyfishy",
-      picture: "https://github.com/shadcn.png",
-    },
-    {
-      userName: "John Deer",
-      picture: "https://github.com/shadcn.png",
-    },
-  ];
+export async function PendingFriends() {
+  const { data } = await getPending();
 
+  return <FriendsWrapper users={data} />;
+}
+
+export default function FriendsWrapper({ users }: { users: User[] }) {
   return (
     <>
       <section className="flex-col w-full h-full">
@@ -65,7 +60,9 @@ export default function FriendsWrapper() {
 
         <div className="flex-col">
           {users.map((user) => {
-            return <Friends key={user.userName} name={user.userName} />;
+            return (
+              <Friends key={user.id} name={user.username} src={user.imageUrl} />
+            );
           })}
         </div>
       </section>

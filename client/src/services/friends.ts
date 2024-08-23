@@ -1,17 +1,19 @@
-import { auth } from "@clerk/nextjs/server";
-
 //client side methods that gets data from route handlers in the server
 
-// export async function getPending() {
-//   const { getToken } = auth();
+export async function getPending() {
+  const response = await fetch("/api/pendingFriends", {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  });
 
-//   const request = await fetch(baseUrl + "/requests", {
-//     method: "GET",
-//     headers: { Authorization: `Bearer ${await getToken()}` },
-//   }).then((res) => res.json());
+  const data = await response.json();
 
-//   return request;
-// }
+  if (!response.ok) {
+    throw new Error(data.error);
+  }
+
+  return data;
+}
 
 export async function sendFriendRequest(username: string) {
   const response = await fetch("/api/friendRequest", {
