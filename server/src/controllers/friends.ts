@@ -27,7 +27,7 @@ interface Friend {
 }
 
 //gets all pending friend requests
-friendsRouter.get("/pending", ClerkExpressRequireAuth({}), async (req, res) => {
+friendsRouter.get("/pending", async (req, res) => {
   // Your route handler logic
   try {
     // const userId = req.auth.userId;
@@ -52,10 +52,8 @@ friendsRouter.get("/pending", ClerkExpressRequireAuth({}), async (req, res) => {
 
     res.json(pendingArr);
   } catch (error) {
-    if (error instanceof Error) {
-      console.error("Error getting pending", error);
-      res.status(500).json({ error: "Error getting pending:" + error });
-    }
+    console.log("Error in friend request route handler:" + error);
+    res.status(500).json({ error: "Error processing friend request:" + error });
   }
 });
 

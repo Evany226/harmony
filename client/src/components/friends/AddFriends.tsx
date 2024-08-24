@@ -2,7 +2,7 @@
 
 import { Button } from "../ui/button";
 import React, { useState } from "react";
-import { sendFriendRequest } from "@/services/friends";
+import { sendFriendRequest } from "@/lib/utils";
 import { useToast } from "../ui/use-toast";
 import { LoadingIcon } from "../ui/loading";
 

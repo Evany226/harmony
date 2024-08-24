@@ -6,7 +6,6 @@ import {
 import { Separator } from "../ui/separator";
 import { User } from "@/types/index";
 import Image from "next/image";
-import { getPending } from "@/services/friends";
 
 interface FriendsProps {
   name: string;
@@ -39,12 +38,6 @@ export function Friends({ name, src }: FriendsProps) {
       <Separator orientation="horizontal" />
     </div>
   );
-}
-
-export async function PendingFriends() {
-  const { data } = await getPending();
-
-  return <FriendsWrapper users={data} />;
 }
 
 export default function FriendsWrapper({ users }: { users: User[] }) {
