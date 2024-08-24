@@ -1,17 +1,10 @@
 /* eslint-disable @typescript-eslint/no-namespace */
-import express from "express";
 import { clerkClient } from "@clerk/clerk-sdk-node";
 import prisma from "../lib/prisma";
+import { Friend } from "../types";
+import { Request, Response } from "express";
 
-import { ClerkExpressRequireAuth, StrictAuthProp } from "@clerk/clerk-sdk-node";
-
-const friendsRouter = express.Router();
-
-friendsRouter.get("/", async (_req, res) => {
-  const users = await prisma.friend.findMany();
-  console.log(users);
-  res.json(users);
-});
+import { StrictAuthProp } from "@clerk/clerk-sdk-node";
 
 declare global {
   namespace Express {
@@ -19,21 +12,65 @@ declare global {
   }
 }
 
-interface Friend {
-  id: string;
-  fromUserId: string;
-  toUserId: string;
-  status: string | null; //get rid of null when u update database, rn database has status as String? meaning its optional
-}
+//fetches all friends
+const getAllFriends = async (req: Request, res: Response) => {
+  try {
+    const userId = req.auth.userId;
+    const friends = await prisma.friend.findMany({
+      where: {
+        OR: [
+          {
+            toUserId: userId,
+          },
+          {
+            fromUserId: userId,
+          },
+        ],
+        status: "confirmed",
+      },
+    });
+
+    const friendsArr = await Promise.all(
+      friends.map(async (friend: Friend) => {
+        let friendId = friend.fromUserId;
+        if (friendId === userId) {
+          friendId = friend.toUserId;
+          const userObject = await clerkClient.users.getUser(friendId);
+
+          return {
+            id: userObject.id,
+            username: userObject.username,
+            hasImage: userObject.hasImage,
+            imageUrl: userObject.imageUrl,
+          };
+        } else {
+          const userObject = await clerkClient.users.getUser(friendId);
+
+          return {
+            id: userObject.id,
+            username: userObject.username,
+            hasImage: userObject.hasImage,
+            imageUrl: userObject.imageUrl,
+          };
+        }
+      })
+    );
+
+    res.json(friendsArr);
+  } catch (error) {
+    console.log("Error in friend request route handler:" + error);
+    res.status(500).json({ error: "Error processing friend request:" + error });
+  }
+};
 
 //gets all pending friend requests
-friendsRouter.get("/pending", async (req, res) => {
-  // Your route handler logic
+const getPendingFriends = async (req: Request, res: Response) => {
   try {
-    // const userId = req.auth.userId;
+    const userId = req.auth.userId;
     const pending = await prisma.friend.findMany({
       where: {
-        toUserId: "user_2kvgB9d6HPZNSZGsGDf02nYSx12",
+        toUserId: userId,
+        status: "pending",
       },
     });
     const pendingArr = await Promise.all(
@@ -55,9 +92,9 @@ friendsRouter.get("/pending", async (req, res) => {
     console.log("Error in friend request route handler:" + error);
     res.status(500).json({ error: "Error processing friend request:" + error });
   }
-});
+};
 
-friendsRouter.post("/", ClerkExpressRequireAuth({}), async (req, res) => {
+const createFriendRequest = async (req: Request, res: Response) => {
   const { username } = req.body as { username: string };
 
   console.log(username);
@@ -103,6 +140,6 @@ friendsRouter.post("/", ClerkExpressRequireAuth({}), async (req, res) => {
     console.error("Error processing friend request:", error);
     res.status(500).json({ error: "Error processing friend request:" + error });
   }
-});
+};
 
-export default friendsRouter;
+export { getAllFriends, getPendingFriends, createFriendRequest };

@@ -4,7 +4,7 @@ import { Button } from "../ui/button";
 import React, { useState } from "react";
 import { sendFriendRequest } from "@/lib/utils";
 import { useToast } from "../ui/use-toast";
-import { LoadingIcon } from "../ui/loading";
+import Loading from "../global/Loading";
 
 export default function AddFriendsForm() {
   const [username, setUsername] = useState<string>("");
@@ -64,7 +64,9 @@ export default function AddFriendsForm() {
       ></input>
       <div className="w-full flex justify-end">
         <Button variant="outline" size="sm" type="submit" className="w-40">
-          {isLoading ? <LoadingIcon /> : "Send friend request"}
+          <Loading isLoading={isLoading}>
+            <p>Send friend request</p>
+          </Loading>
         </Button>
       </div>
     </form>

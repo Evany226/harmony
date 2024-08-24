@@ -2,7 +2,6 @@
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 import { useUser } from "@clerk/nextjs";
 import { SignOutButton, UserButton } from "@clerk/nextjs";
-import { useRouter } from "next/navigation";
 
 export default function ProfileCard() {
   const { isSignedIn, user } = useUser();

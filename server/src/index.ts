@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 
 import cors from "cors";
-import friendsRouter from "./controllers/friends";
+import friendsRouter from "./routes/friendRoutes";
 
 import "dotenv/config"; // To read CLERK_SECRET_KEY and CLERK_PUBLISHABLE_KEY
 import {
@@ -10,7 +10,7 @@ import {
   RequireAuthProp,
   StrictAuthProp,
 } from "@clerk/clerk-sdk-node";
-import express, { Request, Response, NextFunction } from "express";
+import express, { Request } from "express";
 
 //https://clerk.com/docs/backend-requests/handling/nodejs
 declare global {

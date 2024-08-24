@@ -1,10 +1,11 @@
 import FriendsWrapper from "@/components/friends/FriendsCard";
+import friends from "../../../../../friends.json";
 
 export default function Blocked() {
   return (
     <div className="w-full h-full">
       <div className="flex flex-col items-center w-3/4 h-full px-4 py-3 border-r border-zinc-800">
-        <FriendsWrapper />
+        <FriendsWrapper users={friends.users} title="Blocked" pending={false} />
       </div>
     </div>
   );
