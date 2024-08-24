@@ -27,7 +27,7 @@ export async function getAllFriends(token: string) {
 }
 
 export async function getPending(token: string) {
-  const response = await fetch("http:/localhost:3001/api/friends/pending", {
+  const response = await fetch("http:/localhost:3001/api/requests", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -51,6 +51,23 @@ export async function sendFriendRequest(username: string) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ username }),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.error);
+  }
+
+  return data;
+}
+
+export async function acceptFriendRequest(id: string) {
+  const response = await fetch(`/api/acceptRequest/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
 
   const data = await response.json();

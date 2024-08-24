@@ -3,6 +3,7 @@
 
 import cors from "cors";
 import friendsRouter from "./routes/friendRoutes";
+import requestRouter from "./routes/requestRoute";
 
 import "dotenv/config"; // To read CLERK_SECRET_KEY and CLERK_PUBLISHABLE_KEY
 import {
@@ -37,6 +38,7 @@ app.get(
 );
 
 app.use("/api/friends", friendsRouter);
+app.use("/api/requests", requestRouter);
 
 const PORT = 3001;
 

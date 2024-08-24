@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 //used to send post request to server to send friend request
 export async function POST(request: Request) {
-  const baseUrl = "http://localhost:3001/api/friends";
+  const baseUrl = "http://localhost:3001/api/requests";
   const { getToken } = auth();
 
   try {

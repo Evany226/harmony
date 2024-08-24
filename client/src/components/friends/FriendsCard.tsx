@@ -1,3 +1,5 @@
+"use client";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   ChatBubbleOvalLeftIcon,
@@ -7,12 +9,13 @@ import {
 } from "@heroicons/react/16/solid";
 import { Separator } from "../ui/separator";
 import { User } from "@/types/index";
-import Image from "next/image";
 import { TooltipWrapper } from "../global/TooltipWrapper";
+import { acceptFriendRequest } from "@/lib/utils";
+import { auth } from "@clerk/nextjs/server";
+import { useToast } from "../ui/use-toast";
 
 interface FriendsProps {
-  name: string;
-  src: string;
+  user: User;
   pending: boolean;
 }
 
@@ -22,17 +25,40 @@ interface FriendsWrapperProps {
   title: string;
 }
 
-export function Friends({ name, src, pending }: FriendsProps) {
+export function Friends({ user, pending }: FriendsProps) {
+  const { toast } = useToast();
+
+  const handleAccept = async (id: string) => {
+    try {
+      const result = await acceptFriendRequest(id);
+      toast({
+        variant: "default",
+        title: "Accepted friend request!",
+        description:
+          "Your friend request has been successfully accepted. You can now chat with your new friend!",
+      });
+    } catch (error: any) {
+      console.log(error);
+      toast({
+        variant: "destructive",
+        title: "Failed to accept friend request",
+        description:
+          error.message ||
+          "An error occurred while accepting your friend request. Please try again later",
+      });
+    }
+  };
+
   return (
     <div className="flex flex-col w-full bg-zinc-900 rounded-sm hover:bg-zinc-800 group cursor-pointer">
       <main className="flex items-center w-full justify-between">
         <div className="flex items-center w-full py-3 px-2">
           <Avatar>
-            <AvatarImage src={src} />
+            <AvatarImage src={user.imageUrl} />
             <AvatarFallback>EY</AvatarFallback>
           </Avatar>
           <div>
-            <h2 className="text-gray-400 ml-3">{name}</h2>
+            <h2 className="text-gray-400 ml-3">{user.username}</h2>
           </div>
         </div>
 
@@ -40,14 +66,17 @@ export function Friends({ name, src, pending }: FriendsProps) {
           {pending ? (
             <>
               <TooltipWrapper text="Accept">
-                <div className="bg-zinc-800 mr-2 rounded-2xl p-1.5 cursor-pointer group-hover:bg-neutral-900">
+                <button
+                  onClick={() => handleAccept(user.requestId)}
+                  className="bg-zinc-800 mr-2 rounded-2xl p-1.5 cursor-pointer group-hover:bg-neutral-900"
+                >
                   <CheckIcon className="w-6 text-gray-400" />
-                </div>
+                </button>
               </TooltipWrapper>
               <TooltipWrapper text="Reject">
-                <div className="bg-zinc-800 rounded-2xl p-1.5 cursor-pointer group-hover:bg-neutral-900">
+                <button className="bg-zinc-800 rounded-2xl p-1.5 cursor-pointer group-hover:bg-neutral-900">
                   <XMarkIcon className="w-6 text-gray-400" />
-                </div>
+                </button>
               </TooltipWrapper>
             </>
           ) : (
@@ -89,14 +118,7 @@ export default function FriendsWrapper({
 
         <div className="flex-col">
           {users.map((user) => {
-            return (
-              <Friends
-                key={user.id}
-                name={user.username}
-                src={user.imageUrl}
-                pending={pending}
-              />
-            );
+            return <Friends key={user.id} user={user} pending={pending} />;
           })}
         </div>
       </section>
