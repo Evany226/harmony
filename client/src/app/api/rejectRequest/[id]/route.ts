@@ -1,18 +1,18 @@
-import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs/server";
 
-//used to send post request to server to send friend request
-export async function POST(request: Request) {
-  if (request.method === "POST") {
-    const baseUrl = "http://localhost:3001/api/requests";
+export async function DELETE(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  if (request.method === "DELETE") {
     const { getToken } = auth();
+    const id = params.id;
+    const baseUrl = `http://localhost:3001/api/requests/${id}/reject`;
 
     try {
-      const { username } = await request.json();
-
       const response = await fetch(baseUrl, {
-        method: "POST",
-        body: JSON.stringify({ username }),
+        method: "DELETE",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${await getToken()}`,
@@ -30,9 +30,9 @@ export async function POST(request: Request) {
       const data = await response.json();
       return NextResponse.json(data);
     } catch (error) {
-      console.error("Error in friend request route handler:", error);
+      console.error("Error in accept request route handler:", error);
       return NextResponse.json(
-        { error: "Error in friend request route handler:" + error },
+        { error: "Error in accept request route handler:" + error },
         { status: 500 }
       );
     }

@@ -12,7 +12,15 @@ const requestRouter = express.Router();
 
 requestRouter.get("/", ClerkExpressRequireAuth({}), getPendingFriends);
 requestRouter.post("/", ClerkExpressRequireAuth({}), createFriendRequest);
-requestRouter.put("/:id/accept", acceptFriendRequest);
-requestRouter.put("/:id/reject", rejectFriendRequest);
+requestRouter.put(
+  "/:id/accept",
+  ClerkExpressRequireAuth({}),
+  acceptFriendRequest
+);
+requestRouter.delete(
+  "/:id/reject",
+  ClerkExpressRequireAuth({}),
+  rejectFriendRequest
+);
 
 export default requestRouter;

@@ -65,24 +65,69 @@ const createFriendRequest = async (req: Request, res: Response) => {
 
     const friendId = users[0].id;
 
-    const dataObject = {
+    //checks if the user has already sent a friend request to the friend
+    const pendingFromUserObject = {
       toUserId: friendId, //to friend
       fromUserId: req.auth.userId, //from user
       status: "pending",
     };
 
-    const friend = await prisma.friend.findFirst({
-      where: dataObject,
+    const pendingFromUser = await prisma.friend.findFirst({
+      where: pendingFromUserObject,
     });
 
-    if (friend !== null) {
+    if (pendingFromUser !== null) {
       return res.status(400).json({
         error: "You have already sent a friend request to this user.",
       });
     }
 
+    //checks if the friend has already sent a friend request to the user
+    const pendingToUserObject = {
+      toUserId: req.auth.userId,
+      fromUserId: friendId,
+      status: "pending",
+    };
+
+    const pendingToUser = await prisma.friend.findFirst({
+      where: pendingToUserObject,
+    });
+
+    if (pendingToUser !== null) {
+      return res.status(400).json({
+        error: "This user has already sent you a friend request.",
+      });
+    }
+
+    //checks if the user and friend are already friends
+    const existingFriendObject = {
+      OR: [
+        {
+          toUserId: req.auth.userId,
+          fromUserId: friendId,
+          status: "confirmed",
+        },
+        {
+          toUserId: friendId,
+          fromUserId: req.auth.userId,
+          status: "confirmed",
+        },
+      ],
+    };
+
+    const existingFriend = await prisma.friend.findFirst({
+      where: existingFriendObject,
+    });
+
+    if (existingFriend !== null) {
+      return res.status(400).json({
+        error: "You are already friends with this user.",
+      });
+    }
+
+    //if no errors create friend request
     const newFriend = await prisma.friend.create({
-      data: dataObject,
+      data: pendingFromUserObject,
     });
 
     res.json(newFriend);
@@ -120,6 +165,7 @@ const rejectFriendRequest = async (req: Request, res: Response) => {
     const friend = await prisma.friend.delete({
       where: {
         id: friendRequestId,
+        status: "pending",
       },
     });
 

@@ -78,3 +78,37 @@ export async function acceptFriendRequest(id: string) {
 
   return data;
 }
+
+export async function rejectFriendRequest(id: string) {
+  const response = await fetch(`/api/rejectRequest/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.error);
+  }
+
+  return data;
+}
+
+export async function removeFriend(id: string) {
+  const response = await fetch(`/api/removeFriend/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.error);
+  }
+
+  return data;
+}

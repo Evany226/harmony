@@ -65,4 +65,30 @@ const getAllFriends = async (req: Request, res: Response) => {
   }
 };
 
-export { getAllFriends };
+const removeFriend = async (req: Request, res: Response) => {
+  const friendRequestId = req.params.id;
+  const userId = req.auth.userId;
+
+  try {
+    const removedFriend = await prisma.friend.delete({
+      where: {
+        id: friendRequestId,
+        OR: [
+          {
+            toUserId: userId,
+          },
+          {
+            fromUserId: userId,
+          },
+        ],
+        status: "confirmed",
+      },
+    });
+    res.json(removedFriend);
+  } catch (error) {
+    console.log("Error removing friend:" + error);
+    res.status(500).json({ error: "Error removing friend:" + error });
+  }
+};
+
+export { getAllFriends, removeFriend };

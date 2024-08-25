@@ -10,9 +10,14 @@ import {
 import { Separator } from "../ui/separator";
 import { User } from "@/types/index";
 import { TooltipWrapper } from "../global/TooltipWrapper";
-import { acceptFriendRequest } from "@/lib/utils";
-import { auth } from "@clerk/nextjs/server";
+import {
+  acceptFriendRequest,
+  rejectFriendRequest,
+  removeFriend,
+} from "@/lib/utils";
 import { useToast } from "../ui/use-toast";
+import { useRouter } from "next/navigation";
+import { Dropdown } from "../global/Dropdown";
 
 interface FriendsProps {
   user: User;
@@ -27,10 +32,12 @@ interface FriendsWrapperProps {
 
 export function Friends({ user, pending }: FriendsProps) {
   const { toast } = useToast();
+  const router = useRouter();
 
   const handleAccept = async (id: string) => {
     try {
       const result = await acceptFriendRequest(id);
+      router.refresh();
       toast({
         variant: "default",
         title: "Accepted friend request!",
@@ -45,6 +52,48 @@ export function Friends({ user, pending }: FriendsProps) {
         description:
           error.message ||
           "An error occurred while accepting your friend request. Please try again later",
+      });
+    }
+  };
+
+  const handleReject = async (id: string) => {
+    try {
+      const result = await rejectFriendRequest(id);
+      router.refresh();
+      toast({
+        variant: "default",
+        title: "Rejected friend request!",
+        description: "Your friend request has been successfully rejected.",
+      });
+    } catch (error: any) {
+      console.log(error);
+      toast({
+        variant: "destructive",
+        title: "Failed to reject friend request",
+        description:
+          error.message ||
+          "An error occurred while rejecting your friend request. Please try again later",
+      });
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      const result = await removeFriend(id);
+      router.refresh();
+      toast({
+        variant: "default",
+        title: "Friend removed!",
+        description: "Your friend has been successfully removed.",
+      });
+    } catch (error: any) {
+      console.log(error);
+      toast({
+        variant: "destructive",
+        title: "Failed to remove friend",
+        description:
+          error.message ||
+          "An error occurred while removing your friend. Please try again later",
       });
     }
   };
@@ -74,7 +123,10 @@ export function Friends({ user, pending }: FriendsProps) {
                 </button>
               </TooltipWrapper>
               <TooltipWrapper text="Reject">
-                <button className="bg-zinc-800 rounded-2xl p-1.5 cursor-pointer group-hover:bg-neutral-900">
+                <button
+                  onClick={() => handleReject(user.requestId)}
+                  className="bg-zinc-800 rounded-2xl p-1.5 cursor-pointer group-hover:bg-neutral-900"
+                >
                   <XMarkIcon className="w-6 text-gray-400" />
                 </button>
               </TooltipWrapper>
@@ -82,16 +134,16 @@ export function Friends({ user, pending }: FriendsProps) {
           ) : (
             <>
               <TooltipWrapper text="Message">
-                <div className="bg-zinc-800 mr-2 rounded-2xl p-1.5 cursor-pointer group-hover:bg-neutral-900">
+                <div className="bg-zinc-800 mr-2 rounded-2xl p-1.5 cursor-pointer group-hover:bg-neutral-900 ">
                   <ChatBubbleOvalLeftIcon className="w-6 text-gray-400" />
                 </div>
               </TooltipWrapper>
 
-              <TooltipWrapper text="More">
+              <Dropdown removeFriend={() => handleDelete(user.requestId)}>
                 <div className="bg-zinc-800 rounded-2xl p-1.5 cursor-pointer group-hover:bg-neutral-900">
                   <EllipsisVerticalIcon className="w-6 text-gray-400" />
                 </div>
-              </TooltipWrapper>
+              </Dropdown>
             </>
           )}
         </aside>
