@@ -1,5 +1,5 @@
 import { getPending } from "@/lib/utils";
-import FriendsWrapper from "@/components/friends/FriendsCard";
+import FriendsWrapper from "@/components/dashboard/friends/FriendsCard";
 import { auth } from "@clerk/nextjs/server";
 
 export default async function Pending() {

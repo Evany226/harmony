@@ -7,17 +7,17 @@ import {
   CheckIcon,
   XMarkIcon,
 } from "@heroicons/react/16/solid";
-import { Separator } from "../ui/separator";
+import { Separator } from "../../ui/separator";
 import { User } from "@/types/index";
-import { TooltipWrapper } from "../global/TooltipWrapper";
+import { TooltipWrapper } from "../../global/TooltipWrapper";
 import {
   acceptFriendRequest,
   rejectFriendRequest,
   removeFriend,
 } from "@/lib/utils";
-import { useToast } from "../ui/use-toast";
+import { useToast } from "../../ui/use-toast";
 import { useRouter } from "next/navigation";
-import { Dropdown } from "../global/Dropdown";
+import { Dropdown } from "../../global/Dropdown";
 
 interface FriendsProps {
   user: User;

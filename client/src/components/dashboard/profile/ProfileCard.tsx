@@ -1,5 +1,5 @@
 "use client";
-import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "../../ui/avatar";
 import { useUser } from "@clerk/nextjs";
 import { SignOutButton, UserButton } from "@clerk/nextjs";
 

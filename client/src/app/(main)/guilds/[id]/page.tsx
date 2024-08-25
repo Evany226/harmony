@@ -1,4 +1,4 @@
-import ProfileCard from "@/components/profile/ProfileCard";
+import ProfileCard from "@/components/dashboard/profile/ProfileCard";
 
 export default function Guild({ params }: { params: { id: string } }) {
   return (

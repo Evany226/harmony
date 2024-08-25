@@ -1,4 +1,4 @@
-import FriendsWrapper from "@/components/friends/FriendsCard";
+import FriendsWrapper from "@/components/dashboard/friends/FriendsCard";
 import friends from "../../../../../friends.json";
 
 export default async function Dashboard() {

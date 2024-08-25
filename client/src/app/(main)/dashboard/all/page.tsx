@@ -1,4 +1,4 @@
-import FriendsWrapper from "@/components/friends/FriendsCard";
+import FriendsWrapper from "@/components/dashboard/friends/FriendsCard";
 import { auth } from "@clerk/nextjs/server";
 import { getAllFriends } from "@/lib/utils";
 

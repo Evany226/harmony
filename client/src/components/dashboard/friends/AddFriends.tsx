@@ -1,10 +1,10 @@
 "use client";
 
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import React, { useState } from "react";
 import { sendFriendRequest } from "@/lib/utils";
-import { useToast } from "../ui/use-toast";
-import Loading from "../global/Loading";
+import { useToast } from "../../ui/use-toast";
+import Loading from "../../global/Loading";
 
 export default function AddFriendsForm() {
   const [username, setUsername] = useState<string>("");

@@ -9,30 +9,36 @@ datasource db {
 }
 
 model User {
-  id      String   @id @default(uuid())
-  email   String   @unique
-  name    String?
-  servers Server[]
+  id               String         @id @default(uuid())
+  email            String         @unique
+  name             String?
+  messagesReceived Message[]      @relation("ReceivedMessages")
+  messagesSent     Message[]      @relation("SentMessages")
+  conversations    Conversation[] @relation("UserConversations")
 }
 
 model Friend {
-  id     String  @id @default(uuid())
-  status String?
-  toUserId String
+  id         String  @id @default(uuid())
+  status     String?
   fromUserId String
+  toUserId   String
 }
 
-model Server {
-  id           Int           @id @default(autoincrement())
-  name         String
-  ownerId      String?
-  owner        User?         @relation(fields: [ownerId], references: [id])
-  textChannels TextChannel[]
+model Message {
+  id             String       @id @default(uuid())
+  content        String
+  senderId       String
+  receiverId     String
+  conversationId String
+  createdAt      DateTime     @default(now())
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  receiver       User         @relation("ReceivedMessages", fields: [receiverId], references: [id])
+  sender         User         @relation("SentMessages", fields: [senderId], references: [id])
 }
 
-model TextChannel {
-  id       Int     @id @default(autoincrement())
-  name     String
-  serverId Int?
-  server   Server? @relation(fields: [serverId], references: [id])
+model Conversation {
+  id        String    @id @default(uuid())
+  createdAt DateTime  @default(now())
+  messages  Message[]
+  users     User[]    @relation("UserConversations")
 }

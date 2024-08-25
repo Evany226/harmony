@@ -1,4 +1,4 @@
-import AddFriendsForm from "@/components/friends/AddFriends";
+import AddFriendsForm from "@/components/dashboard/friends/AddFriends";
 
 export default function AddFriends() {
   return (
