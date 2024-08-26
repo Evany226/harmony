@@ -8,7 +8,7 @@ import {
   XMarkIcon,
 } from "@heroicons/react/16/solid";
 import { Separator } from "../../ui/separator";
-import { User } from "@/types/index";
+import { Friend } from "@/types";
 import { TooltipWrapper } from "../../global/TooltipWrapper";
 import {
   acceptFriendRequest,
@@ -20,17 +20,17 @@ import { useRouter } from "next/navigation";
 import { Dropdown } from "../../global/Dropdown";
 
 interface FriendsProps {
-  user: User;
+  friend: Friend;
   pending: boolean;
 }
 
 interface FriendsWrapperProps {
-  users: User[];
+  friends: Friend[];
   pending: boolean;
   title: string;
 }
 
-export function Friends({ user, pending }: FriendsProps) {
+export function Friends({ friend, pending }: FriendsProps) {
   const { toast } = useToast();
   const router = useRouter();
 
@@ -103,11 +103,11 @@ export function Friends({ user, pending }: FriendsProps) {
       <main className="flex items-center w-full justify-between">
         <div className="flex items-center w-full py-3 px-2">
           <Avatar>
-            <AvatarImage src={user.imageUrl} />
+            <AvatarImage src={friend.imageUrl} />
             <AvatarFallback>EY</AvatarFallback>
           </Avatar>
           <div>
-            <h2 className="text-gray-400 ml-3">{user.username}</h2>
+            <h2 className="text-gray-400 ml-3">{friend.username}</h2>
           </div>
         </div>
 
@@ -116,7 +116,7 @@ export function Friends({ user, pending }: FriendsProps) {
             <>
               <TooltipWrapper text="Accept">
                 <button
-                  onClick={() => handleAccept(user.requestId)}
+                  onClick={() => handleAccept(friend.requestId)}
                   className="bg-zinc-800 mr-2 rounded-2xl p-1.5 cursor-pointer group-hover:bg-neutral-900"
                 >
                   <CheckIcon className="w-6 text-gray-400" />
@@ -124,7 +124,7 @@ export function Friends({ user, pending }: FriendsProps) {
               </TooltipWrapper>
               <TooltipWrapper text="Reject">
                 <button
-                  onClick={() => handleReject(user.requestId)}
+                  onClick={() => handleReject(friend.requestId)}
                   className="bg-zinc-800 rounded-2xl p-1.5 cursor-pointer group-hover:bg-neutral-900"
                 >
                   <XMarkIcon className="w-6 text-gray-400" />
@@ -139,7 +139,7 @@ export function Friends({ user, pending }: FriendsProps) {
                 </div>
               </TooltipWrapper>
 
-              <Dropdown removeFriend={() => handleDelete(user.requestId)}>
+              <Dropdown removeFriend={() => handleDelete(friend.requestId)}>
                 <div className="bg-zinc-800 rounded-2xl p-1.5 cursor-pointer group-hover:bg-neutral-900">
                   <EllipsisVerticalIcon className="w-6 text-gray-400" />
                 </div>
@@ -154,7 +154,7 @@ export function Friends({ user, pending }: FriendsProps) {
 }
 
 export default function FriendsWrapper({
-  users,
+  friends,
   pending,
   title,
 }: FriendsWrapperProps) {
@@ -163,14 +163,16 @@ export default function FriendsWrapper({
       <section className="flex-col w-full h-full">
         <div className="flex flex-col justify-start">
           <h2 className="text-gray-400 text-sm font-medium mb-2 ml-2">
-            {title} - {users.length}
+            {title} - {friends.length}
           </h2>
           <Separator orientation="horizontal" />
         </div>
 
         <div className="flex-col">
-          {users.map((user) => {
-            return <Friends key={user.id} user={user} pending={pending} />;
+          {friends.map((friend) => {
+            return (
+              <Friends key={friend.id} friend={friend} pending={pending} />
+            );
           })}
         </div>
       </section>

@@ -1,4 +1,6 @@
 import ConversationsPanel from "@/components/dashboard/ConversationsPanel";
+import { Suspense } from "react";
+import PanelSkeleton from "@/components/skeletons/PanelSkeleton";
 
 export default function ConversationsLayout({
   children,
@@ -7,7 +9,9 @@ export default function ConversationsLayout({
 }) {
   return (
     <section className="flex w-full h-full bg-zinc-900">
-      <ConversationsPanel />
+      <Suspense fallback={<PanelSkeleton />}>
+        <ConversationsPanel />
+      </Suspense>
 
       <div className="flex flex-col w-[100%] h-full bg-zinc-900 ">
         {children}

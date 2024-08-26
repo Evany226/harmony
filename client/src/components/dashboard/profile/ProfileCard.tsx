@@ -2,6 +2,7 @@
 import { Avatar, AvatarImage, AvatarFallback } from "../../ui/avatar";
 import { useUser } from "@clerk/nextjs";
 import { SignOutButton, UserButton } from "@clerk/nextjs";
+import ProfileCardSkeleton from "@/components/skeletons/ProfileCardSkeleton";
 
 export default function ProfileCard() {
   const { isSignedIn, user } = useUser();
@@ -36,7 +37,9 @@ export default function ProfileCard() {
             </div>
           </div>
         </div>
-      ) : null}
+      ) : (
+        <ProfileCardSkeleton />
+      )}
     </>
   );
 }

@@ -11,9 +11,57 @@ declare global {
   }
 }
 
+const getAllConversations = async (req: Request, res: Response) => {
+  // const userId = req.auth.userId;
+  const userId = "user_2kvgB9d6HPZNSZGsGDf02nYSx12";
+
+  try {
+    const allConversations = await prisma.conversation.findMany({
+      where: {
+        users: {
+          some: {
+            // some makes it so at least one of the users has an id of userId
+            id: userId,
+          },
+        },
+      },
+      include: {
+        users: true, // Include all posts in the returned object
+      },
+    });
+
+    res.json(allConversations);
+  } catch (error) {
+    console.error("Error fetching conversations:", error);
+    res.status(500).json({ error: "Failed to fetch conversations" });
+  }
+};
+
+//fetches one conversation
+const getConversation = async (req: Request, res: Response) => {
+  const conversationId = req.params.id;
+
+  try {
+    const conversation = await prisma.conversation.findUnique({
+      where: {
+        id: conversationId,
+      },
+      include: {
+        users: true,
+      },
+    });
+
+    res.json(conversation);
+  } catch (error) {
+    console.error("Error fetching conversation:", error);
+    res.status(500).json({ error: "Failed to fetch conversation" });
+  }
+};
+
 //used when users click the direct messages + button to setup empty conversation
 const createConversation = async (req: Request, res: Response) => {
-  const userId = req.auth.userId;
+  // const userId = req.auth.userId;
+  const userId = "user_2kvgB9d6HPZNSZGsGDf02nYSx12";
   const { participantIds } = req.body as { participantIds: string[] };
 
   try {
@@ -35,4 +83,4 @@ const createConversation = async (req: Request, res: Response) => {
   }
 };
 
-export { createConversation };
+export { createConversation, getAllConversations, getConversation };
