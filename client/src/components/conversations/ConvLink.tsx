@@ -5,18 +5,18 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Conversation, User } from "@/types/index";
 import { useUser } from "@clerk/nextjs";
-import DmCardSkeleton from "@/components/skeletons/DmCardSkeleton";
+import ConvLinkSkeleton from "@/components/skeletons/ConvLinkSkeleton";
 
-interface DirectMessageProps {
+interface ConvLinkProps {
   users: User[];
   href: string;
 }
 
-interface DirectMessageWrapperProps {
+interface ConvLinkWrapperProps {
   conversations: Conversation[];
 }
 
-export function DirectMessage({ users, href }: DirectMessageProps) {
+export function ConvLink({ users, href }: ConvLinkProps) {
   const pathname = usePathname();
 
   return (
@@ -48,15 +48,15 @@ export function DirectMessage({ users, href }: DirectMessageProps) {
           </div>
         </Link>
       ) : (
-        <DmCardSkeleton />
+        <ConvLinkSkeleton />
       )}
     </>
   );
 }
 
-export default function DirectMessageWrapper({
+export default function ConvLinkWrapper({
   conversations,
-}: DirectMessageWrapperProps) {
+}: ConvLinkWrapperProps) {
   const { user: currentUser } = useUser(); // renames user to currentUser by destructure
 
   return (
@@ -74,7 +74,7 @@ export default function DirectMessageWrapper({
             );
 
             return (
-              <DirectMessage
+              <ConvLink
                 key={conversation.id}
                 users={newUsers}
                 href={`/conversations/${conversation.id}`}

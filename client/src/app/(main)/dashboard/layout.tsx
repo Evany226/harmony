@@ -1,5 +1,5 @@
 import NavLinks from "@/components/dashboard/friends/NavLinks";
-import ConversationsPanel from "@/components/dashboard/ConversationsPanel";
+import ConversationsPanel from "@/components/conversations/ConversationsPanel";
 import { Suspense } from "react";
 
 export default function DashboardLayout({

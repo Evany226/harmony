@@ -1,4 +1,23 @@
 @tailwind base;
-  @tailwind components;
-  @tailwind utilities;
-  
+@tailwind components;
+@tailwind utilities;
+
+/* width */
+::-webkit-scrollbar {
+  @apply w-2.5 rounded-full;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  @apply bg-zinc-800;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  @apply bg-neutral-950 rounded-full cursor-grab;
+}
+
+/* Handle on hover
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-black;
+} */

@@ -1,4 +1,4 @@
-import ConversationsPanel from "@/components/dashboard/ConversationsPanel";
+import ConversationsPanel from "@/components/conversations/ConversationsPanel";
 import { Suspense } from "react";
 import PanelSkeleton from "@/components/skeletons/PanelSkeleton";
 

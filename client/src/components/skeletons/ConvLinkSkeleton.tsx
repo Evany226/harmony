@@ -1,6 +1,6 @@
 import { Skeleton } from "../ui/skeleton";
 
-export default function DmCardSkeleton() {
+export default function ConvLinkSkeleton() {
   return (
     <div
       className={`flex items-center max-w-52 bg-neutral-900 px-2 py-2 mt-1 rounded-sm `}

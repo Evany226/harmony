@@ -4,7 +4,8 @@ import { User } from "@/types/index.js";
 import { currentUser } from "@clerk/nextjs/server";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import ChatInput from "@/components/conversations/ChatInput";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import ConvEmptyState from "@/components/empty-states/ConvEmptyState";
+import MessageCard from "@/components/conversations/MessageCard";
 
 export default async function Conversation({
   params,
@@ -31,71 +32,55 @@ export default async function Conversation({
         </Avatar>
         <h1 className="text-gray-300 font-semibold">{header}</h1>
       </header>
-      <div className="w-full h-[calc(100%-3rem)] flex flex-col">
-        <div className="w-3/4 h-full border-r border-zinc-800 flex flex-col relative px-4">
-          <div className="flex-grow overflow-hidden pb-4">
-            <ScrollArea className="h-full flex flex-col-reverse">
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
-              <p>Hello</p>
 
-              {/* ... more <p>Hello</p> elements ... */}
-            </ScrollArea>
+      <main className="w-full h-[calc(100%-3rem)] flex flex-col">
+        <article className="w-3/4 h-full border-r border-zinc-800 flex flex-col relative px-5">
+          <div className="h-full w-full flex flex-col overflow-y-auto mb-4">
+            <ConvEmptyState name={header} imageUrl={users[0].imageUrl} />
+            <MessageCard
+              name={"dankmemepepelord"}
+              message={"hello gamer"}
+              imageUrl={users[0].imageUrl}
+            />
+            <MessageCard
+              name={"dankmemepepelord"}
+              message={"hello gamer"}
+              imageUrl={users[0].imageUrl}
+            />
+            <MessageCard
+              name={"dankmemepepelord"}
+              message={"hello gamer"}
+              imageUrl={users[0].imageUrl}
+            />
+            <MessageCard
+              name={"dankmemepepelord"}
+              message={"hello gamer"}
+              imageUrl={users[0].imageUrl}
+            />
+            <MessageCard
+              name={"dankmemepepelord"}
+              message={"hello gamer"}
+              imageUrl={users[0].imageUrl}
+            />
+            <MessageCard
+              name={"dankmemepepelord"}
+              message={"hello gamer"}
+              imageUrl={users[0].imageUrl}
+            />
+            <MessageCard
+              name={"dankmemepepelord"}
+              message={"yolo"}
+              imageUrl={users[0].imageUrl}
+            />
+            <MessageCard
+              name={"dankmemepepelord"}
+              message={"lol"}
+              imageUrl={users[0].imageUrl}
+            />
           </div>
           <ChatInput />
-        </div>
-      </div>
+        </article>
+      </main>
     </>
   );
 }

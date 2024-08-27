@@ -1,5 +1,4 @@
 import { PlusCircleIcon } from "@heroicons/react/24/solid";
-
 export default function ChatInput() {
   return (
     <section className="w-full bg-zinc-800 py-2 px-4 rounded-lg mb-6">

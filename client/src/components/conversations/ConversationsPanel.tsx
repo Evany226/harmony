@@ -1,6 +1,6 @@
-import FriendsNavButton from "./friends/FriendsNavButton";
-import DirectMessageWrapper from "./direct-messages/DmCard";
-import ProfileCard from "./profile/ProfileCard";
+import FriendsNavButton from "../dashboard/friends/FriendsNavButton";
+import ConvLinkWrapper from "./ConvLink";
+import ProfileCard from "../dashboard/profile/ProfileCard";
 import { getAllConversations } from "@/lib/conversations";
 import { auth } from "@clerk/nextjs/server";
 
@@ -20,7 +20,7 @@ export default async function ConversationsPanel() {
 
       <div className="flex flex-col p-3">
         <FriendsNavButton />
-        <DirectMessageWrapper conversations={data} />
+        <ConvLinkWrapper conversations={data} />
       </div>
 
       <ProfileCard />
