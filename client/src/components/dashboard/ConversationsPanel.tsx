@@ -10,7 +10,7 @@ export default async function ConversationsPanel() {
   const data = await getAllConversations(token as string);
 
   return (
-    <div className="flex flex-col w-64 h-full bg-neutral-900 border-x border-zinc-800 relative">
+    <div className="flex flex-col min-w-64 h-full bg-neutral-900 border-x border-zinc-800 relative">
       <header className="flex items-center justify-center w-full h-12 bg-neutral-900 border-b border-zinc-800 px-3">
         <input
           className="outline-0 rounded-sm w-full bg-zinc-800 text-xs py-1 px-2"

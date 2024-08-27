@@ -35,7 +35,10 @@ export function DirectMessage({ users, href }: DirectMessageProps) {
             <div className="flex ml-3 overflow-x-hidden max-w-full">
               {users.map((user, index) => {
                 return (
-                  <p key={user.id} className="text-sm text-gray-200">
+                  <p
+                    key={user.id}
+                    className="text-base text-gray-300 font-medium"
+                  >
                     {user.username}
                     {index < users.length - 1 && users.length > 1 && ", "}
                   </p>
