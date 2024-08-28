@@ -1,6 +1,6 @@
-import { getConversation } from "@/lib/conversations";
+import { getConversation, getAllMessages } from "@/lib/conversations";
 import { auth } from "@clerk/nextjs/server";
-import { User } from "@/types/index.js";
+import { User, Message } from "@/types/index.js";
 import { currentUser } from "@clerk/nextjs/server";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import ChatInput from "@/components/conversations/ChatInput";
@@ -18,9 +18,14 @@ export default async function Conversation({
 
   const { getToken } = auth();
   const token = await getToken();
-  const data = await getConversation(token as string, params.id);
+  const conversationObject = await getConversation(token as string, params.id);
 
-  const users = data.users.filter((user: User) => user.id !== currUser.id);
+  const messages = await getAllMessages(token as string, params.id);
+
+  const users = conversationObject.users.filter(
+    (user: User) => user.id !== currUser.id
+  );
+  //joins the usernames of the users in the conv (excludes current user)
   const header = users.map((user: User) => user.username).join(", ");
 
   return (
@@ -37,46 +42,18 @@ export default async function Conversation({
         <article className="w-3/4 h-full border-r border-zinc-800 flex flex-col relative px-5">
           <div className="h-full w-full flex flex-col overflow-y-auto mb-4">
             <ConvEmptyState name={header} imageUrl={users[0].imageUrl} />
-            <MessageCard
-              name={"dankmemepepelord"}
-              message={"hello gamer"}
-              imageUrl={users[0].imageUrl}
-            />
-            <MessageCard
-              name={"dankmemepepelord"}
-              message={"hello gamer"}
-              imageUrl={users[0].imageUrl}
-            />
-            <MessageCard
-              name={"dankmemepepelord"}
-              message={"hello gamer"}
-              imageUrl={users[0].imageUrl}
-            />
-            <MessageCard
-              name={"dankmemepepelord"}
-              message={"hello gamer"}
-              imageUrl={users[0].imageUrl}
-            />
-            <MessageCard
-              name={"dankmemepepelord"}
-              message={"hello gamer"}
-              imageUrl={users[0].imageUrl}
-            />
-            <MessageCard
-              name={"dankmemepepelord"}
-              message={"hello gamer"}
-              imageUrl={users[0].imageUrl}
-            />
-            <MessageCard
-              name={"dankmemepepelord"}
-              message={"yolo"}
-              imageUrl={users[0].imageUrl}
-            />
-            <MessageCard
-              name={"dankmemepepelord"}
-              message={"lol"}
-              imageUrl={users[0].imageUrl}
-            />
+            {messages.map((message: Message) => {
+              const sender = message.sender;
+
+              return (
+                <MessageCard
+                  key={message.id}
+                  name={sender.username}
+                  message={message.content}
+                  imageUrl={sender.imageUrl}
+                />
+              );
+            })}
           </div>
           <ChatInput />
         </article>
