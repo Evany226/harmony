@@ -3,6 +3,7 @@ import ConvLinkWrapper from "./ConvLink";
 import ProfileCard from "../dashboard/profile/ProfileCard";
 import { getAllConversations } from "@/lib/conversations";
 import { auth, currentUser } from "@clerk/nextjs/server";
+import { Suspense } from "react";
 
 export default async function ConversationsPanel() {
   const { getToken } = auth();
@@ -22,6 +23,8 @@ export default async function ConversationsPanel() {
         <FriendsNavButton />
         <ConvLinkWrapper conversations={data} />
       </div>
+
+      <ProfileCard />
     </div>
   );
 }

@@ -70,11 +70,42 @@ const createConversation = async (req: Request, res: Response) => {
   const userId = "user_2kvgB9d6HPZNSZGsGDf02nYSx12";
   const { participantIds } = req.body as { participantIds: string[] };
 
+  //includes userId
+  const allParticipantIds = [userId, ...participantIds].sort();
+
   try {
+    const existingConversation = await prisma.conversation.findFirst({
+      where: {
+        AND: [
+          {
+            users: {
+              every: {
+                id: {
+                  in: allParticipantIds,
+                },
+              },
+            },
+          },
+        ],
+      },
+      include: {
+        users: true,
+      },
+    });
+
+    if (
+      existingConversation &&
+      existingConversation.users.length === allParticipantIds.length
+    ) {
+      return res.status(400).json({
+        error: "This conversation already exists.",
+      });
+    }
+
     const newConversation = await prisma.conversation.create({
       data: {
         users: {
-          connect: [{ id: userId }, ...participantIds.map((id) => ({ id }))],
+          connect: allParticipantIds.map((id) => ({ id })),
         },
       },
       include: {

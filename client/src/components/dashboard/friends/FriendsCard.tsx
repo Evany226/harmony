@@ -18,6 +18,7 @@ import {
 import { useToast } from "../../ui/use-toast";
 import { useRouter } from "next/navigation";
 import { Dropdown } from "../../global/Dropdown";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface FriendsProps {
   friend: Friend;
@@ -104,7 +105,9 @@ export function Friends({ friend, pending }: FriendsProps) {
         <div className="flex items-center w-full py-3 px-2">
           <Avatar>
             <AvatarImage src={friend.imageUrl} />
-            <AvatarFallback>EY</AvatarFallback>
+            <AvatarFallback>
+              <Skeleton className="w-full h-full" />
+            </AvatarFallback>
           </Avatar>
           <div>
             <h2 className="text-gray-400 ml-3">{friend.username}</h2>

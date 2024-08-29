@@ -26,10 +26,6 @@ export default function PanelSkeleton() {
           <div className="flex-col mt-3">
             <ConvLinkSkeleton />
             <ConvLinkSkeleton />
-            <ConvLinkSkeleton />
-            <ConvLinkSkeleton />
-            <ConvLinkSkeleton />
-            <ConvLinkSkeleton />
           </div>
         </section>
       </div>

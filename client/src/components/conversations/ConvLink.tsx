@@ -7,6 +7,8 @@ import { Conversation, User } from "@/types/index";
 import { useUser } from "@clerk/nextjs";
 import ConvLinkSkeleton from "@/components/skeletons/ConvLinkSkeleton";
 import ConvDropdown from "../global/ConvDropdown";
+import { Suspense } from "react";
+import { Skeleton } from "../ui/skeleton";
 
 interface ConvLinkProps {
   users: User[];
@@ -22,31 +24,37 @@ export function ConvLink({ users, href }: ConvLinkProps) {
 
   return (
     <>
-      <Link href={href}>
-        <div
-          className={`flex items-center w-full bg-neutral-900 px-2 py-2 mt-1 rounded-sm hover:bg-neutral-800 cursor-pointer ${
-            pathname == href ? "bg-zinc-700" : ""
-          }`}
-        >
-          <Avatar>
-            <AvatarImage src={users[0].imageUrl} />
-            <AvatarFallback>EY</AvatarFallback>
-          </Avatar>
-          <div className="flex ml-3 overflow-x-hidden max-w-full">
-            {users.map((user, index) => {
-              return (
-                <p
-                  key={user.id}
-                  className="text-base text-gray-300 font-medium"
-                >
-                  {user.username}
-                  {index < users.length - 1 && users.length > 1 && ", "}
-                </p>
-              );
-            })}
+      {users ? (
+        <Link href={href}>
+          <div
+            className={`flex items-center w-full bg-neutral-900 px-2 py-2 mt-1 rounded-sm hover:bg-neutral-800 cursor-pointer ${
+              pathname == href ? "bg-zinc-700" : ""
+            }`}
+          >
+            <Avatar>
+              <AvatarImage src={users[0].imageUrl} />
+              <AvatarFallback>
+                <Skeleton className="w-full h-full" />
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex ml-3 overflow-x-hidden max-w-full">
+              {users.map((user, index) => {
+                return (
+                  <p
+                    key={user.id}
+                    className="text-base text-gray-300 font-medium"
+                  >
+                    {user.username}
+                    {index < users.length - 1 && users.length > 1 && ", "}
+                  </p>
+                );
+              })}
+            </div>
           </div>
-        </div>
-      </Link>
+        </Link>
+      ) : (
+        <p className="text-gray-300">TEST</p>
+      )}
     </>
   );
 }
@@ -54,8 +62,6 @@ export function ConvLink({ users, href }: ConvLinkProps) {
 export default function ConvLinkWrapper({
   conversations,
 }: ConvLinkWrapperProps) {
-  const { user: currentUser } = useUser(); // renames user to currentUser by destructure
-
   return (
     <>
       <section className="flex-col w-full max-h-full mt-4">

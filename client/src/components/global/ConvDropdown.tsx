@@ -1,9 +1,9 @@
+"use client";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuCheckboxItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import ConvDropdownItem from "./ConvDropdownItem";
@@ -11,15 +11,47 @@ import { getAllFriends } from "@/lib/utils";
 import { useAuth } from "@clerk/nextjs";
 import { useState, useEffect } from "react";
 import { Friend } from "@/types";
+import { Avatar, AvatarImage } from "../ui/avatar";
+import { Button } from "../ui/button";
+import { createConversation } from "@/actions";
+import { useToast } from "../ui/use-toast";
 
-export default async function ConvDropdown({
+export default function ConvDropdown({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const [friends, setFriends] = useState<Friend[]>([]);
-
   const { getToken } = useAuth();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const fetchFriends = async () => {
+      const token = await getToken();
+      const response = await getAllFriends(token as string);
+      console.log("set");
+      setFriends(response);
+    };
+
+    fetchFriends();
+  }, [getToken]);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.target as HTMLFormElement);
+
+    try {
+      const result = await createConversation(formData);
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Failed to create conversation",
+        description:
+          error.message ||
+          "An error occurred while creating the conversation. Please try again later.",
+      });
+    }
+  };
 
   return (
     <DropdownMenu>
@@ -41,7 +73,21 @@ export default async function ConvDropdown({
             placeholder="Type the username of a friend."
           ></input>
         </div>
-        <ConvDropdownItem />
+        <form onSubmit={handleSubmit}>
+          {friends.map((friend) => {
+            return (
+              <ConvDropdownItem
+                id={friend.id}
+                key={friend.id}
+                username={friend.username}
+                imageUrl={friend.imageUrl}
+              />
+            );
+          })}
+          <Button type="submit" variant="outline" className="w-full py-1 mt-4 ">
+            <p className="text-black font-medium">Create DM</p>
+          </Button>
+        </form>
       </DropdownMenuContent>
     </DropdownMenu>
   );
