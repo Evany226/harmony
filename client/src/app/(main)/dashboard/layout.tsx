@@ -1,6 +1,7 @@
 import NavLinks from "@/components/dashboard/friends/NavLinks";
 import ConversationsPanel from "@/components/conversations/ConversationsPanel";
 import { Suspense } from "react";
+import PanelSkeleton from "@/components/skeletons/PanelSkeleton";
 
 export default function DashboardLayout({
   children,
@@ -9,7 +10,7 @@ export default function DashboardLayout({
 }) {
   return (
     <section className="flex w-full h-full bg-zinc-900">
-      <Suspense fallback={<div className="text-white">loading...</div>}>
+      <Suspense fallback={<PanelSkeleton />}>
         <ConversationsPanel />
       </Suspense>
 

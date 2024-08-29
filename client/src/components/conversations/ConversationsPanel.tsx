@@ -2,7 +2,7 @@ import FriendsNavButton from "../dashboard/friends/FriendsNavButton";
 import ConvLinkWrapper from "./ConvLink";
 import ProfileCard from "../dashboard/profile/ProfileCard";
 import { getAllConversations } from "@/lib/conversations";
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 
 export default async function ConversationsPanel() {
   const { getToken } = auth();
@@ -22,8 +22,6 @@ export default async function ConversationsPanel() {
         <FriendsNavButton />
         <ConvLinkWrapper conversations={data} />
       </div>
-
-      <ProfileCard />
     </div>
   );
 }

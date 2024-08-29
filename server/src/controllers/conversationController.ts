@@ -26,7 +26,13 @@ const getAllConversations = async (req: Request, res: Response) => {
         },
       },
       include: {
-        users: true, // Include all posts in the returned object
+        users: {
+          where: {
+            id: {
+              not: userId,
+            },
+          },
+        },
       },
     });
 

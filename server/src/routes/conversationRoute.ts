@@ -7,7 +7,7 @@ import {
   createMessage,
   getAllMessages,
 } from "../controllers/conversationController";
-
+// import { ClerkExpressRequireAuth } from "@clerk/clerk-sdk-node";
 const conversationRouter = express.Router();
 
 conversationRouter.get("/", getAllConversations);
