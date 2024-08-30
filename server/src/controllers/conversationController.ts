@@ -73,33 +73,35 @@ const createConversation = async (req: Request, res: Response) => {
   //includes userId
   const allParticipantIds = [userId, ...participantIds].sort();
 
+  console.log(allParticipantIds);
+
+  const userConditions = allParticipantIds.map((userId) => ({
+    users: {
+      some: {
+        id: userId,
+      },
+    },
+  }));
+
   try {
-    const existingConversation = await prisma.conversation.findFirst({
+    const existingConversation = await prisma.conversation.findMany({
       where: {
-        AND: [
-          {
-            users: {
-              every: {
-                id: {
-                  in: allParticipantIds,
-                },
-              },
+        AND: userConditions,
+        users: {
+          every: {
+            id: {
+              in: allParticipantIds,
             },
           },
-        ],
+        },
       },
       include: {
         users: true,
       },
     });
 
-    if (
-      existingConversation &&
-      existingConversation.users.length === allParticipantIds.length
-    ) {
-      return res.status(400).json({
-        error: "This conversation already exists.",
-      });
+    if (existingConversation !== null && existingConversation.length !== 0) {
+      return res.status(400).json({ error: "Conversation already exists" });
     }
 
     const newConversation = await prisma.conversation.create({

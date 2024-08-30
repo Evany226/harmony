@@ -22,6 +22,8 @@ interface ConvLinkWrapperProps {
 export function ConvLink({ users, href }: ConvLinkProps) {
   const pathname = usePathname();
 
+  const header = users.map((user: User) => user.username).join(", ");
+
   return (
     <>
       {users ? (
@@ -37,18 +39,10 @@ export function ConvLink({ users, href }: ConvLinkProps) {
                 <Skeleton className="w-full h-full" />
               </AvatarFallback>
             </Avatar>
-            <div className="flex ml-3 overflow-x-hidden max-w-full">
-              {users.map((user, index) => {
-                return (
-                  <p
-                    key={user.id}
-                    className="text-base text-gray-300 font-medium"
-                  >
-                    {user.username}
-                    {index < users.length - 1 && users.length > 1 && ", "}
-                  </p>
-                );
-              })}
+            <div className="flex items-center ml-3 max-w-full no-wrap overflow-hidden">
+              <p className="text-base text-gray-300 font-medium overflow-hidden whitespace-nowrap text-ellipsis">
+                {header}
+              </p>
             </div>
           </div>
         </Link>

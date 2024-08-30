@@ -26,7 +26,7 @@ export default async function Conversation({
     (user: User) => user.id !== currUser.id
   );
   //joins the usernames of the users in the conv (excludes current user)
-  const header = users.map((user: User) => user.username).join(", ");
+  const header = users.map((user: User) => user.username).join(" | ");
 
   return (
     <>
