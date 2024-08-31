@@ -18,6 +18,10 @@ export default function Conversation({ params }: { params: { id: string } }) {
   const [image, setImage] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const [isConnected, setIsConnected] = useState<boolean>(false);
+  const [chat, setChat] = useState<string[]>([]);
+  // const { socket, isConnected } = useSocket({
+  //   conversationId: params.id,
+  // });
 
   const { user: currUser } = useUser();
   const { getToken } = useAuth();
@@ -50,11 +54,14 @@ export default function Conversation({ params }: { params: { id: string } }) {
     if (currUser) {
       fetchData();
     }
+  }, [getToken, params.id, currUser]);
 
+  useEffect(() => {
+    socket.connect();
     if (socket.connected) {
-      onConnect();
+      onConnect(); // If already connected, run the logic
     }
-
+    //socket setup
     function onConnect() {
       setIsConnected(true);
     }
@@ -63,22 +70,30 @@ export default function Conversation({ params }: { params: { id: string } }) {
       setIsConnected(false);
     }
 
-    socket.on("connect", onConnect);
-    socket.on("disconnect", onDisconnect);
-    socket.on("message", (data) => {
-      console.log(data);
+    const handleMessage = (msg: string) => {
+      console.log("Received message:", msg);
+      setChat((prevMessages) => [...prevMessages, msg]);
+    };
+
+    socket.on("connect", () => {
+      onConnect();
     });
+    socket.on("disconnect", onDisconnect);
+    socket.emit("joinRoom", params.id);
+    socket.on(`message ${params.id}`, handleMessage);
 
     //cleans up by turning off functions when useEffect dismounts
     return () => {
       socket.off("connect", onConnect);
       socket.off("disconnect", onDisconnect);
     };
-  }, [getToken, params.id, currUser]);
+  }, [params.id]);
 
   const sendMessage = () => {
-    socket.emit("message", { data: "Hello" });
-    console.log("sent message");
+    socket.emit(`message`, {
+      msg: "Hello world",
+      conversationId: params.id,
+    });
   };
 
   return (
@@ -93,11 +108,24 @@ export default function Conversation({ params }: { params: { id: string } }) {
             <h1 className="text-gray-300 font-semibold">{chatTitle}</h1>
           </header>
           <p>Status: {isConnected ? "connected" : "disconnected"}</p>
-          <button onClick={sendMessage}>Test</button>
+          <button className="text-gray-300" onClick={sendMessage}>
+            Press
+          </button>
+
           <main className="w-full h-[calc(100%-3rem)] flex flex-col">
             <article className="w-3/4 h-full border-r border-zinc-800 flex flex-col relative px-5">
               <div className="h-full w-full flex flex-col overflow-y-auto mb-4">
                 <ConvEmptyState name={chatTitle} imageUrl={users[0].imageUrl} />
+
+                <div>
+                  <h2>Messages:</h2>
+                  <ul>
+                    {chat.map((msg, index) => (
+                      <li key={index}>{msg}</li>
+                    ))}
+                  </ul>
+                </div>
+
                 {messages.map((message: Message) => {
                   const sender = message.sender;
 

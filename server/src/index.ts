@@ -58,9 +58,18 @@ const io = new Server(httpServer, {
 io.on("connection", (socket) => {
   console.log("User has connected");
 
-  socket.on("message", (msg) => {
-    console.log(msg.data);
-    io.emit("message", msg.data);
+  socket.on("joinRoom", async (conversationId: string) => {
+    await socket.join(conversationId);
+    console.log(`User joined room ${conversationId}`);
+  });
+
+  socket.on("message", (data: { msg: string; conversationId: string }) => {
+    console.log(data.msg);
+    console.log(data.conversationId);
+    io.to(data.conversationId).emit(
+      `message ${data.conversationId}`,
+      data.msg + " (from server)" + "to:" + data.conversationId
+    );
   });
 
   socket.on("disconnect", () => {

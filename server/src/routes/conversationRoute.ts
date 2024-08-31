@@ -7,14 +7,22 @@ import {
   createMessage,
   getAllMessages,
 } from "../controllers/conversationController";
-// import { ClerkExpressRequireAuth } from "@clerk/clerk-sdk-node";
+import { ClerkExpressRequireAuth } from "@clerk/clerk-sdk-node";
 const conversationRouter = express.Router();
 
-conversationRouter.get("/", getAllConversations);
+conversationRouter.get("/", ClerkExpressRequireAuth({}), getAllConversations);
 conversationRouter.get("/:id", getConversation);
-conversationRouter.post("/", createConversation);
+conversationRouter.post("/", ClerkExpressRequireAuth({}), createConversation);
 
-conversationRouter.get("/:id/messages", getAllMessages);
-conversationRouter.post("/:id/message", createMessage);
+conversationRouter.get(
+  "/:id/messages",
+
+  getAllMessages
+);
+conversationRouter.post(
+  "/:id/message",
+  ClerkExpressRequireAuth({}),
+  createMessage
+);
 
 export default conversationRouter;
