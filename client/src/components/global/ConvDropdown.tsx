@@ -11,7 +11,6 @@ import { getAllFriends } from "@/lib/utils";
 import { useAuth } from "@clerk/nextjs";
 import { useState, useEffect } from "react";
 import { Friend } from "@/types";
-import { Avatar, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import { createConversation } from "@/actions";
 import { useToast } from "../ui/use-toast";
@@ -22,6 +21,7 @@ export default function ConvDropdown({
   children: React.ReactNode;
 }) {
   const [friends, setFriends] = useState<Friend[]>([]);
+  const [modalOpen, setModalOpen] = useState(false);
   const { getToken } = useAuth();
   const { toast } = useToast();
 
@@ -41,7 +41,13 @@ export default function ConvDropdown({
     const formData = new FormData(e.target as HTMLFormElement);
 
     try {
+      setModalOpen(false);
       const result = await createConversation(formData);
+      toast({
+        variant: "default",
+        title: "Conversation created",
+        description: "You have successfully created a conversation.",
+      });
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -54,7 +60,7 @@ export default function ConvDropdown({
   };
 
   return (
-    <DropdownMenu>
+    <DropdownMenu open={modalOpen} onOpenChange={setModalOpen}>
       <DropdownMenuTrigger>{children}</DropdownMenuTrigger>
       <DropdownMenuContent
         align="start"

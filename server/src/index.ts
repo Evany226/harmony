@@ -5,6 +5,7 @@ import cors from "cors";
 import friendsRouter from "./routes/friendRoutes";
 import requestRouter from "./routes/requestRoute";
 import conversationRouter from "./routes/conversationRoute";
+import { Server } from "socket.io";
 
 import "dotenv/config"; // To read CLERK_SECRET_KEY and CLERK_PUBLISHABLE_KEY
 import {
@@ -44,6 +45,25 @@ app.use("/api/conversations", conversationRouter);
 
 const PORT = 3001;
 
-app.listen(PORT, () =>
+const httpServer = app.listen(PORT, () =>
   console.log(`REST API server ready at: http://localhost:${PORT}`)
 );
+
+const io = new Server(httpServer, {
+  cors: {
+    origin: "http://localhost:3000",
+  },
+});
+
+io.on("connection", (socket) => {
+  console.log("User has connected");
+
+  socket.on("message", (msg) => {
+    console.log(msg.data);
+    io.emit("message", msg.data);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
+  });
+});

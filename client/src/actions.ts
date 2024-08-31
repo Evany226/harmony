@@ -7,7 +7,7 @@ export async function createConversation(formData: FormData) {
 
   //key is the id of the checkbox item aka userId. value is the value of the checkbox, when it is checked its default is "on"
   for (const [key, value] of formData.entries()) {
-    if (value === "on") {
+    if (value === "true") {
       selectedFriends.push(key);
     }
   }

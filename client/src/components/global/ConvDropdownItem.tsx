@@ -1,5 +1,8 @@
+"use client";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "../ui/skeleton";
+import { useState } from "react";
 
 interface ConvDropdownItemProps {
   id: string;
@@ -12,8 +15,13 @@ export default function ConvDropdownItem({
   username,
   imageUrl,
 }: ConvDropdownItemProps) {
+  const [checked, setChecked] = useState<boolean>(false);
+
   return (
-    <div className="w-full flex items-center flex-between hover:bg-zinc-700 px-2 py-1 rounded-md cursor-pointer">
+    <div
+      className="w-full flex items-center flex-between hover:bg-zinc-700 px-2 py-1 rounded-md cursor-pointer"
+      onClick={() => setChecked(!checked)}
+    >
       <div className="w-full flex items-center space-x-3">
         <Avatar>
           <AvatarImage src={imageUrl} />
@@ -28,6 +36,8 @@ export default function ConvDropdownItem({
       <input
         type="checkbox"
         name={id}
+        checked={checked}
+        value={checked.toString()}
         className="w-4 h-4  accent-blue-500 border-gray-300 rounded-md"
       />
     </div>
