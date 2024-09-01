@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { getConversation, getAllMessages } from "@/lib/conversations";
 import { useAuth } from "@clerk/nextjs";
 import { User, Message } from "@/types/index.js";
@@ -10,6 +10,8 @@ import ChatInput from "@/components/conversations/ChatInput";
 import ConvEmptyState from "@/components/empty-states/ConvEmptyState";
 import MessageCard from "@/components/conversations/MessageCard";
 import { socket } from "@/app/socket";
+import { createMessage } from "@/lib/conversations";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function Conversation({ params }: { params: { id: string } }) {
   const [chatTitle, setChatTitle] = useState<string>("");
@@ -18,13 +20,17 @@ export default function Conversation({ params }: { params: { id: string } }) {
   const [image, setImage] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const [isConnected, setIsConnected] = useState<boolean>(false);
-  const [chat, setChat] = useState<string[]>([]);
+  const [inputValue, setInputValue] = useState<string>("");
+  const [socketLoading, setSocketLoading] = useState<boolean>(false);
   // const { socket, isConnected } = useSocket({
   //   conversationId: params.id,
   // });
 
   const { user: currUser } = useUser();
   const { getToken } = useAuth();
+  const { toast } = useToast();
+
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -70,9 +76,9 @@ export default function Conversation({ params }: { params: { id: string } }) {
       setIsConnected(false);
     }
 
-    const handleMessage = (msg: string) => {
+    const handleMessage = (msg: Message) => {
       console.log("Received message:", msg);
-      setChat((prevMessages) => [...prevMessages, msg]);
+      setMessages((prevMessages) => [...prevMessages, msg]);
     };
 
     socket.on("connect", () => {
@@ -86,14 +92,43 @@ export default function Conversation({ params }: { params: { id: string } }) {
     return () => {
       socket.off("connect", onConnect);
       socket.off("disconnect", onDisconnect);
+      socket.off(`message ${params.id}`, handleMessage);
     };
   }, [params.id]);
 
-  const sendMessage = () => {
-    socket.emit(`message`, {
-      msg: "Hello world",
-      conversationId: params.id,
-    });
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (inputValue === "") {
+      toast({
+        variant: "destructive",
+        title: "Message cannot be empty",
+        description: "Please enter a message.",
+      });
+      return;
+    }
+
+    setSocketLoading(true);
+
+    try {
+      const result = await createMessage(params.id, inputValue);
+      socket.emit("message", result);
+      console.log("Message created successfully");
+      setInputValue("");
+      setSocketLoading(false);
+    } catch (error: any) {
+      console.log("Failed to create message:" + error);
+    } finally {
+      setSocketLoading(false);
+    }
   };
 
   return (
@@ -107,24 +142,11 @@ export default function Conversation({ params }: { params: { id: string } }) {
             </Avatar>
             <h1 className="text-gray-300 font-semibold">{chatTitle}</h1>
           </header>
-          <p>Status: {isConnected ? "connected" : "disconnected"}</p>
-          <button className="text-gray-300" onClick={sendMessage}>
-            Press
-          </button>
 
           <main className="w-full h-[calc(100%-3rem)] flex flex-col">
             <article className="w-3/4 h-full border-r border-zinc-800 flex flex-col relative px-5">
               <div className="h-full w-full flex flex-col overflow-y-auto mb-4">
                 <ConvEmptyState name={chatTitle} imageUrl={users[0].imageUrl} />
-
-                <div>
-                  <h2>Messages:</h2>
-                  <ul>
-                    {chat.map((msg, index) => (
-                      <li key={index}>{msg}</li>
-                    ))}
-                  </ul>
-                </div>
 
                 {messages.map((message: Message) => {
                   const sender = message.sender;
@@ -138,8 +160,14 @@ export default function Conversation({ params }: { params: { id: string } }) {
                     />
                   );
                 })}
+                <div ref={messagesEndRef} />
               </div>
-              <ChatInput />
+              <ChatInput
+                inputValue={inputValue}
+                setInputValue={setInputValue}
+                handleSubmit={handleSubmit}
+                socketLoading={socketLoading}
+              />
             </article>
           </main>
         </>

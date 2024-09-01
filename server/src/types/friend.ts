@@ -18,3 +18,12 @@ export interface Conversation {
   createdAt: string;
   users: User[];
 }
+
+export interface Message {
+  id: string;
+  content: string;
+  senderId: string;
+  conversationId: string;
+  createdAt: string;
+  sender: User;
+}

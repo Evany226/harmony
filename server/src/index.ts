@@ -6,6 +6,7 @@ import friendsRouter from "./routes/friendRoutes";
 import requestRouter from "./routes/requestRoute";
 import conversationRouter from "./routes/conversationRoute";
 import { Server } from "socket.io";
+import { Message } from "./types";
 
 import "dotenv/config"; // To read CLERK_SECRET_KEY and CLERK_PUBLISHABLE_KEY
 import {
@@ -63,13 +64,9 @@ io.on("connection", (socket) => {
     console.log(`User joined room ${conversationId}`);
   });
 
-  socket.on("message", (data: { msg: string; conversationId: string }) => {
-    console.log(data.msg);
-    console.log(data.conversationId);
-    io.to(data.conversationId).emit(
-      `message ${data.conversationId}`,
-      data.msg + " (from server)" + "to:" + data.conversationId
-    );
+  socket.on("message", (data: Message) => {
+    const { conversationId } = data;
+    io.to(conversationId).emit(`message ${conversationId}`, data);
   });
 
   socket.on("disconnect", () => {
