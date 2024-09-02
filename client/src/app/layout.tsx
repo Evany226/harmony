@@ -3,6 +3,7 @@ import "./globals.css";
 import { noto } from "@/app/ui/fonts";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "@/components/ui/toaster";
+import { SocketProvider } from "@/context/SocketContext";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -21,7 +22,7 @@ export default function RootLayout({
           className={`${noto.className}
               min-h-screen bg-background font-sans antialiased`}
         >
-          {children}
+          <SocketProvider>{children}</SocketProvider>
           <Toaster />
         </body>
       </html>

@@ -9,9 +9,10 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import ChatInput from "@/components/conversations/ChatInput";
 import ConvEmptyState from "@/components/empty-states/ConvEmptyState";
 import MessageCard from "@/components/conversations/MessageCard";
-import { socket } from "@/app/socket";
+
 import { createMessage } from "@/lib/conversations";
 import { useToast } from "@/components/ui/use-toast";
+import { useSocket } from "@/context/SocketContext";
 
 export default function Conversation({ params }: { params: { id: string } }) {
   const [chatTitle, setChatTitle] = useState<string>("");
@@ -19,12 +20,9 @@ export default function Conversation({ params }: { params: { id: string } }) {
   const [users, setUsers] = useState<User[]>([]);
   const [image, setImage] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
-  const [isConnected, setIsConnected] = useState<boolean>(false);
   const [inputValue, setInputValue] = useState<string>("");
   const [socketLoading, setSocketLoading] = useState<boolean>(false);
-  // const { socket, isConnected } = useSocket({
-  //   conversationId: params.id,
-  // });
+  const { socket, isConnected } = useSocket();
 
   const { user: currUser } = useUser();
   const { getToken } = useAuth();
@@ -63,38 +61,19 @@ export default function Conversation({ params }: { params: { id: string } }) {
   }, [getToken, params.id, currUser]);
 
   useEffect(() => {
-    socket.connect();
-    if (socket.connected) {
-      onConnect(); // If already connected, run the logic
-    }
-    //socket setup
-    function onConnect() {
-      setIsConnected(true);
-    }
-
-    function onDisconnect() {
-      setIsConnected(false);
-    }
-
     const handleMessage = (msg: Message) => {
       console.log("Received message:", msg);
       setMessages((prevMessages) => [...prevMessages, msg]);
     };
 
-    socket.on("connect", () => {
-      onConnect();
-    });
-    socket.on("disconnect", onDisconnect);
     socket.emit("joinRoom", params.id);
     socket.on(`message ${params.id}`, handleMessage);
 
     //cleans up by turning off functions when useEffect dismounts
     return () => {
-      socket.off("connect", onConnect);
-      socket.off("disconnect", onDisconnect);
       socket.off(`message ${params.id}`, handleMessage);
     };
-  }, [params.id]);
+  }, [params.id, socket]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
