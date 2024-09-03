@@ -1,3 +1,5 @@
+import FriendPageSkeleton from "@/components/skeletons/FriendPageSkeleton";
+
 export default function Loading() {
-  return <p className="text-white">Loading...</p>;
+  return <FriendPageSkeleton />;
 }

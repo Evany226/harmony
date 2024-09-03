@@ -46,8 +46,10 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       const { content, sender } = data;
       console.log("notification received");
       toast({
-        title: `${sender.username} sent you a message`,
-        description: `${formatTimestamp(data.createdAt)}: ${content}`,
+        title: `${sender.username}`,
+        description: `${content}`,
+        image: sender.imageUrl,
+        createdAt: `${formatTimestamp(data.createdAt)}`,
       });
     });
 

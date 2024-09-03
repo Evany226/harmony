@@ -2,10 +2,10 @@ import { PlusCircleIcon } from "@heroicons/react/24/solid";
 import { Button } from "../ui/button";
 
 interface ChatInputProps {
-  inputValue: string;
-  setInputValue: (value: string) => void;
-  handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-  socketLoading: boolean;
+  inputValue?: string;
+  setInputValue?: (value: string) => void;
+  handleSubmit?: (e: React.FormEvent<HTMLFormElement>) => void;
+  socketLoading?: boolean;
 }
 
 export default function ChatInput({
@@ -16,7 +16,9 @@ export default function ChatInput({
 }: ChatInputProps) {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log(e.target.value);
-    setInputValue(e.target.value);
+    if (setInputValue) {
+      setInputValue(e.target.value);
+    }
   };
 
   return (

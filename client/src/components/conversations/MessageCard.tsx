@@ -1,6 +1,7 @@
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Skeleton } from "../ui/skeleton";
-import { formatTimestamp } from "@/lib/utils";
+import { formatDateTime } from "@/lib/utils";
+import { Separator } from "../ui/separator";
 
 interface MessageCardProps {
   name: string;
@@ -16,7 +17,7 @@ export default function MessageCard({
   createdAt,
 }: MessageCardProps) {
   return (
-    <div className="flex w-full items-center mb-4">
+    <div className="flex w-full items-center overflow-0 break-all mb-6 px-2">
       <Avatar className="w-10 h-10">
         <AvatarImage src={imageUrl} />
         <AvatarFallback>
@@ -26,8 +27,8 @@ export default function MessageCard({
       <div className="flex flex-col ml-4">
         <div className="flex items-center">
           <p className="font-semibold text-gray-300">{name}</p>
-          <p className="text-gray-400 text-sm ml-3">
-            {formatTimestamp(createdAt)}
+          <p className="text-gray-400 text-sm font-medium ml-3">
+            {formatDateTime(createdAt)}
           </p>
         </div>
         <p className="font-normal text-gray-300">{message}</p>

@@ -9,6 +9,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import ChatInput from "@/components/conversations/ChatInput";
 import ConvEmptyState from "@/components/empty-states/ConvEmptyState";
 import MessageCard from "@/components/conversations/MessageCard";
+import ConvPageSkeleton from "@/components/skeletons/ConvPageSkeleton";
 
 import { createMessage } from "@/lib/conversations";
 import { useToast } from "@/components/ui/use-toast";
@@ -116,7 +117,7 @@ export default function Conversation({ params }: { params: { id: string } }) {
           <header className="flex w-full h-12 bg-zinc-900 border-b border-zinc-800 px-2 py-3 space-x-3 items-center ">
             <Avatar className="w-7 h-7 ml-2">
               <AvatarImage src={image} />
-              <AvatarFallback>EY</AvatarFallback>
+              <AvatarFallback></AvatarFallback>
             </Avatar>
             <h1 className="text-gray-300 font-semibold">{chatTitle}</h1>
           </header>
@@ -151,7 +152,7 @@ export default function Conversation({ params }: { params: { id: string } }) {
           </main>
         </>
       ) : (
-        <p>Loading...</p>
+        <ConvPageSkeleton />
       )}
     </>
   );

@@ -24,7 +24,7 @@ export default function AddFriendsForm() {
         variant: "destructive",
         title: "Failed to send friend request",
         description:
-          "The username field cannot be empty. Please enter a valid username to send a friend request.",
+          "The username field cannot be empty. Please enter a valid username.",
       });
       return;
     }

@@ -5,10 +5,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Conversation, User } from "@/types/index";
 import { useUser } from "@clerk/nextjs";
-import ConvLinkSkeleton from "@/components/skeletons/ConvLinkSkeleton";
+
 import ConvDropdown from "../global/ConvDropdown";
 import { Suspense } from "react";
 import { Skeleton } from "../ui/skeleton";
+import ConnectionStatus from "../global/ConnectionStatus";
 
 interface ConvLinkProps {
   users: User[];
@@ -33,12 +34,15 @@ export function ConvLink({ users, href }: ConvLinkProps) {
               pathname == href ? "bg-zinc-700" : ""
             }`}
           >
-            <Avatar>
-              <AvatarImage src={users[0].imageUrl} />
-              <AvatarFallback>
-                <Skeleton className="w-full h-full" />
-              </AvatarFallback>
-            </Avatar>
+            <div className="relative">
+              <Avatar>
+                <AvatarImage src={users[0].imageUrl} />
+                <AvatarFallback>
+                  <Skeleton className="w-full h-full" />
+                </AvatarFallback>
+              </Avatar>
+              <ConnectionStatus isConnected={true} />
+            </div>
             <div className="flex items-center ml-3 max-w-full no-wrap overflow-hidden">
               <p className="text-base text-gray-300 font-medium overflow-hidden whitespace-nowrap text-ellipsis">
                 {header}
