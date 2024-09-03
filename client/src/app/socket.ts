@@ -4,7 +4,10 @@ import { io } from "socket.io-client";
 
 const serverUrl = "http://localhost:3001";
 
-export const socket = io(serverUrl);
+export const socket = io(serverUrl, {
+  reconnection: false,
+  autoConnect: false,
+});
 
 // import { useEffect, useState, useRef } from "react";
 // import { io, Socket } from "socket.io-client";

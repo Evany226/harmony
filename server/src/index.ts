@@ -58,15 +58,24 @@ const io = new Server(httpServer, {
 
 io.on("connection", (socket) => {
   console.log("User has connected");
+  const count = io.engine.clientsCount;
+  console.log(count);
 
-  socket.on("joinRoom", async (conversationId: string) => {
-    await socket.join(conversationId);
-    console.log(`User joined room ${conversationId}`);
+  socket.on("joinRoom", (conversationIds: string[]) => {
+    conversationIds.forEach(async (conversationId) => {
+      await socket.join(conversationId);
+      console.log(`User joined room ${conversationId}`);
+    });
   });
 
   socket.on("message", (data: Message) => {
     const { conversationId } = data;
     io.to(conversationId).emit(`message ${conversationId}`, data);
+  });
+
+  socket.on("notifcation", (data: Message) => {
+    const { conversationId } = data;
+    socket.to(conversationId).emit(`notification`, data);
   });
 
   socket.on("disconnect", () => {

@@ -1,4 +1,4 @@
-import { getPending } from "@/lib/utils";
+import { getPending } from "@/lib/friends";
 import FriendsWrapper from "@/components/dashboard/friends/FriendsCard";
 import { auth } from "@clerk/nextjs/server";
 

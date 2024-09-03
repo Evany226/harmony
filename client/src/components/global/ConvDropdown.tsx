@@ -7,7 +7,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import ConvDropdownItem from "./ConvDropdownItem";
-import { getAllFriends } from "@/lib/utils";
+import { getAllFriends } from "@/lib/friends";
 import { useAuth } from "@clerk/nextjs";
 import { useState, useEffect } from "react";
 import { Friend } from "@/types";

@@ -14,7 +14,7 @@ import {
   acceptFriendRequest,
   rejectFriendRequest,
   removeFriend,
-} from "@/lib/utils";
+} from "@/lib/friends";
 import { useToast } from "../../ui/use-toast";
 import { useRouter } from "next/navigation";
 import { Dropdown } from "../../global/Dropdown";

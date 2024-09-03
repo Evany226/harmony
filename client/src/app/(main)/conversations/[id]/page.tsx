@@ -66,7 +66,6 @@ export default function Conversation({ params }: { params: { id: string } }) {
       setMessages((prevMessages) => [...prevMessages, msg]);
     };
 
-    socket.emit("joinRoom", params.id);
     socket.on(`message ${params.id}`, handleMessage);
 
     //cleans up by turning off functions when useEffect dismounts
@@ -100,7 +99,7 @@ export default function Conversation({ params }: { params: { id: string } }) {
     try {
       const result = await createMessage(params.id, inputValue);
       socket.emit("message", result);
-      console.log("Message created successfully");
+      socket.emit("notifcation", result);
       setInputValue("");
       setSocketLoading(false);
     } catch (error: any) {
@@ -135,6 +134,7 @@ export default function Conversation({ params }: { params: { id: string } }) {
                       key={message.id}
                       name={sender.username}
                       message={message.content}
+                      createdAt={message.createdAt}
                       imageUrl={sender.imageUrl}
                     />
                   );
