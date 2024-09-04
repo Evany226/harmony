@@ -4,23 +4,23 @@ import { PlusIcon } from "@heroicons/react/16/solid";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Conversation, User } from "@/types/index";
-import { useUser } from "@clerk/nextjs";
-
+import { socket } from "@/app/socket";
 import ConvDropdown from "../global/ConvDropdown";
-import { Suspense } from "react";
 import { Skeleton } from "../ui/skeleton";
 import ConnectionStatus from "../global/ConnectionStatus";
+import { useSocket } from "@/context/SocketContext";
 
 interface ConvLinkProps {
   users: User[];
   href: string;
+  status: boolean;
 }
 
 interface ConvLinkWrapperProps {
   conversations: Conversation[];
 }
 
-export function ConvLink({ users, href }: ConvLinkProps) {
+export function ConvLink({ users, href, status }: ConvLinkProps) {
   const pathname = usePathname();
 
   const header = users.map((user: User) => user.username).join(", ");
@@ -41,7 +41,7 @@ export function ConvLink({ users, href }: ConvLinkProps) {
                   <Skeleton className="w-full h-full" />
                 </AvatarFallback>
               </Avatar>
-              <ConnectionStatus isConnected={true} />
+              <ConnectionStatus isConnected={status} />
             </div>
             <div className="flex items-center ml-3 max-w-full no-wrap overflow-hidden">
               <p className="text-base text-gray-300 font-medium overflow-hidden whitespace-nowrap text-ellipsis">
@@ -60,6 +60,8 @@ export function ConvLink({ users, href }: ConvLinkProps) {
 export default function ConvLinkWrapper({
   conversations,
 }: ConvLinkWrapperProps) {
+  const { onlineUsers } = useSocket();
+
   return (
     <>
       <section className="flex-col w-full max-h-full mt-4">
@@ -70,13 +72,26 @@ export default function ConvLinkWrapper({
           </ConvDropdown>
         </div>
 
+        {onlineUsers.map((user) => {
+          return (
+            <p className="text-gray-300" key={user}>
+              {user}
+            </p>
+          );
+        })}
+
         <div className="flex-col mt-3">
           {conversations.map((conversation) => {
+            const onlineStatus = conversation.users.some((user) =>
+              onlineUsers.includes(user.id)
+            );
+
             return (
               <ConvLink
                 key={conversation.id}
                 users={conversation.users}
                 href={`/conversations/${conversation.id}`}
+                status={onlineStatus}
               />
             );
           })}

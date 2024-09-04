@@ -7,6 +7,7 @@ import requestRouter from "./routes/requestRoute";
 import conversationRouter from "./routes/conversationRoute";
 import { Server } from "socket.io";
 import { Message } from "./types";
+import { clerkClient } from "@clerk/clerk-sdk-node";
 
 import "dotenv/config"; // To read CLERK_SECRET_KEY and CLERK_PUBLISHABLE_KEY
 import {
@@ -56,10 +57,20 @@ const io = new Server(httpServer, {
   },
 });
 
+let onlineUsers: string[] = [];
+
 io.on("connection", (socket) => {
   console.log("User has connected");
+  let id = "no_user_id";
   const count = io.engine.clientsCount;
   console.log(count);
+
+  socket.on("joinOnline", (userId: string) => {
+    id = userId;
+
+    onlineUsers.push(userId);
+    io.emit("onlineUsers", onlineUsers);
+  });
 
   socket.on("joinRoom", (conversationIds: string[]) => {
     conversationIds.forEach(async (conversationId) => {
@@ -78,7 +89,13 @@ io.on("connection", (socket) => {
     socket.to(conversationId).emit(`notification`, data);
   });
 
+  socket.on("disconnecting", () => {
+    console.log("disconnecting");
+  });
+
   socket.on("disconnect", () => {
     console.log("user disconnected");
+    console.log(id);
+    onlineUsers = onlineUsers.filter((userId) => userId !== id);
   });
 });

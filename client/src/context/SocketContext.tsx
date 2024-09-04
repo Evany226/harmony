@@ -7,19 +7,22 @@ import { useAuth } from "@clerk/nextjs";
 import { Conversation, Message } from "@/types";
 import { useToast } from "@/components/ui/use-toast";
 import { formatTimestamp } from "@/lib/utils";
+import { User } from "@/types";
 
 interface SocketContextProps {
   socket: typeof socket;
   isConnected: boolean;
+  onlineUsers: string[];
 }
 
 const SocketContext = createContext<SocketContextProps | undefined>(undefined);
 
 export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
-  const { getToken } = useAuth();
+  const { getToken, userId } = useAuth();
   const { toast } = useToast();
 
   const [isConnected, setIsConnected] = useState(socket.connected);
+  const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
 
   useEffect(() => {
     socket.connect();
@@ -36,6 +39,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
 
     socket.on("connect", () => {
       setIsConnected(true);
+      socket.emit("joinOnline", userId);
     });
 
     socket.on("disconnect", () => {
@@ -53,15 +57,24 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       });
     });
 
+    socket.on("onlineUsers", (data: string[]) => {
+      toast({
+        title: "online users",
+        description: `${data}`,
+      });
+      setOnlineUsers(data);
+    });
+
     return () => {
       socket.off("connect");
       socket.off("disconnect");
       socket.off("notification");
+      socket.off("onlineUsers");
     };
-  }, [getToken, toast]);
+  }, [getToken, toast, userId]);
 
   return (
-    <SocketContext.Provider value={{ socket, isConnected }}>
+    <SocketContext.Provider value={{ socket, isConnected, onlineUsers }}>
       {children}
     </SocketContext.Provider>
   );
