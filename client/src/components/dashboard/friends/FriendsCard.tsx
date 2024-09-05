@@ -19,19 +19,21 @@ import { useToast } from "../../ui/use-toast";
 import { useRouter } from "next/navigation";
 import { Dropdown } from "../../global/Dropdown";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useSocket } from "@/context/SocketContext";
+import ConnectionStatus from "@/components/global/ConnectionStatus";
 
 interface FriendsProps {
   friend: Friend;
   pending: boolean;
+  status: boolean;
 }
 
 interface FriendsWrapperProps {
   friends: Friend[];
-  pending: boolean;
-  title: string;
+  variant: "Online" | "All" | "Pending" | "Blocked";
 }
 
-export function Friends({ friend, pending }: FriendsProps) {
+export function Friends({ friend, pending, status }: FriendsProps) {
   const { toast } = useToast();
   const router = useRouter();
 
@@ -103,12 +105,15 @@ export function Friends({ friend, pending }: FriendsProps) {
     <div className="flex flex-col w-full bg-zinc-900 rounded-sm hover:bg-zinc-800 group cursor-pointer">
       <main className="flex items-center w-full justify-between">
         <div className="flex items-center w-full py-3 px-2">
-          <Avatar>
-            <AvatarImage src={friend.imageUrl} />
-            <AvatarFallback>
-              <Skeleton className="w-full h-full" />
-            </AvatarFallback>
-          </Avatar>
+          <div className="relative">
+            <Avatar>
+              <AvatarImage src={friend.imageUrl} />
+              <AvatarFallback>
+                <Skeleton className="w-full h-full" />
+              </AvatarFallback>
+            </Avatar>
+            <ConnectionStatus isConnected={status} />
+          </div>
           <div>
             <h2 className="text-gray-400 ml-3">{friend.username}</h2>
           </div>
@@ -158,23 +163,65 @@ export function Friends({ friend, pending }: FriendsProps) {
 
 export default function FriendsWrapper({
   friends,
-  pending,
-  title,
+  variant,
 }: FriendsWrapperProps) {
+  const { onlineUsers } = useSocket();
+
+  const onlineFriends = friends.filter((friend) =>
+    onlineUsers.includes(friend.id)
+  );
+
+  if (variant !== "Online") {
+    return (
+      <>
+        <section className="flex-col w-full h-full">
+          <div className="flex flex-col justify-start">
+            <h2 className="text-gray-400 text-sm font-medium mb-2 ml-2">
+              {variant} - {friends.length}
+            </h2>
+            <Separator orientation="horizontal" />
+          </div>
+
+          <div className="flex-col">
+            {friends.map((friend) => {
+              const onlineStatus = onlineUsers.includes(friend.id);
+
+              return (
+                <Friends
+                  key={friend.id}
+                  friend={friend}
+                  pending={variant === "Pending"}
+                  status={onlineStatus}
+                />
+              );
+            })}
+          </div>
+        </section>
+      </>
+    );
+  }
+
   return (
     <>
       <section className="flex-col w-full h-full">
         <div className="flex flex-col justify-start">
           <h2 className="text-gray-400 text-sm font-medium mb-2 ml-2">
-            {title} - {friends.length}
+            {variant} - {onlineFriends.length}
           </h2>
           <Separator orientation="horizontal" />
         </div>
 
         <div className="flex-col">
-          {friends.map((friend) => {
+          {onlineFriends.map((friend) => {
+            const onlineStatus = onlineUsers.includes(friend.id);
+
             return (
-              <Friends key={friend.id} friend={friend} pending={pending} />
+              <Friends
+                key={friend.id}
+                friend={friend}
+                pending={false}
+                status={onlineStatus}
+              />
             );
           })}
         </div>

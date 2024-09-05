@@ -72,14 +72,6 @@ export default function ConvLinkWrapper({
           </ConvDropdown>
         </div>
 
-        {onlineUsers.map((user) => {
-          return (
-            <p className="text-gray-300" key={user}>
-              {user}
-            </p>
-          );
-        })}
-
         <div className="flex-col mt-3">
           {conversations.map((conversation) => {
             const onlineStatus = conversation.users.some((user) =>

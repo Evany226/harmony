@@ -7,6 +7,51 @@ export function cn(...inputs: ClassValue[]) {
 
 export function formatDateTime(timestamp: string) {
   const date = new Date(timestamp);
+  const currentDate = new Date();
+  const prevDate = new Date(currentDate.getDate() + 1);
+
+  if (
+    currentDate.toLocaleString("en-US", {
+      month: "2-digit",
+      day: "2-digit",
+      year: "numeric",
+    }) ===
+    date.toLocaleString("en-US", {
+      month: "2-digit",
+      day: "2-digit",
+      year: "numeric",
+    })
+  ) {
+    return (
+      "Today at " +
+      date.toLocaleString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    );
+  }
+
+  if (
+    currentDate.toLocaleString("en-US", {
+      month: "2-digit",
+      day: "2-digit",
+      year: "numeric",
+    }) ===
+    date.toLocaleString("en-US", {
+      month: "2-digit",
+      day: "2-digit",
+      year: "numeric",
+    })
+  ) {
+    return (
+      "Yesterday at " +
+      date.toLocaleString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    );
+  }
+
   return date.toLocaleString("en-US", {
     month: "2-digit",
     day: "2-digit",

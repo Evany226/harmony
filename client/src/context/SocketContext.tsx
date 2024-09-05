@@ -58,10 +58,10 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     });
 
     socket.on("onlineUsers", (data: string[]) => {
-      toast({
-        title: "online users",
-        description: `${data}`,
-      });
+      // toast({
+      //   title: "online users",
+      //   description: `${data}`,
+      // });
       setOnlineUsers(data);
     });
 

@@ -5,6 +5,7 @@ import cors from "cors";
 import friendsRouter from "./routes/friendRoutes";
 import requestRouter from "./routes/requestRoute";
 import conversationRouter from "./routes/conversationRoute";
+import guildRouter from "./routes/guildRoute";
 import { Server } from "socket.io";
 import { Message } from "./types";
 import { clerkClient } from "@clerk/clerk-sdk-node";
@@ -44,12 +45,15 @@ app.get(
 app.use("/api/friends", friendsRouter);
 app.use("/api/requests", requestRouter);
 app.use("/api/conversations", conversationRouter);
+app.use("/api/guilds", guildRouter);
 
 const PORT = 3001;
 
 const httpServer = app.listen(PORT, () =>
   console.log(`REST API server ready at: http://localhost:${PORT}`)
 );
+
+//socketio for real time chat
 
 const io = new Server(httpServer, {
   cors: {

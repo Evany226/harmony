@@ -16,6 +16,7 @@ model User {
   imageUrl         String?
   messagesSent     Message[]      @relation("SentMessages")
   conversations    Conversation[] @relation("UserConversations")
+  guilds          Guild[]        @relation("GuildUsers")
 }
 
 model Friend {
@@ -40,4 +41,20 @@ model Conversation {
   createdAt DateTime  @default(now())
   messages  Message[]
   users     User[]    @relation("UserConversations")
+}
+
+model Guild {
+  id         String    @id @default(uuid())
+  name      String
+  createdAt  DateTime  @default(now())
+  users     User[]    @relation("GuildUsers")
+  textChannels TextChannel[]
+}
+
+model TextChannel {
+  id         String    @id @default(uuid())
+  name      String
+  createdAt  DateTime  @default(now())
+  guildId    String
+  guild      Guild     @relation(fields: [guildId], references: [id])
 }
