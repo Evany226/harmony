@@ -15,7 +15,11 @@ import { createMessage } from "@/lib/conversations";
 import { useToast } from "@/components/ui/use-toast";
 import { useSocket } from "@/context/SocketContext";
 
-export default function Conversation({ params }: { params: { id: string } }) {
+export default function ConversationPage({
+  params,
+}: {
+  params: { id: string };
+}) {
   const [chatTitle, setChatTitle] = useState<string>("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [users, setUsers] = useState<User[]>([]);

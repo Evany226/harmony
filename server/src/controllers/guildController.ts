@@ -20,14 +20,11 @@ const getAllGuilds = async (req: Request, res: Response) => {
   try {
     const allGuilds = await prisma.guild.findMany({
       where: {
-        users: {
+        members: {
           some: {
-            id: userId,
+            userId: userId,
           },
         },
-      },
-      include: {
-        users: true,
       },
     });
 
@@ -39,12 +36,20 @@ const getAllGuilds = async (req: Request, res: Response) => {
 };
 
 const getGuild = async (req: Request, res: Response) => {
-  const guildId = req.params.guildId;
+  const guildId = req.params.id;
 
   try {
     const guild = await prisma.guild.findUnique({
       where: {
         id: guildId,
+      },
+      include: {
+        members: {
+          include: {
+            user: true,
+          },
+        },
+        textChannels: true,
       },
     });
 
@@ -58,16 +63,32 @@ const getGuild = async (req: Request, res: Response) => {
 const createGuild = async (req: Request, res: Response) => {
   //   const userId = req.auth.userId;
   const userId = "user_2kvgB9d6HPZNSZGsGDf02nYSx12";
+  const { name } = req.body as { name: string };
 
   try {
     const newGuild = await prisma.guild.create({
       data: {
-        name: "Test Guild",
-        users: {
-          connect: {
-            id: userId,
+        name: name,
+        ownerId: userId,
+        members: {
+          create: {
+            userId: userId,
+            role: "OWNER",
           },
         },
+        textChannels: {
+          create: {
+            name: "general",
+          },
+        },
+      },
+      include: {
+        members: {
+          include: {
+            user: true,
+          },
+        },
+        textChannels: true,
       },
     });
 

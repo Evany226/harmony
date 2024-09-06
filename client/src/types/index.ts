@@ -24,7 +24,40 @@ export interface Message {
   id: string;
   content: string;
   senderId: string;
+  sender: User;
   conversationId: string;
   createdAt: string;
-  sender: User;
+}
+
+export interface Guild {
+  id: string;
+  name: string;
+  ownerId: string;
+  owner: User;
+  members: Member[];
+  textChannels: TextChannel[];
+  createdAt: string;
+}
+
+enum MemberRole {
+  OWNER = "OWNER",
+  ADMIN = "ADMIN",
+  MEMBER = "MEMBER",
+}
+
+export interface Member {
+  id: string;
+  role: MemberRole;
+  userId: string;
+  user: User;
+  guildId: string;
+  guild: Guild;
+}
+
+export interface TextChannel {
+  id: string;
+  name: string;
+  guildId: string;
+  guild: Guild;
+  createdAt: string;
 }
