@@ -14,6 +14,7 @@ import ConvPageSkeleton from "@/components/skeletons/ConvPageSkeleton";
 import { createMessage } from "@/lib/conversations";
 import { useToast } from "@/components/ui/use-toast";
 import { useSocket } from "@/context/SocketContext";
+import { useRouter } from "next/navigation";
 
 export default function ConversationPage({
   params,
@@ -32,6 +33,7 @@ export default function ConversationPage({
   const { user: currUser } = useUser();
   const { getToken } = useAuth();
   const { toast } = useToast();
+  const router = useRouter();
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -43,6 +45,9 @@ export default function ConversationPage({
         params.id
       );
 
+      if (!conversationObject) {
+        router.push("/404");
+      }
       const messages = await getAllMessages(token as string, params.id);
 
       setMessages(messages);
@@ -63,7 +68,7 @@ export default function ConversationPage({
     if (currUser) {
       fetchData();
     }
-  }, [getToken, params.id, currUser]);
+  }, [getToken, params.id, currUser, router]);
 
   useEffect(() => {
     const handleMessage = (msg: Message) => {

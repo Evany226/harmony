@@ -5,6 +5,7 @@ import Link from "next/link";
 import { getAllGuilds } from "@/lib/guilds";
 import { auth } from "@clerk/nextjs/server";
 import { Guild } from "@/types";
+import CreateGuildDialog from "../global/CreateGuildDialog";
 
 export default async function SideNav() {
   const { getToken } = auth();
@@ -33,7 +34,9 @@ export default async function SideNav() {
             <Image src="/harmony-logo.png" width={60} height={60} alt="Logo" />
           </Link>
         ))}
-        <PlusCircleIcon className="w-16 text-zinc-700 hover:text-zinc-600 cursor-pointer" />
+        <CreateGuildDialog>
+          <PlusCircleIcon className="w-16 text-zinc-700 hover:text-zinc-600 cursor-pointer" />
+        </CreateGuildDialog>
       </section>
     </ScrollArea>
   );
