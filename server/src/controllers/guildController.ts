@@ -4,14 +4,6 @@ import prisma from "../lib/prisma";
 
 import { Request, Response } from "express";
 
-import { StrictAuthProp } from "@clerk/clerk-sdk-node";
-
-declare global {
-  namespace Express {
-    interface Request extends StrictAuthProp {}
-  }
-}
-
 //grabs all the guild the user is in
 const getAllGuilds = async (req: Request, res: Response) => {
   //   const userId = req.auth.userId;
@@ -49,7 +41,11 @@ const getGuild = async (req: Request, res: Response) => {
             user: true,
           },
         },
-        textChannels: true,
+        categories: {
+          include: {
+            channels: true,
+          },
+        },
       },
     });
 
@@ -76,9 +72,14 @@ const createGuild = async (req: Request, res: Response) => {
             role: "OWNER",
           },
         },
-        textChannels: {
+        categories: {
           create: {
-            name: "general",
+            name: "Text Channels",
+            channels: {
+              create: {
+                name: "general",
+              },
+            },
           },
         },
       },
@@ -88,7 +89,7 @@ const createGuild = async (req: Request, res: Response) => {
             user: true,
           },
         },
-        textChannels: true,
+        categories: true,
       },
     });
 

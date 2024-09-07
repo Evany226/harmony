@@ -14,6 +14,7 @@ import { Friend } from "@/types";
 import { Button } from "../ui/button";
 import { createConversation } from "@/actions";
 import { useToast } from "../ui/use-toast";
+import { socket } from "@/app/socket";
 
 export default function ConvDropdown({
   children,
@@ -43,6 +44,7 @@ export default function ConvDropdown({
     try {
       setModalOpen(false);
       const result = await createConversation(formData);
+      socket.emit("joinRoom", [result.id]);
       toast({
         variant: "default",
         title: "Conversation created",

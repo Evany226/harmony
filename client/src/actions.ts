@@ -32,6 +32,8 @@ export async function createConversation(formData: FormData) {
     }
 
     revalidatePath("/conversations");
+
+    return data;
   } catch (error) {
     console.error("Error creating conversation:", error);
     throw error; // Ensure the error is propagated

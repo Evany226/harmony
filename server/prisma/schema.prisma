@@ -28,53 +28,53 @@ model Friend {
 }
 
 model Message {
-  id             String       @id @default(uuid())
-  content        String
+  id      String @id @default(uuid())
+  content String
 
-  senderId       String
-  sender         User         @relation("SentMessages", fields: [senderId], references: [id])
+  senderId String
+  sender   User   @relation("SentMessages", fields: [senderId], references: [id])
 
   conversationId String
   conversation   Conversation @relation(fields: [conversationId], references: [id])
 
-  createdAt      DateTime     @default(now())
+  createdAt DateTime @default(now())
 }
 
 model Conversation {
-  id        String    @id @default(uuid())
+  id String @id @default(uuid())
 
-  messages  Message[]
-  users     User[]    @relation("UserConversations")
+  messages Message[]
+  users    User[]    @relation("UserConversations")
 
-  createdAt DateTime  @default(now())
+  createdAt DateTime @default(now())
 }
 
 model Guild {
-  id           String        @id @default(uuid())
-  name         String
-  
-  ownerId     String
-  owner      User          @relation("GuildOwners", fields: [ownerId], references: [id])
+  id   String @id @default(uuid())
+  name String
 
+  ownerId String
+  owner   User   @relation("GuildOwners", fields: [ownerId], references: [id])
 
-  members      Member[]      @relation("GuildMembers")
-  textChannels TextChannel[]
+  members    Member[]     @relation("GuildMembers")
+  categories Categories[] @relation("GuildCategories")
 
-  createdAt    DateTime      @default(now())
+  createdAt DateTime @default(now())
 }
 
 enum MemberRole {
   OWNER
-  ADMIN 
+  ADMIN
   MEMBER
 }
+
 //model to check user permissions in a guild and save their messages in the guild
 model Member {
-  id      String @id @default(uuid())
-  role   MemberRole @default(MEMBER)
+  id   String     @id @default(uuid())
+  role MemberRole @default(MEMBER)
 
-  userId  String
-  user    User   @relation("UserMember", fields: [userId], references: [id])
+  userId String
+  user   User   @relation("UserMember", fields: [userId], references: [id])
 
   guildId String
   guild   Guild  @relation("GuildMembers", fields: [guildId], references: [id])
@@ -82,24 +82,36 @@ model Member {
   sentMessages ChannelMessages[] @relation("SentChannelMessages")
 }
 
-model TextChannel {
-  id        String   @id @default(uuid())
-  name      String
-  
-  guildId   String
-  guild     Guild    @relation(fields: [guildId], references: [id])
+model Categories {
+  id   String @id @default(uuid())
+  name String
 
-  messages ChannelMessages[] 
+  guildId String
+  guild   Guild  @relation("GuildCategories", fields: [guildId], references: [id])
+
+  channels TextChannel[] @relation("CategoryChannels")
+
+  createdAt DateTime @default(now())
+}
+
+model TextChannel {
+  id   String @id @default(uuid())
+  name String
+
+  channelId String
+  channel   Categories @relation("CategoryChannels", fields: [channelId], references: [id])
+
+  messages ChannelMessages[]
 
   createdAt DateTime @default(now())
 }
 
 model ChannelMessages {
-  id        String   @id @default(uuid())
-  content   String
+  id      String @id @default(uuid())
+  content String
 
-  senderId  String
-  sender    Member     @relation("SentChannelMessages", fields: [senderId], references: [id])
+  senderId String
+  sender   Member @relation("SentChannelMessages", fields: [senderId], references: [id])
 
   channelId String
   channel   TextChannel @relation(fields: [channelId], references: [id])

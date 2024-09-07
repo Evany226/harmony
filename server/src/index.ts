@@ -6,6 +6,7 @@ import friendsRouter from "./routes/friendRoutes";
 import requestRouter from "./routes/requestRoute";
 import conversationRouter from "./routes/conversationRoute";
 import guildRouter from "./routes/guildRoute";
+import categoryRouter from "./routes/categoryRoute";
 import { Server } from "socket.io";
 import { Message } from "./types";
 import { clerkClient } from "@clerk/clerk-sdk-node";
@@ -46,6 +47,7 @@ app.use("/api/friends", friendsRouter);
 app.use("/api/requests", requestRouter);
 app.use("/api/conversations", conversationRouter);
 app.use("/api/guilds", guildRouter);
+app.use("/api/categories", categoryRouter);
 
 const PORT = 3001;
 

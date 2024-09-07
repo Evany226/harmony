@@ -66,8 +66,8 @@ const getConversation = async (req: Request, res: Response) => {
 
 //used when users click the direct messages + button to setup empty conversation
 const createConversation = async (req: Request, res: Response) => {
-  const userId = req.auth.userId;
-  // const userId = "user_2kvgB9d6HPZNSZGsGDf02nYSx12";
+  // const userId = req.auth.userId;
+  const userId = "user_2kvgB9d6HPZNSZGsGDf02nYSx12";
   const { participantIds } = req.body as { participantIds: string[] };
 
   //includes userId
