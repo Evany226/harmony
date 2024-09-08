@@ -33,21 +33,3 @@ export const getGuild = async (token: string, id: string) => {
 
   return data;
 };
-
-// export const createGuild = async (name: string) => {
-//   const response = await fetch("/api/createGuild", {
-//     method: "POST",
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//     body: JSON.stringify({ name }),
-//   });
-
-//   const data = await response.json();
-
-//   if (!response.ok) {
-//     throw new Error(data.error);
-//   }
-
-//   return data;
-// };

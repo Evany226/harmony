@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Collapsible,
   CollapsibleContent,
@@ -26,7 +28,7 @@ export default function CategoryWrapper({
   channels,
   guildId,
 }: CategoryWrapperProps) {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(true);
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>

@@ -4,7 +4,7 @@ import { PlusCircleIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import { getAllGuilds } from "@/lib/guilds";
 import { auth } from "@clerk/nextjs/server";
-import { Guild } from "@/types";
+import { Guild, Category } from "@/types";
 import CreateGuildDialog from "../guilds/CreateGuildDialog";
 
 export default async function SideNav() {
@@ -29,11 +29,35 @@ export default async function SideNav() {
       </section>
 
       <section className="flex flex-col h-full w-full items-center mt-2">
-        {guilds.map((guild: Guild) => (
-          <Link href={`/guilds/${guild.id}`} key={guild.id}>
-            <Image src="/harmony-logo.png" width={60} height={60} alt="Logo" />
-          </Link>
-        ))}
+        {guilds.map((guild: Guild) => {
+          const hasChannels =
+            guild.categories.length > 0 &&
+            guild.categories.some(
+              (category: Category) => category.channels.length > 0
+            );
+
+          const categoryWithChannels = guild.categories.find(
+            (category: Category) => category.channels.length > 0
+          );
+
+          return (
+            <Link
+              href={
+                hasChannels && categoryWithChannels
+                  ? `/guilds/${guild.id}/${categoryWithChannels.channels[0].id}`
+                  : `/guilds/${guild.id}`
+              }
+              key={guild.id}
+            >
+              <Image
+                src="/harmony-logo.png"
+                width={60}
+                height={60}
+                alt="Logo"
+              />
+            </Link>
+          );
+        })}
         <CreateGuildDialog>
           <PlusCircleIcon className="w-16 text-zinc-700 hover:text-zinc-600 cursor-pointer" />
         </CreateGuildDialog>

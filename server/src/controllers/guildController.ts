@@ -18,6 +18,13 @@ const getAllGuilds = async (req: Request, res: Response) => {
           },
         },
       },
+      include: {
+        categories: {
+          include: {
+            channels: true,
+          },
+        },
+      },
     });
 
     res.json(allGuilds);

@@ -3,6 +3,7 @@
 import { TextChannel } from "@/types";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { HashtagIcon } from "@heroicons/react/24/solid";
 
 interface ChannelLinkProps {
   channel: TextChannel;
@@ -15,11 +16,12 @@ export default function ChannelLink({ channel, href }: ChannelLinkProps) {
   return (
     <Link
       href={href}
-      className={`py-1 rounded-sm hover:bg-neutral-800 ${
+      className={`py-1 rounded-sm hover:bg-neutral-800 flex items-center px-2 ${
         pathname == href ? "bg-zinc-700" : ""
       }`}
     >
-      <p className="text-gray-300 text-sm ml-4 font-medium">{channel.name}</p>
+      <HashtagIcon className="w-4 text-gray-300 cursor-pointer" />
+      <p className="text-gray-300 text-sm font-medium ml-2">{channel.name}</p>
     </Link>
   );
 }
