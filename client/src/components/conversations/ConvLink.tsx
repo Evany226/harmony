@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Conversation, User } from "@/types/index";
 import { socket } from "@/app/socket";
-import ConvDropdown from "../global/ConvDropdown";
+import ConvDropdown from "./ConvDropdown";
 import { Skeleton } from "../ui/skeleton";
 import ConnectionStatus from "../global/ConnectionStatus";
 import { useSocket } from "@/context/SocketContext";

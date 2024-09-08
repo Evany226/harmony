@@ -35,7 +35,16 @@ export interface Guild {
   ownerId: string;
   owner: User;
   members: Member[];
-  textChannels: TextChannel[];
+  categories: Category[];
+  createdAt: string;
+}
+
+export interface Category {
+  id: string;
+  name: string;
+  guildId: string;
+  guild: Guild;
+  channels: TextChannel[];
   createdAt: string;
 }
 
@@ -59,5 +68,16 @@ export interface TextChannel {
   name: string;
   guildId: string;
   guild: Guild;
+  messages: ChannelMessages[];
+  createdAt: string;
+}
+
+export interface ChannelMessages {
+  id: string;
+  content: string;
+  senderId: string;
+  sender: Member;
+  channelId: string;
+  channel: TextChannel;
   createdAt: string;
 }

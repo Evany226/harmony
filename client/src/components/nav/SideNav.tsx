@@ -5,7 +5,7 @@ import Link from "next/link";
 import { getAllGuilds } from "@/lib/guilds";
 import { auth } from "@clerk/nextjs/server";
 import { Guild } from "@/types";
-import CreateGuildDialog from "../global/CreateGuildDialog";
+import CreateGuildDialog from "../guilds/CreateGuildDialog";
 
 export default async function SideNav() {
   const { getToken } = auth();

@@ -5,6 +5,7 @@ import { getGuild } from "@/lib/guilds";
 import { useEffect, useState } from "react";
 import { useAuth } from "@clerk/nextjs";
 import { Guild } from "@/types";
+import CategoryWrapper from "@/components/guilds/CategoryWrapper";
 import LeftPanel from "@/components/guilds/LeftPanel";
 
 export default function GuildPage({ params }: { params: { id: string } }) {
@@ -37,6 +38,17 @@ export default function GuildPage({ params }: { params: { id: string } }) {
             {guild.name}
           </h1>
         </header>
+
+        <div className="flex flex-col px-2 py-2 max-w-64 space-y-4 mt-2">
+          {guild.categories.map((category: any) => (
+            <CategoryWrapper
+              key={category.id}
+              name={category.name}
+              channels={category.channels}
+              guildId={params.id}
+            />
+          ))}
+        </div>
 
         <ProfileCard />
       </div>
