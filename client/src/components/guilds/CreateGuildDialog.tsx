@@ -87,7 +87,7 @@ export default function CreateGuildDialog({
               SERVER NAME
             </label>
             <input
-              className="outline-0 rounded-md w-full text-sm bg-zinc-900 py-2 px-3 text-gray-300"
+              className="outline-0 rounded-md w-full text-sm bg-neutral-900 py-2 px-3 text-gray-300"
               placeholder="Enter a server name."
               name="name"
             ></input>

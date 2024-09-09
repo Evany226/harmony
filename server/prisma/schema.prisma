@@ -57,7 +57,7 @@ model Guild {
   owner   User   @relation("GuildOwners", fields: [ownerId], references: [id])
 
   members    Member[]     @relation("GuildMembers")
-  categories Categories[] @relation("GuildCategories")
+  categories Category[] @relation("GuildCategories")
 
   createdAt DateTime @default(now())
 }
@@ -82,7 +82,7 @@ model Member {
   sentMessages ChannelMessages[] @relation("SentChannelMessages")
 }
 
-model Categories {
+model Category {
   id   String @id @default(uuid())
   name String
 
@@ -98,8 +98,8 @@ model TextChannel {
   id   String @id @default(uuid())
   name String
 
-  channelId String
-  channel   Categories @relation("CategoryChannels", fields: [channelId], references: [id])
+  categoryId String
+  category   Category @relation("CategoryChannels", fields: [categoryId], references: [id])
 
   messages ChannelMessages[]
 

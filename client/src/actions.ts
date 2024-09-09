@@ -66,3 +66,33 @@ export async function createNewGuild(formData: FormData) {
     throw error; // Ensure the error is propagated
   }
 }
+
+export async function createChannel(formdata: FormData) {
+  const { getToken } = auth();
+  const token = await getToken();
+
+  try {
+    const response = await fetch("http://localhost:3001/api/channels", {
+      method: "POST",
+      body: JSON.stringify({
+        categoryId: formdata.get("categoryId"),
+        name: formdata.get("name"),
+      }),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Express error creating channel.");
+    }
+
+    revalidatePath("/guilds");
+  } catch (error) {
+    console.error("Error creating channel:", error);
+    throw error;
+  }
+}

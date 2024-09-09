@@ -22,6 +22,7 @@ export default async function ChannelPanel({ guildId }: { guildId: string }) {
             name={category.name}
             channels={category.channels}
             guildId={guildId}
+            categoryId={category.id}
           />
         ))}
       </div>

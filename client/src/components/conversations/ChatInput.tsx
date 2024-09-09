@@ -23,13 +23,13 @@ export default function ChatInput({
 
   return (
     <form
-      className="w-full bg-zinc-800 py-2 px-4 rounded-lg mb-6"
+      className="w-full bg-neutral-800 py-2 px-4 rounded-lg mb-6"
       onSubmit={handleSubmit}
     >
       <div className="flex items-center">
         <PlusCircleIcon className="w-7 text-gray-300" />
         <input
-          className="outline-0 ml-3 w-full bg-zinc-800 text-gray-300 py-1 box-border"
+          className="outline-0 ml-3 w-full bg-neutral-800 text-gray-300 py-1 box-border"
           placeholder="Find or start a conversation"
           style={{ boxSizing: "border-box" }}
           value={inputValue}

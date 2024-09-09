@@ -5,7 +5,7 @@ const getCategories = async (req: Request, res: Response) => {
   const guildId = req.params.guildId;
 
   try {
-    const categories = await prisma.categories.findMany({
+    const categories = await prisma.category.findMany({
       where: {
         guildId: guildId,
       },
@@ -25,7 +25,7 @@ const createCategory = async (req: Request, res: Response) => {
   const { guildId, name } = req.body as { guildId: string; name: string };
 
   try {
-    const newCategory = await prisma.categories.create({
+    const newCategory = await prisma.category.create({
       data: {
         name: name,
         guildId: guildId,

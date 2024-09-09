@@ -12,6 +12,7 @@ import {
   ChevronRightIcon,
 } from "@heroicons/react/24/solid";
 
+import CreateChannelDialog from "./CreateChannelDialog";
 import { useState } from "react";
 
 import { TextChannel } from "@/types";
@@ -21,12 +22,14 @@ interface CategoryWrapperProps {
   name: string;
   channels: TextChannel[];
   guildId: string;
+  categoryId: string;
 }
 
 export default function CategoryWrapper({
   name,
   channels,
   guildId,
+  categoryId,
 }: CategoryWrapperProps) {
   const [isOpen, setIsOpen] = useState<boolean>(true);
 
@@ -45,7 +48,9 @@ export default function CategoryWrapper({
         </CollapsibleTrigger>
 
         <aside className="">
-          <PlusIcon className="w-4 text-gray-300 cursor-pointer" />
+          <CreateChannelDialog categoryId={categoryId}>
+            <PlusIcon className="w-4 text-gray-300 cursor-pointer" />
+          </CreateChannelDialog>
         </aside>
       </div>
 

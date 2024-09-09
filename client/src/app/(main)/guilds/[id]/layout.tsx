@@ -14,7 +14,7 @@ export default async function GuildLayout({
     <section className="flex w-full h-full bg-zinc-900">
       <ChannelPanel guildId={params.id} />
 
-      <main className="w-full h-[calc(100%-3rem)] flex flex-col">
+      <main className="w-full h-full flex flex-col">
         <article className="w-3/4 h-full border-r border-zinc-800 flex flex-col relative px-5">
           {children}
         </article>

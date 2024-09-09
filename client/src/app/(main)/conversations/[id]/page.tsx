@@ -109,7 +109,7 @@ export default function ConversationPage({
     try {
       const result = await createMessage(params.id, inputValue);
       socket.emit("message", result);
-      socket.emit("notifcation", result);
+      socket.emit("notification", result);
       setInputValue("");
       setSocketLoading(false);
     } catch (error: any) {

@@ -44,7 +44,7 @@ export default function ConvDropdown({
     try {
       setModalOpen(false);
       const result = await createConversation(formData);
-      socket.emit("joinRoom", [result.id]);
+      socket.emit("joinConversation", result.id);
       toast({
         variant: "default",
         title: "Conversation created",

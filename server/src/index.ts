@@ -7,6 +7,7 @@ import requestRouter from "./routes/requestRoute";
 import conversationRouter from "./routes/conversationRoute";
 import guildRouter from "./routes/guildRoute";
 import categoryRouter from "./routes/categoryRoute";
+import channelRouter from "./routes/channelRoute.ts";
 import { Server } from "socket.io";
 import { Message } from "./types";
 import { clerkClient } from "@clerk/clerk-sdk-node";
@@ -48,6 +49,7 @@ app.use("/api/requests", requestRouter);
 app.use("/api/conversations", conversationRouter);
 app.use("/api/guilds", guildRouter);
 app.use("/api/categories", categoryRouter);
+app.use("/api/channels", channelRouter);
 
 const PORT = 3001;
 
@@ -85,12 +87,18 @@ io.on("connection", (socket) => {
     });
   });
 
+  socket.on("joinConversation", async (conversationId: string) => {
+    await socket.join(conversationId);
+    console.log(`User joined conversation ${conversationId}`);
+    socket.to(conversationId).emit("joinConversation");
+  });
+
   socket.on("message", (data: Message) => {
     const { conversationId } = data;
     io.to(conversationId).emit(`message ${conversationId}`, data);
   });
 
-  socket.on("notifcation", (data: Message) => {
+  socket.on("notification", (data: Message) => {
     const { conversationId } = data;
     socket.to(conversationId).emit(`notification`, data);
   });

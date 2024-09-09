@@ -7,7 +7,7 @@ import { useAuth } from "@clerk/nextjs";
 import { Conversation, Message } from "@/types";
 import { useToast } from "@/components/ui/use-toast";
 import { formatTimestamp } from "@/lib/utils";
-import { User } from "@/types";
+import { useRouter } from "next/navigation";
 
 interface SocketContextProps {
   socket: typeof socket;
@@ -20,6 +20,7 @@ const SocketContext = createContext<SocketContextProps | undefined>(undefined);
 export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const { getToken, userId } = useAuth();
   const { toast } = useToast();
+  const router = useRouter();
 
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
@@ -57,6 +58,10 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       });
     });
 
+    socket.on("joinConversation", () => {
+      router.refresh();
+    });
+
     socket.on("onlineUsers", (data: string[]) => {
       // toast({
       //   title: "online users",
@@ -71,7 +76,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       socket.off("notification");
       socket.off("onlineUsers");
     };
-  }, [getToken, toast, userId]);
+  }, [getToken, toast, userId, router]);
 
   return (
     <SocketContext.Provider value={{ socket, isConnected, onlineUsers }}>
