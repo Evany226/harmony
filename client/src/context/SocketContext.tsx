@@ -59,14 +59,11 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     });
 
     socket.on("joinConversation", () => {
+      //revalidates the other clients when a new conversation is created
       router.refresh();
     });
 
     socket.on("onlineUsers", (data: string[]) => {
-      // toast({
-      //   title: "online users",
-      //   description: `${data}`,
-      // });
       setOnlineUsers(data);
     });
 
@@ -75,6 +72,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       socket.off("disconnect");
       socket.off("notification");
       socket.off("onlineUsers");
+      socket.off("joinConversation");
     };
   }, [getToken, toast, userId, router]);
 

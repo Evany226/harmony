@@ -65,7 +65,12 @@ const io = new Server(httpServer, {
   },
 });
 
-let onlineUsers: string[] = [];
+interface socketUser {
+  userId: string;
+  socketId: string;
+}
+
+let onlineUsers: socketUser[] = [];
 
 io.on("connection", (socket) => {
   console.log("User has connected");
@@ -76,8 +81,12 @@ io.on("connection", (socket) => {
   socket.on("joinOnline", (userId: string) => {
     id = userId;
 
-    onlineUsers.push(userId);
-    io.emit("onlineUsers", onlineUsers);
+    onlineUsers.push({ userId, socketId: socket.id });
+
+    console.log(onlineUsers);
+
+    const onlineUsersArray = onlineUsers.map((user) => user.userId);
+    io.emit("onlineUsers", onlineUsersArray);
   });
 
   socket.on("joinRoom", (conversationIds: string[]) => {
@@ -87,11 +96,24 @@ io.on("connection", (socket) => {
     });
   });
 
-  socket.on("joinConversation", async (conversationId: string) => {
-    await socket.join(conversationId);
-    console.log(`User joined conversation ${conversationId}`);
-    socket.to(conversationId).emit("joinConversation");
-  });
+  socket.on(
+    "joinConversation",
+    (data: { conversationId: string; participantIds: string[] }) => {
+      const { conversationId, participantIds } = data;
+
+      participantIds.forEach((userId: string) => {
+        const user = onlineUsers.find((user) => user.userId === userId);
+        if (user) {
+          io.in(user.socketId).socketsJoin(conversationId);
+          console.log(`Second client joined ${conversationId}`);
+        }
+      });
+
+      console.log(participantIds);
+
+      socket.to(conversationId).emit("joinConversation");
+    }
+  );
 
   socket.on("message", (data: Message) => {
     const { conversationId } = data;
@@ -110,6 +132,6 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("user disconnected");
     console.log(id);
-    onlineUsers = onlineUsers.filter((userId) => userId !== id);
+    onlineUsers = onlineUsers.filter((user) => user.userId !== id);
   });
 });
