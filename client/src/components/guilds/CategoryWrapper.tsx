@@ -43,7 +43,9 @@ export default function CategoryWrapper({
             ) : (
               <ChevronDownIcon className="w-3 text-gray-300 cursor-pointer font-bold" />
             )}
-            <p className="text-sm text-gray-300 font-medium">{name}</p>
+            <p className="text-sm text-gray-300 font-medium hover:text-white">
+              {name}
+            </p>
           </main>
         </CollapsibleTrigger>
 

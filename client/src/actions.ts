@@ -67,6 +67,36 @@ export async function createNewGuild(formData: FormData) {
   }
 }
 
+export async function createCategory(formdata: FormData) {
+  const { getToken } = auth();
+  const token = await getToken();
+
+  try {
+    const response = await fetch("http://localhost:3001/api/categories", {
+      method: "POST",
+      body: JSON.stringify({
+        guildId: formdata.get("guildId"),
+        name: formdata.get("name"),
+      }),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Express error creating category.");
+    }
+
+    revalidatePath("/guilds");
+  } catch (error) {
+    console.error("Error creating category:", error);
+    throw error;
+  }
+}
+
 export async function createChannel(formdata: FormData) {
   const { getToken } = auth();
   const token = await getToken();

@@ -16,12 +16,18 @@ export default function ChannelLink({ channel, href }: ChannelLinkProps) {
   return (
     <Link
       href={href}
-      className={`py-1 rounded-sm hover:bg-neutral-800 flex items-center px-2 ${
+      className={`group py-1 rounded-sm hover:bg-neutral-800 flex items-center px-2 ${
         pathname == href ? "bg-zinc-700" : ""
       }`}
     >
       <HashtagIcon className="w-4 text-gray-300 cursor-pointer" />
-      <p className="text-gray-300 text-sm font-medium ml-2">{channel.name}</p>
+      <p
+        className={`text-zinc-400 text-sm font-medium ml-2 group-hover:text-white ${
+          pathname == href ? "text-white" : ""
+        }`}
+      >
+        {channel.name}
+      </p>
     </Link>
   );
 }

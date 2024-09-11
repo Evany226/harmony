@@ -1,7 +1,7 @@
-import CategoryWrapper from "@/components/guilds/CategoryWrapper";
 import { auth } from "@clerk/nextjs/server";
-import { Guild, Category } from "@/types";
+
 import ProfileCard from "../dashboard/profile/ProfileCard";
+import PanelContextMenu from "./PanelContextMenu";
 import { getGuild } from "@/lib/guilds";
 
 export default async function ChannelPanel({ guildId }: { guildId: string }) {
@@ -15,17 +15,7 @@ export default async function ChannelPanel({ guildId }: { guildId: string }) {
         <h1 className="text-gray-300 text-base font-semibold">{guild.name}</h1>
       </header>
 
-      <div className="flex flex-col px-2 py-2 max-w-64 space-y-4 mt-2">
-        {guild.categories.map((category: Category) => (
-          <CategoryWrapper
-            key={category.id}
-            name={category.name}
-            channels={category.channels}
-            guildId={guildId}
-            categoryId={category.id}
-          />
-        ))}
-      </div>
+      <PanelContextMenu guild={guild} guildId={guildId} />
 
       <ProfileCard />
     </div>

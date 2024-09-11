@@ -19,7 +19,7 @@ export default function ConvDropdownItem({
 
   return (
     <div
-      className="w-full flex items-center flex-between hover:bg-zinc-700 px-2 py-1 rounded-md cursor-pointer"
+      className="w-full flex items-center flex-between group hover:bg-zinc-700 px-2 py-1 rounded-md cursor-pointer"
       onClick={() => setChecked(!checked)}
     >
       <div className="w-full flex items-center space-x-3">
@@ -29,7 +29,7 @@ export default function ConvDropdownItem({
             <Skeleton className="w-full h-full" />
           </AvatarFallback>
         </Avatar>
-        <label className="w-full text-base text-gray-300 outline-0 cursor-pointer">
+        <label className="w-full text-base text-gray-300 group-hover:text-white outline-0 cursor-pointer">
           {username}
         </label>
       </div>
@@ -38,7 +38,7 @@ export default function ConvDropdownItem({
         name={id}
         checked={checked}
         value={checked.toString()}
-        className="w-4 h-4  accent-blue-500 border-gray-300 rounded-md"
+        className="w-4 h-4 accent-blue-500 border-gray-300 rounded-md"
       />
     </div>
   );
