@@ -6,9 +6,9 @@ import { useAuth } from "@clerk/nextjs";
 import { User, Message } from "@/types/index.js";
 import { useUser } from "@clerk/nextjs";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import ChatInput from "@/components/conversations/ChatInput";
+import ChatInput from "@/components/global/ChatInput";
 import ConvEmptyState from "@/components/empty-states/ConvEmptyState";
-import MessageCard from "@/components/conversations/MessageCard";
+import MessageCard from "@/components/global/MessageCard";
 import ConvPageSkeleton from "@/components/skeletons/ConvPageSkeleton";
 
 import { createMessage } from "@/lib/conversations";

@@ -4,7 +4,7 @@ import ProfileCard from "../dashboard/profile/ProfileCard";
 import PanelContextMenu from "./PanelContextMenu";
 import { getGuild } from "@/lib/guilds";
 
-export default async function ChannelPanel({ guildId }: { guildId: string }) {
+export default async function GuildLeftPanel({ guildId }: { guildId: string }) {
   const { getToken } = auth();
   const token = await getToken();
   const guild = await getGuild(token as string, guildId);

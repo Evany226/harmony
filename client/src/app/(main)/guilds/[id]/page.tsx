@@ -1,5 +1,3 @@
-import ChannelPanel from "@/components/guilds/ChannelPanel";
-
 export default async function GuildPage({
   params,
 }: {

@@ -1,5 +1,5 @@
 import { Skeleton } from "../ui/skeleton";
-import ChatInput from "../conversations/ChatInput";
+import ChatInput from "../global/ChatInput";
 
 interface MessageSkeletonProps {
   variant: "short" | "medium" | "long";

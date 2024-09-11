@@ -1,16 +1,19 @@
 import { auth } from "@clerk/nextjs/server";
-import { getChannel } from "@/lib/guilds";
+import { getChannel, getAllMembers } from "@/lib/guilds";
 import { HashtagIcon } from "@heroicons/react/24/solid";
-import { Hash } from "lucide-react";
+import ChatInput from "@/components/global/ChatInput";
+import UserPanel from "@/components/guilds/UserPanel";
 
 export default async function ChannelPage({
   params,
 }: {
-  params: { channelId: string };
+  params: { id: string; channelId: string };
 }) {
   const { getToken } = auth();
   const token = await getToken();
   const channel = await getChannel(token as string, params.channelId);
+
+  const members = await getAllMembers(token as string, params.id);
 
   return (
     <>
@@ -18,9 +21,30 @@ export default async function ChannelPage({
         <HashtagIcon className="w-5 text-gray-300 cursor-pointer ml-2" />
         <h1 className="text-gray-300 font-semibold">{channel.name}</h1>
       </header>
-      <div className="flex w-full h-full ">
-        <main className="w-4/5 h-full border-r border-zinc-800 flex flex-col relative px-2"></main>
-        <aside className="w-1/5 h-full border-r border-zinc-800 flex flex-col relative px-2"></aside>
+      <div className="flex w-full h-[calc(100%-3rem)] ">
+        <main className="w-10/12 h-full border-r border-zinc-800 flex flex-col relative px-5">
+          <div className="h-full w-full flex flex-col overflow-y-auto mb-4">
+            {/* <ConvEmptyState name={chatTitle} imageUrl={users[0].imageUrl} />
+
+                {messages.map((message: Message) => {
+                  const sender = message.sender;
+
+                  return (
+                    <MessageCard
+                      key={message.id}
+                      name={sender.username}
+                      message={message.content}
+                      createdAt={message.createdAt}
+                      imageUrl={sender.imageUrl}
+                    />
+                  );
+                })}
+                <div ref={messagesEndRef} /> */}
+          </div>
+          <ChatInput />
+        </main>
+
+        <UserPanel members={members} />
       </div>
     </>
   );

@@ -1,3 +1,4 @@
+"use client";
 import { PlusCircleIcon } from "@heroicons/react/24/solid";
 import { Button } from "../ui/button";
 
@@ -23,7 +24,7 @@ export default function ChatInput({
 
   return (
     <form
-      className="w-full bg-neutral-800 py-2 px-4 rounded-lg mb-6"
+      className="w-full bg-neutral-800 py-1.5 px-4 rounded-lg mb-6"
       onSubmit={handleSubmit}
     >
       <div className="flex items-center">
