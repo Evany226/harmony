@@ -2,6 +2,7 @@ import ProfileCard from "@/components/dashboard/profile/ProfileCard";
 import { getGuild } from "@/lib/guilds";
 
 import ChannelPanel from "@/components/guilds/ChannelPanel";
+import { HashtagIcon } from "@heroicons/react/24/solid";
 
 export default async function GuildLayout({
   params,
@@ -14,11 +15,9 @@ export default async function GuildLayout({
     <section className="flex w-full h-full bg-zinc-900">
       <ChannelPanel guildId={params.id} />
 
-      <main className="w-full h-full flex flex-col">
-        <article className="w-3/4 h-full border-r border-zinc-800 flex flex-col relative px-5">
-          {children}
-        </article>
-      </main>
+      <div className="flex flex-col w-[100%] h-full bg-zinc-900">
+        {children}
+      </div>
     </section>
   );
 }

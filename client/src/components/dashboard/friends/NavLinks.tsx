@@ -57,6 +57,7 @@ export default function NavLinks() {
           }}
           variant="outline"
           size="default"
+          className="bg-purple-700 text-gray-300 border-0 hover:bg-purple-800 hover:text-gray-200"
         >
           Add Friend
         </Button>

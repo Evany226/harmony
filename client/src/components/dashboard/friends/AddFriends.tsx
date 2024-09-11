@@ -63,9 +63,14 @@ export default function AddFriendsForm() {
         value={username}
       ></input>
       <div className="w-full flex justify-end">
-        <Button variant="outline" size="sm" type="submit" className="w-40">
+        <Button
+          variant="outline"
+          size="sm"
+          type="submit"
+          className="w-40 bg-purple-700 text-gray-300 border-0 hover:bg-purple-800 hover:text-gray-200"
+        >
           <Loading isLoading={isLoading}>
-            <p>Send friend request</p>
+            <p>Send Friend Request</p>
           </Loading>
         </Button>
       </div>

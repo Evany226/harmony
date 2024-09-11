@@ -22,8 +22,8 @@ export default function ChannelLink({ channel, href }: ChannelLinkProps) {
     >
       <HashtagIcon className="w-4 text-gray-300 cursor-pointer" />
       <p
-        className={`text-zinc-400 text-sm font-medium ml-2 group-hover:text-white ${
-          pathname == href ? "text-white" : ""
+        className={`text-sm font-medium ml-2 group-hover:text-white ${
+          pathname == href ? "text-white" : "text-zinc-400 "
         }`}
       >
         {channel.name}

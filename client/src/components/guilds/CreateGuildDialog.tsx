@@ -8,6 +8,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import GuildDialogFooter from "./GuildDialogFooter";
 
 import { CameraIcon } from "@heroicons/react/24/solid";
 import { PlusIcon } from "@heroicons/react/16/solid";
@@ -93,11 +94,7 @@ export default function CreateGuildDialog({
             ></input>
           </aside>
 
-          <div className="w-full flex justify-end mt-4">
-            <Button variant="outline" className="px-3 py-1 rounded-sm">
-              Create
-            </Button>
-          </div>
+          <GuildDialogFooter setDialogOpen={setDialogOpen} />
         </form>
       </DialogContent>
     </Dialog>

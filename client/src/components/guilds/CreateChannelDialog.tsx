@@ -8,6 +8,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import GuildDialogFooter from "./GuildDialogFooter";
 
 import { HashtagIcon, SpeakerWaveIcon } from "@heroicons/react/24/solid";
 
@@ -115,11 +116,7 @@ export default function CreateChannelDialog({
             </div>
           </aside>
 
-          <div className="w-full flex justify-end mt-4">
-            <Button variant="outline" className="px-3 py-1 rounded-sm">
-              Create
-            </Button>
-          </div>
+          <GuildDialogFooter setDialogOpen={setDialogOpen} />
         </form>
       </DialogContent>
     </Dialog>
