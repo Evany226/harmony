@@ -126,3 +126,29 @@ export async function createChannel(formdata: FormData) {
     throw error;
   }
 }
+
+export async function deleteChannel(id: string) {
+  const { getToken } = auth();
+  const token = await getToken();
+
+  try {
+    const response = await fetch(`http://localhost:3001/api/channels/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Express error deleting channel.");
+    }
+
+    revalidatePath("/guilds");
+  } catch (error) {
+    console.error("Error deleting channel:", error);
+    throw error;
+  }
+}

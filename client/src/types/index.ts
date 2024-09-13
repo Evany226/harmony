@@ -66,6 +66,7 @@ export interface Member {
 export interface TextChannel {
   id: string;
   name: string;
+  topic: string;
   guildId: string;
   guild: Guild;
   messages: ChannelMessages[];

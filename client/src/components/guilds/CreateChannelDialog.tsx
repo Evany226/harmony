@@ -116,7 +116,7 @@ export default function CreateChannelDialog({
             </div>
           </aside>
 
-          <GuildDialogFooter setDialogOpen={setDialogOpen} />
+          <GuildDialogFooter setDialogOpen={setDialogOpen} text="Create" />
         </form>
       </DialogContent>
     </Dialog>

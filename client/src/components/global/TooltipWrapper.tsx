@@ -15,7 +15,7 @@ export function TooltipWrapper({
   return (
     <TooltipProvider delayDuration={100}>
       <Tooltip>
-        <TooltipTrigger>{children}</TooltipTrigger>
+        <TooltipTrigger className="p-0 m-0">{children}</TooltipTrigger>
         <TooltipContent className="bg-neutral-900">{text}</TooltipContent>
       </Tooltip>
     </TooltipProvider>

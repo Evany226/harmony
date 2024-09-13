@@ -97,6 +97,7 @@ model Category {
 model TextChannel {
   id   String @id @default(uuid())
   name String
+  topic String?
 
   categoryId String
   category   Category @relation("CategoryChannels", fields: [categoryId], references: [id])

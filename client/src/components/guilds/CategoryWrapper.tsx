@@ -62,6 +62,7 @@ export default function CategoryWrapper({
             key={channel.id}
             channel={channel}
             href={`/guilds/${guildId}/${channel.id}`}
+            guildId={guildId}
           />
         ))}
       </CollapsibleContent>

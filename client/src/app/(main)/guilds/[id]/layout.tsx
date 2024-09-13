@@ -1,7 +1,7 @@
 import ProfileCard from "@/components/dashboard/profile/ProfileCard";
 import { getGuild } from "@/lib/guilds";
 
-import GuildLeftPanel from "@/components/guilds/ChannelPanel";
+import GuildLeftPanel from "@/components/guilds/GuildLeftPanel";
 import { HashtagIcon } from "@heroicons/react/24/solid";
 
 export default async function GuildLayout({

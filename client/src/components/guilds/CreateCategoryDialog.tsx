@@ -69,9 +69,7 @@ export default function CreateCategoryDialog({
         </DialogDescription>
       </DialogHeader>
       <form className=" w-full flex flex-col" onSubmit={handleSubmit}>
-        <main className="w-full flex justify-center"></main>
-
-        <aside className="flex flex-col space-y-2">
+        <div className="flex flex-col space-y-2">
           <label className="text-gray-300 text-sm font-semibold">
             CATEGORY NAME
           </label>
@@ -80,9 +78,9 @@ export default function CreateCategoryDialog({
             placeholder="New Category"
             name="name"
           ></input>
-        </aside>
+        </div>
 
-        <GuildDialogFooter setDialogOpen={setDialogOpen} />
+        <GuildDialogFooter text="Create" setDialogOpen={setDialogOpen} />
       </form>
     </DialogContent>
   );

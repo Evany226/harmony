@@ -1,7 +1,7 @@
 import prisma from "../lib/prisma";
 import { Request, Response } from "express";
 
-export const getChannel = async (req: Request, res: Response) => {
+const getChannel = async (req: Request, res: Response) => {
   const { channelId } = req.params;
 
   try {
@@ -18,7 +18,7 @@ export const getChannel = async (req: Request, res: Response) => {
   }
 };
 
-export const createChannel = async (req: Request, res: Response) => {
+const createChannel = async (req: Request, res: Response) => {
   const { categoryId, name } = req.body as { categoryId: string; name: string };
 
   try {
@@ -35,3 +35,42 @@ export const createChannel = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Failed to create channel" + error });
   }
 };
+
+const deleteChannel = async (req: Request, res: Response) => {
+  const { channelId } = req.params;
+
+  try {
+    const deletedChannel = await prisma.textChannel.delete({
+      where: {
+        id: channelId,
+      },
+    });
+
+    res.json(deletedChannel);
+  } catch (error) {
+    console.error("Error deleting channel:", error);
+    res.status(500).json({ error: "Failed to delete channel" + error });
+  }
+};
+
+const getFirstChannel = async (req: Request, res: Response) => {
+  const { guildId } = req.params;
+
+  try {
+    const firstCategory = await prisma.category.findFirst({
+      where: {
+        guildId: guildId,
+      },
+      include: {
+        channels: true,
+      },
+    });
+
+    res.json(`/guilds/${guildId}/${firstCategory?.channels[0]?.id}`);
+  } catch (error) {
+    console.error("Error fetching first channel:", error);
+    res.status(500).json({ error: "Failed to fetch first channel" + error });
+  }
+};
+
+export { getChannel, createChannel, deleteChannel, getFirstChannel };

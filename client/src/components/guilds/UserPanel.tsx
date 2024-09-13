@@ -18,7 +18,7 @@ export default function UserPanel({ members }: UserPanelProps) {
 
         if (membersByRole.length >= 0) {
           return (
-            <div className="flex flex-col w-full mb-4 " key="role">
+            <div className="flex flex-col w-full mb-4 " key={role}>
               <h1 className="text-gray-300 text-sm font-medium">
                 {role} - {membersByRole.length}
               </h1>
