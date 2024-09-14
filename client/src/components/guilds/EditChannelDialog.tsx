@@ -56,7 +56,7 @@ export default function EditChannelDialog({
     fetchData();
   }, [getToken, guildId]);
 
-  const onDelete = async () => {
+  const handleDelete = async () => {
     await deleteChannel(id).then(() => {
       if (pathname === `/guilds/${guildId}/${id}`) {
         router.push(redirectLink);
@@ -98,7 +98,7 @@ export default function EditChannelDialog({
   };
 
   return (
-    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+    <Dialog open={dialogOpen} onOpenChange={setDialogOpen} modal={true}>
       <DialogTrigger>{children}</DialogTrigger>
       <DialogContent className="bg-zinc-800">
         <DialogHeader>
@@ -138,9 +138,10 @@ export default function EditChannelDialog({
           <Separator className="mt-4" />
           <GuildDialogFooter
             setDialogOpen={setDialogOpen}
-            onDelete={onDelete}
+            handleDelete={handleDelete}
             text="Save"
             hasDelete={true}
+            variant="Channel"
           />
         </form>
       </DialogContent>

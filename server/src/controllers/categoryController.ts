@@ -42,4 +42,48 @@ const createCategory = async (req: Request, res: Response) => {
   }
 };
 
-export { createCategory, getCategories };
+const updateCategory = async (req: Request, res: Response) => {
+  const { categoryId } = req.params;
+  const { name } = req.body as { name: string };
+
+  try {
+    const updatedCategory = await prisma.category.update({
+      where: { id: categoryId },
+      data: { name },
+    });
+
+    res.json(updatedCategory);
+  } catch (error) {
+    console.error("Error updating category:", error);
+    res.status(500).json({ error: "Failed to update category" });
+  }
+};
+
+const deleteCategory = async (req: Request, res: Response) => {
+  const { categoryId } = req.params;
+
+  try {
+    await prisma.category.update({
+      where: { id: categoryId },
+      data: {
+        channels: {
+          deleteMany: {},
+        },
+      },
+    });
+
+    const deletedCategory = await prisma.category.delete({
+      where: { id: categoryId },
+      include: {
+        channels: true,
+      },
+    });
+
+    res.json(deletedCategory);
+  } catch (error) {
+    console.error("Error deleting category:", error);
+    res.status(500).json({ error: "Failed to delete category" });
+  }
+};
+
+export { createCategory, getCategories, updateCategory, deleteCategory };

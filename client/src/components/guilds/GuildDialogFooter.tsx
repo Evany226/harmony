@@ -6,18 +6,20 @@ export default function GuildDialogFooter({
   text,
   setDialogOpen,
   hasDelete,
-  onDelete,
+  handleDelete,
+  variant,
 }: {
   setDialogOpen: (arg: boolean) => void;
   text: string;
   hasDelete?: boolean;
-  onDelete?: () => void;
+  handleDelete?: () => void;
+  variant: "Category" | "Channel";
 }) {
   return (
     <div className="w-full flex justify-between mt-4 space-x-2 ">
       <div className="flex items-center">
-        {hasDelete && onDelete && (
-          <AlertDialogWrapper onDelete={onDelete}>
+        {hasDelete && handleDelete && (
+          <AlertDialogWrapper handleDelete={handleDelete}>
             <span className="text-sm bg-red-700 hover:bg-red-900 hover:text-white px-3 py-1 mt-1 rounded-sm text-gray-300 font-medium">
               Delete Channel
               <TrashIcon className="w-4 inline-block ml-1" />
@@ -37,6 +39,7 @@ export default function GuildDialogFooter({
         <Button
           variant="outline"
           className="px-3 py-1 ml-2 rounded-sm bg-purple-700 border-0 text-gray-300 hover:bg-purple-800 hover:text-white"
+          type="submit"
         >
           {text}
         </Button>

@@ -1,7 +1,11 @@
 import { auth } from "@clerk/nextjs/server";
 
 import ProfileCard from "../dashboard/profile/ProfileCard";
-import PanelContextMenu from "./PanelContextMenu";
+import CreateCategoryDialog from "./CreateCategoryDialog";
+import CategoryWrapper from "@/components/guilds/CategoryWrapper";
+import { Category } from "@/types";
+import { Button } from "../ui/button";
+
 import { getGuild } from "@/lib/guilds";
 
 export default async function GuildLeftPanel({ guildId }: { guildId: string }) {
@@ -15,7 +19,22 @@ export default async function GuildLeftPanel({ guildId }: { guildId: string }) {
         <h1 className="text-gray-300 text-base font-semibold">{guild.name}</h1>
       </header>
 
-      <PanelContextMenu guild={guild} guildId={guildId} />
+      <div className="flex flex-col h-[calc(100%-7rem)] px-2 py-2 max-w-64 space-y-4 mt-2">
+        {guild.categories.map((category: Category) => (
+          <CategoryWrapper
+            key={category.id}
+            name={category.name}
+            channels={category.channels}
+            guildId={guildId}
+            categoryId={category.id}
+          />
+        ))}
+        <CreateCategoryDialog guildId={guildId}>
+          <Button variant="outline" className="w-full">
+            Create Category
+          </Button>
+        </CreateCategoryDialog>
+      </div>
 
       <ProfileCard />
     </div>

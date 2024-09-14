@@ -25,15 +25,14 @@ export default function ChannelLink({
   const [isHovering, setIsHovering] = useState<boolean>(false);
 
   return (
-    <Link
-      href={href}
+    <div
       className={`group py-1 rounded-sm flex items-center justify-between px-2 ${
         pathname == href ? "bg-zinc-700" : "hover:bg-neutral-800"
       }`}
       onMouseOver={() => setIsHovering(true)}
       onMouseOut={() => setIsHovering(false)}
     >
-      <div className="flex items-center">
+      <Link href={href} className="flex items-center w-full">
         <HashtagIcon className="w-4 text-gray-300 cursor-pointer" />
         <p
           className={`text-sm font-medium ml-2 ${
@@ -44,19 +43,21 @@ export default function ChannelLink({
         >
           {channel.name}
         </p>
-      </div>
+      </Link>
 
-      {isHovering || pathname == href ? (
-        <div className="flex items-center">
-          <EditChannelDialog
-            name={channel.name}
-            id={channel.id}
-            guildId={guildId}
-          >
-            <Cog8ToothIcon className="w-4 text-gray-400 cursor-pointer hover:text-white" />
-          </EditChannelDialog>
-        </div>
-      ) : null}
-    </Link>
+      <div className="flex items-center">
+        {isHovering || pathname == href ? (
+          <div className="flex items-center">
+            <EditChannelDialog
+              name={channel.name}
+              id={channel.id}
+              guildId={guildId}
+            >
+              <Cog8ToothIcon className="w-4 text-gray-400 cursor-pointer hover:text-white" />
+            </EditChannelDialog>
+          </div>
+        ) : null}
+      </div>
+    </div>
   );
 }

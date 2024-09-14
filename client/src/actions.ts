@@ -97,6 +97,64 @@ export async function createCategory(formdata: FormData) {
   }
 }
 
+export async function updateCategory(formdata: FormData, categoryId: string) {
+  const { getToken } = auth();
+  const token = await getToken();
+
+  try {
+    const response = await fetch(
+      `http://localhost:3001/api/categories/${categoryId}`,
+      {
+        method: "PUT",
+        body: JSON.stringify({
+          name: formdata.get("name"),
+        }),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Express error updating category.");
+    }
+
+    revalidatePath("/guilds");
+  } catch (error) {
+    console.error("Error updating category:", error);
+    throw error;
+  }
+}
+
+export async function deleteCategory(id: string) {
+  const { getToken } = auth();
+  const token = await getToken();
+
+  try {
+    const response = await fetch(`http://localhost:3001/api/categories/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Express error deleting category.");
+    }
+
+    revalidatePath("/guilds");
+  } catch (error) {
+    console.error("Error deleting category:", error);
+    throw error;
+  }
+}
+
 export async function createChannel(formdata: FormData) {
   const { getToken } = auth();
   const token = await getToken();

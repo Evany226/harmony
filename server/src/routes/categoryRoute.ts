@@ -5,11 +5,15 @@ import express from "express";
 import {
   createCategory,
   getCategories,
+  updateCategory,
+  deleteCategory,
 } from "../controllers/categoryController";
 
 const categoryRouter = express.Router();
 
 categoryRouter.get("/:guildId", getCategories);
 categoryRouter.post("/", createCategory);
+categoryRouter.put("/:categoryId", updateCategory);
+categoryRouter.delete("/:categoryId", deleteCategory);
 
 export default categoryRouter;

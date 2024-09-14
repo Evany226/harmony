@@ -6,6 +6,8 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 
+import CategoryContextMenu from "./CategoryContextMenu";
+
 import {
   PlusIcon,
   ChevronDownIcon,
@@ -43,9 +45,16 @@ export default function CategoryWrapper({
             ) : (
               <ChevronDownIcon className="w-3 text-gray-300 cursor-pointer font-bold" />
             )}
-            <p className="text-sm text-gray-300 font-medium hover:text-white">
-              {name}
-            </p>
+
+            <CategoryContextMenu
+              name={name}
+              categoryId={categoryId}
+              guildId={guildId}
+            >
+              <p className="text-sm text-gray-300 font-medium hover:text-white">
+                {name}
+              </p>
+            </CategoryContextMenu>
           </main>
         </CollapsibleTrigger>
 

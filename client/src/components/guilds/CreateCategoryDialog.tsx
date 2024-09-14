@@ -10,20 +10,23 @@ import {
 } from "@/components/ui/dialog";
 import GuildDialogFooter from "./GuildDialogFooter";
 
-import { Button } from "../ui/button";
+import { useState } from "react";
 import { useToast } from "../ui/use-toast";
 import { createCategory } from "@/actions";
+import React from "react";
 
 interface CreateCategoryDialogProps {
   guildId: string;
-  setDialogOpen(arg: boolean): void;
+  children: React.ReactNode;
 }
 
 export default function CreateCategoryDialog({
   guildId,
-  setDialogOpen,
+  children,
 }: CreateCategoryDialogProps) {
   const { toast } = useToast();
+
+  const [dialogOpen, setDialogOpen] = useState<boolean>(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -60,28 +63,31 @@ export default function CreateCategoryDialog({
   };
 
   return (
-    <DialogContent className="bg-zinc-800">
-      <DialogHeader>
-        <DialogTitle className="text-gray-300 ">Create Category</DialogTitle>
-        <DialogDescription>
-          A category is where you bundle your channels. You can customize it
-          however you want.
-        </DialogDescription>
-      </DialogHeader>
-      <form className=" w-full flex flex-col" onSubmit={handleSubmit}>
-        <div className="flex flex-col space-y-2">
-          <label className="text-gray-300 text-sm font-semibold">
-            CATEGORY NAME
-          </label>
-          <input
-            className="outline-0 rounded-md w-full text-sm bg-neutral-900 py-2 px-3 text-gray-300"
-            placeholder="New Category"
-            name="name"
-          ></input>
-        </div>
+    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogContent className="bg-zinc-800">
+        <DialogHeader>
+          <DialogTitle className="text-gray-300 ">Create Category</DialogTitle>
+          <DialogDescription>
+            A category is where you bundle your channels. You can customize it
+            however you want.
+          </DialogDescription>
+        </DialogHeader>
+        <form className=" w-full flex flex-col" onSubmit={handleSubmit}>
+          <div className="flex flex-col space-y-2">
+            <label className="text-gray-300 text-sm font-semibold">
+              CATEGORY NAME
+            </label>
+            <input
+              className="outline-0 rounded-md w-full text-sm bg-neutral-900 py-2 px-3 text-gray-300"
+              placeholder="New Category"
+              name="name"
+            ></input>
+          </div>
 
-        <GuildDialogFooter text="Create" setDialogOpen={setDialogOpen} />
-      </form>
-    </DialogContent>
+          <GuildDialogFooter text="Create" setDialogOpen={setDialogOpen} />
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 }

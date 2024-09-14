@@ -3,6 +3,7 @@ import { getChannel, getAllMembers } from "@/lib/guilds";
 import { HashtagIcon } from "@heroicons/react/24/solid";
 import ChatInput from "@/components/global/ChatInput";
 import UserPanel from "@/components/guilds/UserPanel";
+import { Separator } from "@/components/ui/separator";
 
 export default async function ChannelPage({
   params,
@@ -17,9 +18,17 @@ export default async function ChannelPage({
 
   return (
     <>
-      <header className="flex w-full h-12 bg-zinc-900 border-b border-zinc-800 px-2 py-3 space-x-1 items-center">
+      <header className="flex w-full h-12 bg-zinc-900 border-b border-zinc-800 px-2 py-3 items-center">
         <HashtagIcon className="w-5 text-gray-300 cursor-pointer ml-2" />
-        <h1 className="text-gray-300 font-semibold">{channel.name}</h1>
+        <h1 className="text-gray-300 font-semibold ml-1 text-sm">
+          {channel.name}
+        </h1>
+        {channel.topic && (
+          <>
+            <Separator className="mx-3" orientation="vertical" />
+            <p className="text-gray-400 font-medium text-xs">{channel.topic}</p>
+          </>
+        )}
       </header>
       <div className="flex w-full h-[calc(100%-3rem)] ">
         <main className="w-10/12 h-full border-r border-zinc-800 flex flex-col relative px-5">

@@ -12,10 +12,12 @@ import {
 
 export default function AlertDialogWrapper({
   children,
-  onDelete,
+  handleDelete,
+  variant,
 }: {
   children: React.ReactNode;
-  onDelete: () => void;
+  handleDelete: () => void;
+  variant: "Category" | "Channel";
 }) {
   return (
     <AlertDialog>
@@ -26,15 +28,24 @@ export default function AlertDialogWrapper({
             Are you absolutely sure?
           </AlertDialogTitle>
           <AlertDialogDescription className="text-gray-400">
-            This action cannot be undone. This will permanently delete your
-            channel and remove any corresponding messages.
+            {variant === "Channel" ? (
+              <p>
+                This action cannot be undone. This will permanently delete your
+                channel and remove any corresponding messages.
+              </p>
+            ) : (
+              <p>
+                This action cannot be undone. This will permanently delete your
+                category and ALL the channels associated with it.
+              </p>
+            )}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
             className="text-gray-300 bg-red-700 hover:bg-red-900"
-            onClick={onDelete}
+            onClick={handleDelete}
           >
             Delete
           </AlertDialogAction>
