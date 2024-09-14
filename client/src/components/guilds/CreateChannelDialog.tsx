@@ -32,6 +32,7 @@ export default function CreateChannelDialog({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log("test chanel submit");
     const formData = new FormData(e.target as HTMLFormElement);
     formData.set("categoryId", categoryId);
 

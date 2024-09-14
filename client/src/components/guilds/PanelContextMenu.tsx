@@ -33,17 +33,17 @@ export default function PanelContextMenu({ guild, guildId }: PanelContextMenu) {
               categoryId={category.id}
             />
           ))}
-          <ContextMenuContent className="bg-zinc-800 border-zinc-700 px-2 py-1">
-            <DialogTrigger asChild>
-              <ContextMenuItem className="text-gray-300 text-sm focus:bg-zinc-700 focus:text-white">
-                Create Category
-              </ContextMenuItem>
-            </DialogTrigger>
-            <ContextMenuItem className="text-gray-300 text-sm focus:bg-zinc-700 focus:text-white">
-              Create Channel
-            </ContextMenuItem>
-          </ContextMenuContent>
         </ContextMenuTrigger>
+        <ContextMenuContent className="bg-zinc-800 border-zinc-700 px-2 py-1">
+          <DialogTrigger>
+            <ContextMenuItem className="text-gray-300 text-sm focus:bg-zinc-700 focus:text-white">
+              Create Category
+            </ContextMenuItem>
+          </DialogTrigger>
+          <ContextMenuItem className="text-gray-300 text-sm focus:bg-zinc-700 focus:text-white">
+            Create Channel
+          </ContextMenuItem>
+        </ContextMenuContent>
       </ContextMenu>
 
       <CreateCategoryDialog guildId={guildId} setDialogOpen={setDialogOpen} />

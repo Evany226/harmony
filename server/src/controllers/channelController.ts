@@ -36,6 +36,28 @@ const createChannel = async (req: Request, res: Response) => {
   }
 };
 
+const updateChannel = async (req: Request, res: Response) => {
+  const { channelId } = req.params;
+  const { name, topic } = req.body as { name: string; topic?: string };
+
+  try {
+    const updatedChannel = await prisma.textChannel.update({
+      where: {
+        id: channelId,
+      },
+      data: {
+        name: name,
+        topic: topic,
+      },
+    });
+
+    res.json(updatedChannel);
+  } catch (error) {
+    console.error("Error updating channel:", error);
+    res.status(500).json({ error: "Failed to update channel" + error });
+  }
+};
+
 const deleteChannel = async (req: Request, res: Response) => {
   const { channelId } = req.params;
 
@@ -73,4 +95,10 @@ const getFirstChannel = async (req: Request, res: Response) => {
   }
 };
 
-export { getChannel, createChannel, deleteChannel, getFirstChannel };
+export {
+  getChannel,
+  createChannel,
+  deleteChannel,
+  getFirstChannel,
+  updateChannel,
+};
