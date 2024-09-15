@@ -7,11 +7,8 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useToast } from "../ui/use-toast";
-import { useAuth } from "@clerk/nextjs";
-import { useRouter } from "next/navigation";
-import { getFirstChannel } from "@/lib/guilds";
 import EditCategoryDialog from "./EditCategoryDialog";
 
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
@@ -22,30 +19,14 @@ export default function CategoryContextMenu({
   children,
   name,
   categoryId,
-  guildId,
 }: {
   children: React.ReactNode;
   name: string;
   categoryId: string;
-  guildId: string;
 }) {
   const { toast } = useToast();
-  const router = useRouter();
-  const { getToken } = useAuth();
 
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
-  const [redirectLink, setRedirectLink] = useState<string>("");
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const token = await getToken();
-      const firstChannel = await getFirstChannel(token as string, guildId);
-      console.log(firstChannel);
-      setRedirectLink(firstChannel);
-    };
-
-    fetchData();
-  }, [getToken, guildId]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -91,13 +72,7 @@ export default function CategoryContextMenu({
 
   const handleDelete = async () => {
     try {
-      await deleteCategory(categoryId).then(() => {
-        if (redirectLink === `/guilds/${guildId}/undefined`) {
-          router.push(`/guilds/${guildId}`);
-        } else if (redirectLink) {
-          router.push(redirectLink);
-        }
-      });
+      await deleteCategory(categoryId);
       toast({
         variant: "default",
         title: "Category deleted",
@@ -122,14 +97,14 @@ export default function CategoryContextMenu({
           <DialogTrigger asChild onClick={(e) => e.stopPropagation()}>
             <ContextMenuItem
               onClick={(e) => e.stopPropagation()}
-              className="text-gray-300 text-sm focus:bg-zinc-700 focus:text-white"
+              className="text-gray-300 text-sm focus:bg-zinc-700 focus:text-white cursor-pointer"
             >
               Edit Category
             </ContextMenuItem>
           </DialogTrigger>
           <ContextMenuItem
             onClick={(e) => e.stopPropagation()}
-            className="text-red-500 text-sm focus:bg-zinc-700 focus:text-white focus:bg-red-500"
+            className="text-red-500 text-sm focus:bg-zinc-700 focus:text-white focus:bg-red-500 cursor-pointer"
           >
             Delete Category
           </ContextMenuItem>

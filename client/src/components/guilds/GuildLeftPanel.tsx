@@ -5,8 +5,10 @@ import CreateCategoryDialog from "./CreateCategoryDialog";
 import CategoryWrapper from "@/components/guilds/CategoryWrapper";
 import { Category } from "@/types";
 import { Button } from "../ui/button";
+import { ChevronDownIcon } from "@heroicons/react/24/outline";
 
 import { getGuild } from "@/lib/guilds";
+import GuildDropdown from "./GuildDropdown";
 
 export default async function GuildLeftPanel({ guildId }: { guildId: string }) {
   const { getToken } = auth();
@@ -15,9 +17,14 @@ export default async function GuildLeftPanel({ guildId }: { guildId: string }) {
 
   return (
     <div className="flex flex-col min-w-64 h-full bg-neutral-900 border-x border-zinc-800 relative">
-      <header className="flex items-center w-full h-12 bg-neutral-900 border-b border-zinc-800 px-4">
-        <h1 className="text-gray-300 text-base font-semibold">{guild.name}</h1>
-      </header>
+      <GuildDropdown guildId={guildId}>
+        <header className="w-full flex items-center justify-between h-12 bg-neutral-900 border-b border-zinc-800 px-4 cursor-pointer hover:bg-neutral-800">
+          <h1 className="text-gray-300 text-base font-semibold">
+            {guild.name}
+          </h1>
+          <ChevronDownIcon className="w-4 h-4 text-gray-400" />
+        </header>
+      </GuildDropdown>
 
       <div className="flex flex-col h-[calc(100%-7rem)] px-2 py-2 max-w-64 space-y-4 mt-2">
         {guild.categories.map((category: Category) => (

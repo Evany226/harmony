@@ -21,3 +21,8 @@
 ::-webkit-scrollbar-thumb:hover {
   @apply bg-black;
 } */
+
+/* Set heroicon's stroke width */
+svg path {
+  stroke-width: 4;
+}

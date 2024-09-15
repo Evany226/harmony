@@ -4,6 +4,8 @@ import { HashtagIcon } from "@heroicons/react/24/solid";
 import ChatInput from "@/components/global/ChatInput";
 import UserPanel from "@/components/guilds/UserPanel";
 import { Separator } from "@/components/ui/separator";
+import { redirect } from "next/navigation";
+import { getFirstChannel } from "@/lib/guilds";
 
 export default async function ChannelPage({
   params,
@@ -15,6 +17,16 @@ export default async function ChannelPage({
   const channel = await getChannel(token as string, params.channelId);
 
   const members = await getAllMembers(token as string, params.id);
+
+  const firstChannel = await getFirstChannel(token as string, params.id);
+
+  if (!channel) {
+    if (firstChannel) {
+      redirect(firstChannel);
+    } else {
+      redirect(`/guilds/${params.id}`);
+    }
+  }
 
   return (
     <>

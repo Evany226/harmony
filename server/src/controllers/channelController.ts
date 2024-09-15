@@ -88,7 +88,11 @@ const getFirstChannel = async (req: Request, res: Response) => {
       },
     });
 
-    res.json(`/guilds/${guildId}/${firstCategory?.channels[0]?.id}`);
+    if (firstCategory?.channels[0]?.id) {
+      res.json(`/guilds/${guildId}/${firstCategory?.channels[0]?.id}`);
+    } else {
+      res.json(null);
+    }
   } catch (error) {
     console.error("Error fetching first channel:", error);
     res.status(500).json({ error: "Failed to fetch first channel" + error });

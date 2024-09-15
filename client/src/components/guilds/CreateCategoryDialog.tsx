@@ -85,7 +85,11 @@ export default function CreateCategoryDialog({
             ></input>
           </div>
 
-          <GuildDialogFooter text="Create" setDialogOpen={setDialogOpen} />
+          <GuildDialogFooter
+            text="Create"
+            setDialogOpen={setDialogOpen}
+            variant="Category"
+          />
         </form>
       </DialogContent>
     </Dialog>

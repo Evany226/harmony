@@ -38,25 +38,20 @@ export default function CategoryWrapper({
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
       <div className="flex justify-between items-center">
-        <CollapsibleTrigger>
-          <main className="flex items-center space-x-1">
-            {isOpen ? (
-              <ChevronRightIcon className="w-3 text-gray-300 cursor-pointer font-bold" />
-            ) : (
-              <ChevronDownIcon className="w-3 text-gray-300 cursor-pointer font-bold" />
-            )}
-
-            <CategoryContextMenu
-              name={name}
-              categoryId={categoryId}
-              guildId={guildId}
-            >
+        <CategoryContextMenu name={name} categoryId={categoryId}>
+          <CollapsibleTrigger onClick={(e) => e.stopPropagation()} asChild>
+            <main className="flex items-center space-x-1 cursor-pointer">
+              {isOpen ? (
+                <ChevronRightIcon className="w-3 text-gray-300 cursor-pointer font-bold" />
+              ) : (
+                <ChevronDownIcon className="w-3 text-gray-300 cursor-pointer font-bold" />
+              )}
               <p className="text-sm text-gray-300 font-medium hover:text-white">
                 {name}
               </p>
-            </CategoryContextMenu>
-          </main>
-        </CollapsibleTrigger>
+            </main>
+          </CollapsibleTrigger>
+        </CategoryContextMenu>
 
         <aside className="">
           <CreateChannelDialog categoryId={categoryId}>

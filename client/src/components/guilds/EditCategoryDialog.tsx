@@ -21,7 +21,11 @@ export default function EditCategoryDialog({
   handleDelete: () => void;
 }) {
   return (
-    <DialogContent onClick={(e) => e.stopPropagation()} className="bg-zinc-800">
+    <DialogContent
+      onClick={(e) => e.stopPropagation()}
+      className="bg-zinc-800"
+      onPointerDownOutside={(e) => e.stopPropagation()}
+    >
       <DialogHeader>
         <DialogTitle className="text-gray-300">Category Overview</DialogTitle>
         <DialogDescription>

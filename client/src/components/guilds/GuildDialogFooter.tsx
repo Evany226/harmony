@@ -19,9 +19,9 @@ export default function GuildDialogFooter({
     <div className="w-full flex justify-between mt-4 space-x-2 ">
       <div className="flex items-center">
         {hasDelete && handleDelete && (
-          <AlertDialogWrapper handleDelete={handleDelete}>
+          <AlertDialogWrapper handleDelete={handleDelete} variant={variant}>
             <span className="text-sm bg-red-700 hover:bg-red-900 hover:text-white px-3 py-1 mt-1 rounded-sm text-gray-300 font-medium">
-              Delete Channel
+              {`Delete ${variant}`}
               <TrashIcon className="w-4 inline-block ml-1" />
             </span>
           </AlertDialogWrapper>

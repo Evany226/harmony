@@ -14,54 +14,46 @@ import { TrashIcon } from "@heroicons/react/24/solid";
 import { useAuth } from "@clerk/nextjs";
 import { Separator } from "../ui/separator";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { usePathname } from "next/navigation";
+import { useState } from "react";
+
 import { useToast } from "../ui/use-toast";
 
 import GuildDialogFooter from "./GuildDialogFooter";
 
-import { getFirstChannel } from "@/lib/guilds";
 import { updateChannel } from "@/actions";
 
 interface EditChannelDialogProps {
   id: string;
-  guildId: string;
   name: string;
   children: React.ReactNode;
 }
 
 export default function EditChannelDialog({
   id,
-  guildId,
   name,
   children,
 }: EditChannelDialogProps) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const { getToken } = useAuth();
   const { toast } = useToast();
 
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [redirectLink, setRedirectLink] = useState<string>("");
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const token = await getToken();
-      const firstChannel = await getFirstChannel(token as string, guildId);
-      console.log(firstChannel);
-      setRedirectLink(firstChannel);
-    };
-
-    fetchData();
-  }, [getToken, guildId]);
 
   const handleDelete = async () => {
-    await deleteChannel(id).then(() => {
-      if (pathname === `/guilds/${guildId}/${id}`) {
-        router.push(redirectLink);
-      }
-    });
+    try {
+      await deleteChannel(id);
+      toast({
+        variant: "default",
+        title: "Channel deleted",
+        description: "You have successfully deleted the channel.",
+      });
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Failed to delete channel",
+        description:
+          error.message ||
+          "An error occurred while deleting the channel. Please try again later.",
+      });
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
