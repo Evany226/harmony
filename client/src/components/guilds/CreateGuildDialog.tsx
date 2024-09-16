@@ -94,7 +94,11 @@ export default function CreateGuildDialog({
             ></input>
           </aside>
 
-          <GuildDialogFooter setDialogOpen={setDialogOpen} text="Create" />
+          <GuildDialogFooter
+            setDialogOpen={setDialogOpen}
+            text="Create"
+            variant="Guild"
+          />
         </form>
       </DialogContent>
     </Dialog>

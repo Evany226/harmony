@@ -17,7 +17,7 @@ export default async function GuildLeftPanel({ guildId }: { guildId: string }) {
 
   return (
     <div className="flex flex-col min-w-64 h-full bg-neutral-900 border-x border-zinc-800 relative">
-      <GuildDropdown guildId={guildId}>
+      <GuildDropdown guild={guild}>
         <header className="w-full flex items-center justify-between h-12 bg-neutral-900 border-b border-zinc-800 px-4 cursor-pointer hover:bg-neutral-800">
           <h1 className="text-gray-300 text-base font-semibold">
             {guild.name}

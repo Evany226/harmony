@@ -19,7 +19,7 @@ export default async function SideNav() {
       <section className="flex flex-col items-center w-full justify-center mt-2 -b">
         <h1 className="text-gray-300 text-sm font-semibold">Harmony</h1>
         <SideNavTooltip text="Direct Messages">
-          <Link href="/dashboard">
+          <Link href="/friends">
             <Image
               src="/logo-past.png"
               className="border-b border-zinc-600"

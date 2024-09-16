@@ -9,11 +9,11 @@ export default function GuildDialogFooter({
   handleDelete,
   variant,
 }: {
-  setDialogOpen: (arg: boolean) => void;
+  setDialogOpen?: (arg: boolean) => void;
   text: string;
   hasDelete?: boolean;
   handleDelete?: () => void;
-  variant: "Category" | "Channel";
+  variant: "Category" | "Channel" | "Guild";
 }) {
   return (
     <div className="w-full flex justify-between mt-4 space-x-2 ">
@@ -28,14 +28,16 @@ export default function GuildDialogFooter({
         )}
       </div>
       <div className="flex items-center">
-        <Button
-          variant="ghost"
-          className="text-gray-300 focus:bg-zinc-800 hover:text-white hover:underline hover:bg-zinc-800"
-          type="button"
-          onClick={() => setDialogOpen(false)}
-        >
-          Cancel
-        </Button>
+        {setDialogOpen && (
+          <Button
+            variant="ghost"
+            className="text-gray-300 focus:bg-zinc-800 hover:text-white hover:underline hover:bg-zinc-800"
+            type="button"
+            onClick={() => setDialogOpen(false)}
+          >
+            Cancel
+          </Button>
+        )}
         <Button
           variant="outline"
           className="px-3 py-1 ml-2 rounded-sm bg-purple-700 border-0 text-gray-300 hover:bg-purple-800 hover:text-white"

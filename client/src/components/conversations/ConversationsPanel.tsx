@@ -1,4 +1,5 @@
 import FriendsNavButton from "../dashboard/friends/FriendsNavButton";
+import GuildNavButton from "../dashboard/guild-requests/GuildNavButton";
 import ConvLinkWrapper from "./ConvLink";
 import ProfileCard from "../dashboard/profile/ProfileCard";
 import { getAllConversations } from "@/lib/conversations";
@@ -21,6 +22,7 @@ export default async function ConversationsPanel() {
 
       <div className="flex flex-col p-3">
         <FriendsNavButton />
+        <GuildNavButton />
         <ConvLinkWrapper conversations={data} />
       </div>
 

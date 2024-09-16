@@ -6,10 +6,12 @@ import {
   getGuild,
 } from "../controllers/guildController";
 
+import { ClerkExpressRequireAuth } from "@clerk/clerk-sdk-node";
+
 const guildRouter = express.Router();
 
-guildRouter.get("/", getAllGuilds);
-guildRouter.get("/:id", getGuild);
-guildRouter.post("/", createGuild);
+guildRouter.get("/", ClerkExpressRequireAuth({}), getAllGuilds);
+guildRouter.get("/:id", ClerkExpressRequireAuth({}), getGuild);
+guildRouter.post("/", ClerkExpressRequireAuth({}), createGuild);
 
 export default guildRouter;

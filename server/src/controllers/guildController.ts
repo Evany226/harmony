@@ -6,8 +6,8 @@ import { Request, Response } from "express";
 
 //grabs all the guild the user is in
 const getAllGuilds = async (req: Request, res: Response) => {
-  //   const userId = req.auth.userId;
-  const userId = "user_2kvgB9d6HPZNSZGsGDf02nYSx12";
+  const userId = req.auth.userId;
+  // const userId = "user_2kvgB9d6HPZNSZGsGDf02nYSx12";
 
   try {
     const allGuilds = await prisma.guild.findMany({
@@ -106,5 +106,8 @@ const createGuild = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Failed to create guild" });
   }
 };
+
+// export const inviteToGuild = async (req: Request, res: Response) => {
+// }
 
 export { getAllGuilds, createGuild, getGuild };

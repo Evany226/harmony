@@ -19,18 +19,16 @@ import {
 
 import GuildSettingsDialog from "./GuildSettingsDialog";
 import InviteDialog from "./InviteDialog";
+import { Guild } from "@/types";
 
 import { useState } from "react";
 
 interface GuildSettingsProps {
   children: React.ReactNode;
-  guildId: string;
+  guild: Guild;
 }
 
-export default function GuildDropdown({
-  children,
-  guildId,
-}: GuildSettingsProps) {
+export default function GuildDropdown({ children, guild }: GuildSettingsProps) {
   const [settingsDialogOpen, setSettingsDialogOpen] = useState<boolean>(false);
   const [inviteDialogOpen, setInviteDialogOpen] = useState<boolean>(false);
 
@@ -71,7 +69,7 @@ export default function GuildDropdown({
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {settingsDialogOpen && <GuildSettingsDialog />}
+      {settingsDialogOpen && <GuildSettingsDialog guild={guild} />}
 
       {inviteDialogOpen && <InviteDialog />}
     </Dialog>

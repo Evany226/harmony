@@ -17,7 +17,7 @@ export default function AlertDialogWrapper({
 }: {
   children: React.ReactNode;
   handleDelete: () => void;
-  variant: "Category" | "Channel";
+  variant: "Category" | "Channel" | "Guild";
 }) {
   return (
     <AlertDialog>

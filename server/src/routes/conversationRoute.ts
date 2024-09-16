@@ -16,7 +16,7 @@ conversationRouter.post("/", ClerkExpressRequireAuth({}), createConversation);
 
 conversationRouter.get(
   "/:id/messages",
-
+  ClerkExpressRequireAuth({}),
   getAllMessages
 );
 conversationRouter.post(

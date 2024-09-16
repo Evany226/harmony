@@ -2,41 +2,33 @@
 
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
-import { UserIcon } from "@heroicons/react/16/solid";
+import { UsersIcon } from "@heroicons/react/16/solid";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
-export default function NavLinks() {
+export default function GuildNavLinks() {
   const pathname = usePathname();
   const router = useRouter();
 
   const links = [
     {
-      name: "Online",
-      href: "/dashboard",
+      name: "Sent",
+      href: "/guild-requests/sent",
     },
     {
-      name: "All",
-      href: "/dashboard/all",
-    },
-    {
-      name: "Pending",
-      href: "/dashboard/pending",
-    },
-    {
-      name: "Blocking",
-      href: "/dashboard/blocked",
+      name: "Received",
+      href: "/guild-requests/received",
     },
   ];
 
   return (
     <>
       <div className="flex items-center space-x-2">
-        <UserIcon className="text-gray-300 w-5" />
-        <h1 className="text-gray-300 text-sm font-medium">Friends</h1>
+        <UsersIcon className="text-gray-300 w-5" />
+        <h1 className="text-gray-300 text-sm font-medium">Guild Requests</h1>
       </div>
       <Separator orientation="vertical" />
-      <div className="flex items-center space-x-5">
+      <div className="flex items-center space-x-4">
         {links.map((link) => {
           return (
             <Link
@@ -50,17 +42,6 @@ export default function NavLinks() {
             </Link>
           );
         })}
-
-        <Button
-          onClick={() => {
-            router.push("/dashboard/add-friends");
-          }}
-          variant="outline"
-          size="default"
-          className="bg-purple-700 text-gray-300 border-0 hover:bg-purple-800 hover:text-gray-200"
-        >
-          Add Friend
-        </Button>
       </div>
     </>
   );

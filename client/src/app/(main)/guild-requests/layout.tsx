@@ -1,4 +1,4 @@
-import NavLinks from "@/components/dashboard/friends/NavLinks";
+import GuildNavLinks from "@/components/dashboard/guild-requests/GuildNavLinks";
 import ConversationsPanel from "@/components/conversations/ConversationsPanel";
 import { Suspense } from "react";
 import PanelSkeleton from "@/components/skeletons/PanelSkeleton";
@@ -16,7 +16,7 @@ export default function DashboardLayout({
 
       <div className="flex flex-col w-[100%] h-full bg-zinc-900 ">
         <header className="flex w-full h-12 bg-zinc-900 border-b border-zinc-800 px-2 py-3 space-x-3 items-center">
-          <NavLinks />
+          <GuildNavLinks />
         </header>
         {children}
       </div>
