@@ -6,21 +6,21 @@ import {
   createFriendRequest,
   acceptFriendRequest,
   rejectFriendRequest,
-} from "../controllers/requestController";
+} from "../controllers/friendReqController";
 
-const requestRouter = express.Router();
+const friendReqRouter = express.Router();
 
-requestRouter.get("/", ClerkExpressRequireAuth({}), getPendingFriends);
-requestRouter.post("/", ClerkExpressRequireAuth({}), createFriendRequest);
-requestRouter.put(
+friendReqRouter.get("/", ClerkExpressRequireAuth({}), getPendingFriends);
+friendReqRouter.post("/", ClerkExpressRequireAuth({}), createFriendRequest);
+friendReqRouter.put(
   "/:id/accept",
   ClerkExpressRequireAuth({}),
   acceptFriendRequest
 );
-requestRouter.delete(
+friendReqRouter.delete(
   "/:id/reject",
   ClerkExpressRequireAuth({}),
   rejectFriendRequest
 );
 
-export default requestRouter;
+export default friendReqRouter;

@@ -18,6 +18,7 @@ model User {
   conversations Conversation[] @relation("UserConversations")
   guilds        Guild[]        @relation("GuildOwners")
   members       Member[]       @relation("UserMember")
+  guildRequests GuildRequests[] @relation("GuildInvites")
 }
 
 model Friend {
@@ -59,6 +60,8 @@ model Guild {
   members    Member[]     @relation("GuildMembers")
   categories Category[] @relation("GuildCategories")
 
+  guildRequests GuildRequests[] @relation("GuildRequests")
+
   createdAt DateTime @default(now())
 }
 
@@ -80,6 +83,17 @@ model Member {
   guild   Guild  @relation("GuildMembers", fields: [guildId], references: [id])
 
   sentMessages ChannelMessages[] @relation("SentChannelMessages")
+}
+
+model GuildRequests {
+  id      String @id @default(uuid())
+  status   String
+
+  toUserId String
+  toUser   User @relation("GuildInvites", fields: [toUserId], references: [id])
+
+  fromGuildId String
+  fromGuild  Guild @relation("GuildRequests", fields: [fromGuildId], references: [id])
 }
 
 model Category {

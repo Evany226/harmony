@@ -69,7 +69,12 @@ export default function GuildDropdown({ children, guild }: GuildSettingsProps) {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {settingsDialogOpen && <GuildSettingsDialog guild={guild} />}
+      {settingsDialogOpen && (
+        <GuildSettingsDialog
+          setDialogOpen={setSettingsDialogOpen}
+          guild={guild}
+        />
+      )}
 
       {inviteDialogOpen && <InviteDialog />}
     </Dialog>

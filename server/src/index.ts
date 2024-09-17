@@ -3,12 +3,13 @@
 
 import cors from "cors";
 import friendsRouter from "./routes/friendRoutes";
-import requestRouter from "./routes/requestRoute";
+import friendReqRouter from "./routes/friendReqRoute";
 import conversationRouter from "./routes/conversationRoute";
 import guildRouter from "./routes/guildRoute";
 import categoryRouter from "./routes/categoryRoute";
 import channelRouter from "./routes/channelRoute.ts";
 import memberRouter from "./routes/memberRoute";
+import guildReqRouter from "./routes/guildReqRoute";
 import { Server } from "socket.io";
 import { Message } from "./types";
 import { clerkClient } from "@clerk/clerk-sdk-node";
@@ -46,12 +47,13 @@ app.get(
 );
 
 app.use("/api/friends", friendsRouter);
-app.use("/api/requests", requestRouter);
+app.use("/api/requests", friendReqRouter);
 app.use("/api/conversations", conversationRouter);
 app.use("/api/guilds", guildRouter);
 app.use("/api/categories", categoryRouter);
 app.use("/api/channels", channelRouter);
 app.use("/api/members", memberRouter);
+app.use("/api/guild-requests", guildReqRouter);
 
 const PORT = 3001;
 

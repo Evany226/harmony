@@ -82,3 +82,11 @@ export interface ChannelMessages {
   channel: TextChannel;
   createdAt: string;
 }
+
+export interface GuildRequest {
+  id: string;
+  status: "pending" | "confirmed";
+  toUserId: string;
+  fromGuildId: string;
+  fromGuild: Guild;
+}

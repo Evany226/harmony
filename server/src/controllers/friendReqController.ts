@@ -4,14 +4,6 @@ import prisma from "../lib/prisma";
 import { Friend } from "../types";
 import { Request, Response } from "express";
 
-import { StrictAuthProp } from "@clerk/clerk-sdk-node";
-
-declare global {
-  namespace Express {
-    interface Request extends StrictAuthProp {}
-  }
-}
-
 //gets all pending friend requests
 const getPendingFriends = async (req: Request, res: Response) => {
   try {

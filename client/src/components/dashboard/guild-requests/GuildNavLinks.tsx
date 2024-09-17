@@ -12,12 +12,8 @@ export default function GuildNavLinks() {
 
   const links = [
     {
-      name: "Sent",
-      href: "/guild-requests/sent",
-    },
-    {
-      name: "Received",
-      href: "/guild-requests/received",
+      name: "Pending",
+      href: "/guild-requests/pending",
     },
   ];
 
