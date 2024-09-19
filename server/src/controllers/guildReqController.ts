@@ -1,6 +1,15 @@
+/* eslint-disable @typescript-eslint/no-namespace */
 import prisma from "../lib/prisma";
 import { Request, Response } from "express";
 import { clerkClient } from "@clerk/clerk-sdk-node";
+
+import { StrictAuthProp } from "@clerk/clerk-sdk-node";
+
+declare global {
+  namespace Express {
+    interface Request extends StrictAuthProp {}
+  }
+}
 
 const getPendingGuildReq = async (require: Request, res: Response) => {
   const userId = require.auth.userId;
@@ -83,4 +92,46 @@ const createGuildRequest = async (req: Request, res: Response) => {
   }
 };
 
-export { createGuildRequest, getPendingGuildReq };
+const acceptGuildRequest = async (req: Request, res: Response) => {
+  const { guildRequestId } = req.params;
+
+  try {
+    const request = await prisma.guildRequests.update({
+      where: {
+        id: guildRequestId,
+      },
+      data: {
+        status: "confirmed",
+      },
+    });
+
+    res.status(200).json(request);
+  } catch (error) {
+    console.error("Error accepting guild request:", error);
+    res.status(500).json({ error: "Error accepting guild request:" + error });
+  }
+};
+
+const rejectGuildRequest = async (req: Request, res: Response) => {
+  const { guildRequestId } = req.params;
+
+  try {
+    const request = await prisma.guildRequests.delete({
+      where: {
+        id: guildRequestId,
+        status: "pending",
+      },
+    });
+    res.json(request);
+  } catch (error) {
+    console.error("Error rejecting guild request:", error);
+    res.status(500).json({ error: "Error rejecting guild request:" + error });
+  }
+};
+
+export {
+  createGuildRequest,
+  getPendingGuildReq,
+  acceptGuildRequest,
+  rejectGuildRequest,
+};

@@ -7,11 +7,63 @@ import { TooltipWrapper } from "@/components/global/TooltipWrapper";
 import { GuildRequest, Guild } from "@/types";
 
 import { CheckIcon, XMarkIcon } from "@heroicons/react/16/solid";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast";
 
-function GuildRequestCard({ guild }: { guild: Guild }) {
-  if (!guild) {
-    return <p>Not loaded?</p>;
-  }
+import { acceptGuildRequest, rejectGuildRequest } from "@/lib/guilds";
+
+interface GuildRequestCardProps {
+  guild: Guild;
+  requestId: string;
+}
+
+function GuildRequestCard({ guild, requestId }: GuildRequestCardProps) {
+  const router = useRouter();
+  const { toast } = useToast();
+
+  const handleAccept = async (id: string) => {
+    try {
+      const result = await acceptGuildRequest(id);
+      router.refresh();
+      toast({
+        variant: "default",
+        title: "Accepted guild request!",
+        description:
+          "You have successfully accepted the guild request. You can view your guild on the left sidebar.",
+      });
+    } catch (error: any) {
+      console.log(error);
+      toast({
+        variant: "destructive",
+        title: "Failed to accept guild request",
+        description:
+          error.message ||
+          "An error occurred while accepting the guild request. Please try again later.",
+      });
+    }
+  };
+
+  const handleReject = async (id: string) => {
+    try {
+      const result = await rejectGuildRequest(id);
+      router.refresh();
+      toast({
+        variant: "default",
+        title: "Rejected guild request!",
+        description: "You have rejected the guild request.",
+      });
+      router.refresh();
+    } catch (error: any) {
+      console.log(error);
+      toast({
+        variant: "destructive",
+        title: "Failed to reject guild request",
+        description:
+          error.message ||
+          "An error occurred while rejecting the guild request. Please try again later.",
+      });
+    }
+  };
 
   return (
     <div className="flex flex-col w-full bg-zinc-900 rounded-sm hover:bg-zinc-800 group cursor-pointer">
@@ -32,12 +84,18 @@ function GuildRequestCard({ guild }: { guild: Guild }) {
 
         <aside className="flex items-center mr-2">
           <TooltipWrapper text="Accept">
-            <button className="bg-zinc-800 mr-2 rounded-2xl p-1.5 cursor-pointer group-hover:bg-neutral-900">
+            <button
+              onClick={() => handleAccept(requestId)}
+              className="bg-zinc-800 mr-2 rounded-2xl p-1.5 cursor-pointer group-hover:bg-neutral-900"
+            >
               <CheckIcon className="w-6 text-gray-400" />
             </button>
           </TooltipWrapper>
           <TooltipWrapper text="Reject">
-            <button className="bg-zinc-800 rounded-2xl p-1.5 cursor-pointer group-hover:bg-neutral-900">
+            <button
+              onClick={() => handleReject(requestId)}
+              className="bg-zinc-800 rounded-2xl p-1.5 cursor-pointer group-hover:bg-neutral-900"
+            >
               <XMarkIcon className="w-6 text-gray-400" />
             </button>
           </TooltipWrapper>
@@ -65,7 +123,11 @@ export default function GuildRequestWrapper({
       <div className="flex-col">
         {pendingRequests.map((request: GuildRequest) => {
           return (
-            <GuildRequestCard key={request.id} guild={request.fromGuild} />
+            <GuildRequestCard
+              key={request.id}
+              requestId={request.id}
+              guild={request.fromGuild}
+            />
           );
         })}
       </div>
