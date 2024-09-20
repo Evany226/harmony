@@ -76,7 +76,7 @@ export default function GuildDropdown({ children, guild }: GuildSettingsProps) {
         />
       )}
 
-      {inviteDialogOpen && <InviteDialog />}
+      {inviteDialogOpen && <InviteDialog guildId={guild.id} />}
     </Dialog>
   );
 }

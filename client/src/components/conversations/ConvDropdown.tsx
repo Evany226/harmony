@@ -30,7 +30,6 @@ export default function ConvDropdown({
     const fetchFriends = async () => {
       const token = await getToken();
       const response = await getAllFriends(token as string);
-      console.log("set");
       setFriends(response);
     };
 
@@ -82,7 +81,7 @@ export default function ConvDropdown({
         </p>
         <div className="w-full my-2">
           <input
-            className="w-full outline-0 bg-zinc-900 text-gray-200 py-1 px-2 rounded-sm text-sm placeholder-gray-400"
+            className="w-full outline-0 bg-zinc-900 text-gray-200 py-1.5 px-2 rounded-sm text-sm placeholder-gray-400"
             placeholder="Type the username of a friend."
           ></input>
         </div>

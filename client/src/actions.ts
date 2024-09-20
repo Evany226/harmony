@@ -243,3 +243,33 @@ export async function deleteChannel(id: string) {
     throw error;
   }
 }
+
+export async function createGuildRequest(username: string, guildId: string) {
+  const { getToken } = auth();
+  const token = await getToken();
+
+  try {
+    const response = await fetch("http://localhost:3001/api/guild-requests", {
+      method: "POST",
+      body: JSON.stringify({
+        username: username,
+        guildId: guildId,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Express error creating guild request.");
+    }
+
+    revalidatePath("/guilds");
+  } catch (error) {
+    console.error("Error creating guild request:", error);
+    throw error;
+  }
+}

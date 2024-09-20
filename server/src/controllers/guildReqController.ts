@@ -105,7 +105,14 @@ const acceptGuildRequest = async (req: Request, res: Response) => {
       },
     });
 
-    res.status(200).json(request);
+    const newMember = await prisma.member.create({
+      data: {
+        userId: request.toUserId,
+        guildId: request.fromGuildId,
+      },
+    });
+
+    res.json(newMember);
   } catch (error) {
     console.error("Error accepting guild request:", error);
     res.status(500).json({ error: "Error accepting guild request:" + error });
