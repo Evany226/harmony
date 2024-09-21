@@ -1,5 +1,33 @@
+/* eslint-disable @typescript-eslint/no-namespace */
 import { Request, Response } from "express";
 import prisma from "../lib/prisma";
+
+import { StrictAuthProp } from "@clerk/clerk-sdk-node";
+
+declare global {
+  namespace Express {
+    interface Request extends StrictAuthProp {}
+  }
+}
+
+const getMember = async (req: Request, res: Response) => {
+  const userId = req.auth.userId;
+  const { guildId } = req.params as { guildId: string };
+  // const userId = "user_2kvgB9d6HPZNSZGsGDf02nYSx12";
+
+  try {
+    const member = await prisma.member.findFirst({
+      where: {
+        userId: userId,
+        guildId: guildId,
+      },
+    });
+
+    res.json(member);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to get member" });
+  }
+};
 
 const getAllMembers = async (req: Request, res: Response) => {
   const { guildId } = req.params as { guildId: string };
@@ -20,4 +48,4 @@ const getAllMembers = async (req: Request, res: Response) => {
   }
 };
 
-export { getAllMembers };
+export { getAllMembers, getMember };

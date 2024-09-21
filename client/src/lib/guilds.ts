@@ -73,6 +73,27 @@ export const getFirstChannel = async (token: string, guildId: string) => {
   return data;
 };
 
+export const getMember = async (token: string, guildId: string) => {
+  const response = await fetch(
+    `http://localhost:3001/api/members/${guildId}/single`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.error);
+  }
+
+  return data;
+};
+
 export const getAllMembers = async (token: string, guildId: string) => {
   const response = await fetch(`http://localhost:3001/api/members/${guildId}`, {
     headers: {

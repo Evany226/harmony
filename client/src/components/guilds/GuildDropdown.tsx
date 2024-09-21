@@ -17,26 +17,37 @@ import {
   Cog8ToothIcon,
 } from "@heroicons/react/24/solid";
 
+import LeaveAlertDialog from "./LeaveAlertDialog";
 import GuildSettingsDialog from "./GuildSettingsDialog";
 import InviteDialog from "./InviteDialog";
-import { Guild } from "@/types";
+import { Guild, Member } from "@/types";
 
 import { useState } from "react";
 
 interface GuildSettingsProps {
   children: React.ReactNode;
   guild: Guild;
+  currentMember: Member;
 }
 
-export default function GuildDropdown({ children, guild }: GuildSettingsProps) {
+export default function GuildDropdown({
+  children,
+  guild,
+  currentMember,
+}: GuildSettingsProps) {
   const [settingsDialogOpen, setSettingsDialogOpen] = useState<boolean>(false);
   const [inviteDialogOpen, setInviteDialogOpen] = useState<boolean>(false);
+  const [leaveServerAlert, setLeaveServerAlert] = useState<boolean>(false);
 
   return (
     <Dialog
-      open={settingsDialogOpen || inviteDialogOpen}
+      open={settingsDialogOpen || inviteDialogOpen || leaveServerAlert}
       onOpenChange={
-        settingsDialogOpen ? setSettingsDialogOpen : setInviteDialogOpen
+        settingsDialogOpen
+          ? setSettingsDialogOpen
+          : inviteDialogOpen
+          ? setInviteDialogOpen
+          : setLeaveServerAlert
       }
     >
       <DropdownMenu>
@@ -61,11 +72,17 @@ export default function GuildDropdown({ children, guild }: GuildSettingsProps) {
             <p className="text-gray-300">Add Category</p>
             <FolderPlusIcon className="w-5 h-5 text-gray-300" />
           </DropdownMenuItem>
-          <DropdownMenuSeparator className="bg-zinc-600" />
-          <DropdownMenuItem className="flex items-center justify-between cursor-pointer">
-            <p className="text-red-500">Leave Server</p>
-            <ArrowRightStartOnRectangleIcon className="w-5 h-5 text-red-500" />
-          </DropdownMenuItem>
+          {currentMember.role !== "OWNER" && (
+            <>
+              <DropdownMenuSeparator className="bg-zinc-600" />
+              <DropdownMenuItem onClick={() => setLeaveServerAlert(true)}>
+                <div className="w-full flex items-center justify-between cursor-pointer">
+                  <p className="text-red-500">Leave Server</p>
+                  <ArrowRightStartOnRectangleIcon className="w-5 h-5 text-red-500" />
+                </div>
+              </DropdownMenuItem>
+            </>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
 
@@ -73,10 +90,19 @@ export default function GuildDropdown({ children, guild }: GuildSettingsProps) {
         <GuildSettingsDialog
           setDialogOpen={setSettingsDialogOpen}
           guild={guild}
+          currentMember={currentMember}
         />
       )}
 
       {inviteDialogOpen && <InviteDialog guildId={guild.id} />}
+
+      {leaveServerAlert && (
+        <LeaveAlertDialog
+          name={guild.name}
+          guildId={guild.id}
+          setDialogOpen={setLeaveServerAlert}
+        />
+      )}
     </Dialog>
   );
 }

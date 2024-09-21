@@ -107,4 +107,26 @@ const createGuild = async (req: Request, res: Response) => {
   }
 };
 
-export { getAllGuilds, createGuild, getGuild };
+const leaveGuild = async (req: Request, res: Response) => {
+  const userId = req.auth.userId;
+  const { guildId } = req.params as { guildId: string };
+
+  try {
+    await prisma.member.deleteMany({
+      where: {
+        userId: userId,
+        guildId: guildId,
+        role: {
+          not: "OWNER",
+        },
+      },
+    });
+
+    res.json({ message: "Successfully left guild" });
+  } catch (error) {
+    console.error("Error leaving guild:", error);
+    res.status(500).json({ error: "Failed to leave guild" });
+  }
+};
+
+export { getAllGuilds, createGuild, getGuild, leaveGuild };

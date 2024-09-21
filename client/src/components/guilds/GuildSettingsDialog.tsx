@@ -10,7 +10,7 @@ import { Separator } from "../ui/separator";
 
 import { TrashIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
-import { Guild } from "@/types";
+import { Guild, Member } from "@/types";
 import { Button } from "../ui/button";
 import { CameraIcon, PlusIcon } from "@heroicons/react/24/solid";
 import GuildDialogFooter from "./GuildDialogFooter";
@@ -20,11 +20,13 @@ const tabs = [{ name: "Overview" }, { name: "Roles" }, { name: "Emojis" }];
 interface GuildSettingsDialogProps {
   guild: Guild;
   setDialogOpen: (arg: boolean) => void;
+  currentMember: Member;
 }
 
 export default function GuildSettingsDialog({
   guild,
   setDialogOpen,
+  currentMember,
 }: GuildSettingsDialogProps) {
   const [selectedTab, setSelectedTab] = useState(0);
 
@@ -50,13 +52,17 @@ export default function GuildSettingsDialog({
                     {tab.name}
                   </li>
                 ))}
-                <Separator className="bg-zinc-600" />
-                <li className="flex items-center justify-between px-1.5 py-0.5 rounded-sm hover:bg-zinc-800 cursor-pointer">
-                  <p className="text-red-500 font-medium text-base ">
-                    Delete Server
-                  </p>
-                  <TrashIcon className="w-4 h-4 text-red-500 inline" />
-                </li>
+                {currentMember.role === "OWNER" && (
+                  <>
+                    <Separator className="bg-zinc-600" />
+                    <li className="flex items-center justify-between px-1.5 py-0.5 rounded-sm hover:bg-zinc-800 cursor-pointer">
+                      <p className="text-red-500 font-medium text-base ">
+                        Delete Server
+                      </p>
+                      <TrashIcon className="w-4 h-4 text-red-500 inline" />
+                    </li>
+                  </>
+                )}
               </ul>
             </DialogDescription>
           </section>

@@ -1,6 +1,7 @@
 "use server";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 export async function createConversation(formData: FormData) {
   const selectedFriends = [];
@@ -270,6 +271,38 @@ export async function createGuildRequest(username: string, guildId: string) {
     revalidatePath("/guilds");
   } catch (error) {
     console.error("Error creating guild request:", error);
+    throw error;
+  }
+}
+
+export async function leaveGuild(guildId: string) {
+  const { getToken } = auth();
+  const token = await getToken();
+
+  try {
+    const response = await fetch(
+      `http://localhost:3001/api/guilds/${guildId}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Express error leaving guild.");
+    }
+
+    revalidatePath("/friends");
+    redirect("/friends");
+
+    return data;
+  } catch (error) {
+    console.error("Error leaving guild:", error);
     throw error;
   }
 }
