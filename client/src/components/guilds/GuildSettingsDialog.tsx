@@ -1,6 +1,8 @@
 "use client";
 
 import {
+  Dialog,
+  DialogTrigger,
   DialogContent,
   DialogDescription,
   DialogHeader,
@@ -13,7 +15,9 @@ import { useState } from "react";
 import { Guild, Member } from "@/types";
 import { Button } from "../ui/button";
 import { CameraIcon, PlusIcon } from "@heroicons/react/24/solid";
-import GuildDialogFooter from "./GuildDialogFooter";
+import AlertDialogWrapper from "../global/AlertDialogWrapper";
+import { useToast } from "../ui/use-toast";
+import { deleteGuild } from "@/actions";
 
 const tabs = [{ name: "Overview" }, { name: "Roles" }, { name: "Emojis" }];
 
@@ -28,7 +32,28 @@ export default function GuildSettingsDialog({
   setDialogOpen,
   currentMember,
 }: GuildSettingsDialogProps) {
+  const { toast } = useToast();
+
   const [selectedTab, setSelectedTab] = useState(0);
+
+  const handleDelete = async () => {
+    try {
+      const result = await deleteGuild(guild.id);
+      toast({
+        variant: "default",
+        title: "Guild deleted",
+        description: "You have successfully deleted the guild.",
+      });
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Failed to delete guild",
+        description:
+          error.message ||
+          "An error occurred while deleting the guild. Please try again later.",
+      });
+    }
+  };
 
   return (
     <DialogContent className="bg-neutral-800 max-w-screen h-screen p-0">
@@ -53,7 +78,10 @@ export default function GuildSettingsDialog({
                   </li>
                 ))}
                 {currentMember.role === "OWNER" && (
-                  <>
+                  <AlertDialogWrapper
+                    variant="Guild"
+                    handleDelete={handleDelete}
+                  >
                     <Separator className="bg-zinc-600" />
                     <li className="flex items-center justify-between px-1.5 py-0.5 rounded-sm hover:bg-zinc-800 cursor-pointer">
                       <p className="text-red-500 font-medium text-base ">
@@ -61,7 +89,7 @@ export default function GuildSettingsDialog({
                       </p>
                       <TrashIcon className="w-4 h-4 text-red-500 inline" />
                     </li>
-                  </>
+                  </AlertDialogWrapper>
                 )}
               </ul>
             </DialogDescription>

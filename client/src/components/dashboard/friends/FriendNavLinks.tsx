@@ -12,12 +12,12 @@ export default function FriendNavLinks() {
 
   const links = [
     {
-      name: "Online",
+      name: "All",
       href: "/friends",
     },
     {
-      name: "All",
-      href: "/friends/all",
+      name: "Online",
+      href: "/friends/online",
     },
     {
       name: "Pending",

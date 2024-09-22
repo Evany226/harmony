@@ -6,8 +6,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-import GuildDialogFooter from "./GuildDialogFooter";
-import { Separator } from "../ui/separator";
+import GuildDialogFooter from "../GuildDialogFooter";
+import { Separator } from "@/components/ui/separator";
 
 export default function EditCategoryDialog({
   setDialogOpen,

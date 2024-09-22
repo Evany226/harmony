@@ -2,7 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { getChannel, getAllMembers } from "@/lib/guilds";
 import { HashtagIcon } from "@heroicons/react/24/solid";
 import ChatInput from "@/components/global/ChatInput";
-import UserPanel from "@/components/guilds/UserPanel";
+import UserPanel from "@/components/guilds/users/UserPanel";
 import { Separator } from "@/components/ui/separator";
 import { redirect } from "next/navigation";
 import { getFirstChannel } from "@/lib/guilds";

@@ -1,6 +1,6 @@
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Skeleton } from "../ui/skeleton";
-import ConnectionStatus from "../global/ConnectionStatus";
+import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
+import { Skeleton } from "../../ui/skeleton";
+import ConnectionStatus from "../../global/ConnectionStatus";
 import { User } from "@/types";
 
 export default function MemberCard({ member }: { member: User }) {

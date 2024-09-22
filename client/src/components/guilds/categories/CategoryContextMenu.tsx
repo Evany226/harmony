@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/context-menu";
 
 import { useState } from "react";
-import { useToast } from "../ui/use-toast";
+import { useToast } from "../../ui/use-toast";
 import EditCategoryDialog from "./EditCategoryDialog";
 
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";

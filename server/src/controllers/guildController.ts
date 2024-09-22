@@ -4,6 +4,14 @@ import prisma from "../lib/prisma";
 
 import { Request, Response } from "express";
 
+import { StrictAuthProp } from "@clerk/clerk-sdk-node";
+
+declare global {
+  namespace Express {
+    interface Request extends StrictAuthProp {}
+  }
+}
+
 //grabs all the guild the user is in
 const getAllGuilds = async (req: Request, res: Response) => {
   const userId = req.auth.userId;
@@ -129,4 +137,38 @@ const leaveGuild = async (req: Request, res: Response) => {
   }
 };
 
-export { getAllGuilds, createGuild, getGuild, leaveGuild };
+const deleteGuild = async (req: Request, res: Response) => {
+  // const userId = req.auth.userId;
+  const userId = "user_2l6xqjXoVzoqWB4Lm3w2iwCezWB";
+  const { guildId } = req.params as { guildId: string };
+
+  const isOwner = await prisma.member.findFirst({
+    where: {
+      userId: userId,
+      guildId: guildId,
+      role: "OWNER",
+    },
+  });
+
+  if (!isOwner) {
+    return res
+      .status(403)
+      .json({ error: "You are not the owner of this guild" });
+  }
+
+  try {
+    const deletedGuild = await prisma.guild.delete({
+      where: {
+        id: guildId,
+        ownerId: userId,
+      },
+    });
+
+    res.json(deletedGuild);
+  } catch (error) {
+    console.error("Error deleting guild:", error);
+    res.status(500).json({ error: "Failed to delete guild" });
+  }
+};
+
+export { getAllGuilds, createGuild, getGuild, leaveGuild, deleteGuild };

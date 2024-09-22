@@ -80,7 +80,7 @@ model Member {
   user   User   @relation("UserMember", fields: [userId], references: [id])
 
   guildId String
-  guild   Guild  @relation("GuildMembers", fields: [guildId], references: [id])
+  guild   Guild  @relation("GuildMembers", fields: [guildId], references: [id], onDelete: Cascade)
 
   sentMessages ChannelMessages[] @relation("SentChannelMessages")
 }
@@ -93,7 +93,7 @@ model GuildRequests {
   toUser   User @relation("GuildInvites", fields: [toUserId], references: [id])
 
   fromGuildId String
-  fromGuild  Guild @relation("GuildRequests", fields: [fromGuildId], references: [id])
+  fromGuild  Guild @relation("GuildRequests", fields: [fromGuildId], references: [id], onDelete: Cascade)
 }
 
 model Category {
@@ -101,7 +101,7 @@ model Category {
   name String
 
   guildId String
-  guild   Guild  @relation("GuildCategories", fields: [guildId], references: [id])
+  guild   Guild  @relation("GuildCategories", fields: [guildId], references: [id], onDelete: Cascade)
 
   channels TextChannel[] @relation("CategoryChannels")
 
@@ -114,7 +114,7 @@ model TextChannel {
   topic String?
 
   categoryId String
-  category   Category @relation("CategoryChannels", fields: [categoryId], references: [id])
+  category   Category @relation("CategoryChannels", fields: [categoryId], references: [id], onDelete: Cascade)
 
   messages ChannelMessages[]
 

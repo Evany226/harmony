@@ -8,10 +8,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import GuildDialogFooter from "./GuildDialogFooter";
+import GuildDialogFooter from "../GuildDialogFooter";
 
 import { useState } from "react";
-import { useToast } from "../ui/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { createCategory } from "@/actions";
 import React from "react";
 

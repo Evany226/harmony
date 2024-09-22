@@ -2,7 +2,7 @@ import FriendsWrapper from "@/components/dashboard/friends/FriendsCard";
 import { auth } from "@clerk/nextjs/server";
 import { getAllFriends } from "@/lib/friends";
 
-export default async function AllFriends() {
+export default async function Dashboard() {
   const { getToken } = auth();
   const token = await getToken();
 

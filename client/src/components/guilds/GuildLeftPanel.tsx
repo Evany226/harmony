@@ -1,8 +1,8 @@
 import { auth } from "@clerk/nextjs/server";
 
 import ProfileCard from "../dashboard/profile/ProfileCard";
-import CreateCategoryDialog from "./CreateCategoryDialog";
-import CategoryWrapper from "@/components/guilds/CategoryWrapper";
+import CreateCategoryDialog from "./categories/CreateCategoryDialog";
+import CategoryWrapper from "@/components/guilds/categories/CategoryWrapper";
 import { Category } from "@/types";
 import { Button } from "../ui/button";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";

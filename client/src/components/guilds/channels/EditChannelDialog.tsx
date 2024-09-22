@@ -12,14 +12,13 @@ import { deleteChannel } from "@/actions";
 import TextareaAutosize from "react-textarea-autosize";
 import { TrashIcon } from "@heroicons/react/24/solid";
 import { useAuth } from "@clerk/nextjs";
-import { Separator } from "../ui/separator";
+import { Separator } from "@/components/ui/separator";
 
 import { useState } from "react";
 
-import { useToast } from "../ui/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 
-import GuildDialogFooter from "./GuildDialogFooter";
-
+import GuildDialogFooter from "../GuildDialogFooter";
 import { updateChannel } from "@/actions";
 
 interface EditChannelDialogProps {

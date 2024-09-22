@@ -1,6 +1,6 @@
-import MemberCard from "@/components/guilds/MemberCard";
+import MemberCard from "@/components/guilds/users/MemberCard";
 import { Member } from "@/types";
-import { ScrollArea } from "../ui/scroll-area";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const roles = ["Owner", "Admin", "Member"];
 

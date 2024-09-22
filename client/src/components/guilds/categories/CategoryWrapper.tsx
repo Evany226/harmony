@@ -14,11 +14,11 @@ import {
   ChevronRightIcon,
 } from "@heroicons/react/24/solid";
 
-import CreateChannelDialog from "./CreateChannelDialog";
+import CreateChannelDialog from "../channels/CreateChannelDialog";
 import { useState } from "react";
 
 import { TextChannel } from "@/types";
-import ChannelLink from "./ChannelLink";
+import ChannelLink from "../channels/ChannelLink";
 
 interface CategoryWrapperProps {
   name: string;

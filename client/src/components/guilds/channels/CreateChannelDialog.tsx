@@ -8,12 +8,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import GuildDialogFooter from "./GuildDialogFooter";
-
+import GuildDialogFooter from "../GuildDialogFooter";
 import { HashtagIcon, SpeakerWaveIcon } from "@heroicons/react/24/solid";
 
-import { Button } from "../ui/button";
-import { useToast } from "../ui/use-toast";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
 import { useState } from "react";
 import { createChannel } from "@/actions";
 
@@ -117,7 +116,11 @@ export default function CreateChannelDialog({
             </div>
           </aside>
 
-          <GuildDialogFooter setDialogOpen={setDialogOpen} text="Create" />
+          <GuildDialogFooter
+            setDialogOpen={setDialogOpen}
+            text="Create"
+            variant="Channel"
+          />
         </form>
       </DialogContent>
     </Dialog>
