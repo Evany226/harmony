@@ -9,6 +9,7 @@ import ConvDropdown from "./ConvDropdown";
 import { Skeleton } from "../ui/skeleton";
 import ConnectionStatus from "../global/ConnectionStatus";
 import { useSocket } from "@/context/SocketContext";
+import Image from "next/image";
 
 interface ConvLinkProps {
   users: User[];
@@ -25,16 +26,54 @@ export function ConvLink({ users, href, status }: ConvLinkProps) {
 
   const header = users.map((user: User) => user.username).join(", ");
 
+  if (!users) {
+    return <p>Failed to load users</p>;
+  }
+
   return (
     <>
-      {users ? (
+      {users.length > 1 ? (
+        <Link href={href}>
+          <div
+            className={`group flex items-center w-full bg-neutral-900 px-2 py-2 mt-1 rounded-sm hover:bg-neutral-800 cursor-pointer ${
+              pathname == href ? "bg-zinc-700" : ""
+            }`}
+          >
+            <div className="relative w-10 h-10">
+              <Avatar className="w-7 h-7 absolute top-0 left-0">
+                <AvatarImage src={users[0].imageUrl} />
+                <AvatarFallback>
+                  <Skeleton className="w-full h-full" />
+                </AvatarFallback>
+              </Avatar>
+
+              <Avatar
+                className={`group-hover:border-neutral-800 w-7 h-7 absolute bottom-0 right-0 border-2  ${
+                  pathname == href ? "border-zinc-700" : "border-neutral-900"
+                }`}
+              >
+                <AvatarImage src={users[1].imageUrl} />
+                <AvatarFallback>
+                  <Skeleton className="w-full h-full" />
+                </AvatarFallback>
+              </Avatar>
+              <ConnectionStatus isConnected={status} />
+            </div>
+            <div className="flex items-center ml-3 max-w-full no-wrap overflow-hidden">
+              <p className="text-base text-gray-300 font-medium overflow-hidden whitespace-nowrap text-ellipsis">
+                {header}
+              </p>
+            </div>
+          </div>
+        </Link>
+      ) : (
         <Link href={href}>
           <div
             className={`flex items-center w-full bg-neutral-900 px-2 py-2 mt-1 rounded-sm hover:bg-neutral-800 cursor-pointer ${
               pathname == href ? "bg-zinc-700" : ""
             }`}
           >
-            <div className="relative">
+            <div className="relative w-10 h-10">
               <Avatar>
                 <AvatarImage src={users[0].imageUrl} />
                 <AvatarFallback>
@@ -50,8 +89,6 @@ export function ConvLink({ users, href, status }: ConvLinkProps) {
             </div>
           </div>
         </Link>
-      ) : (
-        <p className="text-gray-300">TEST</p>
       )}
     </>
   );

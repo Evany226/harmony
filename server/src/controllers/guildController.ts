@@ -138,8 +138,8 @@ const leaveGuild = async (req: Request, res: Response) => {
 };
 
 const deleteGuild = async (req: Request, res: Response) => {
-  // const userId = req.auth.userId;
-  const userId = "user_2l6xqjXoVzoqWB4Lm3w2iwCezWB";
+  const userId = req.auth.userId;
+  // const userId = "user_2l6xqjXoVzoqWB4Lm3w2iwCezWB";
   const { guildId } = req.params as { guildId: string };
 
   const isOwner = await prisma.member.findFirst({

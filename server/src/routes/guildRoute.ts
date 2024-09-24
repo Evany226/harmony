@@ -16,6 +16,6 @@ guildRouter.get("/", ClerkExpressRequireAuth({}), getAllGuilds);
 guildRouter.get("/:id", ClerkExpressRequireAuth({}), getGuild);
 guildRouter.post("/", ClerkExpressRequireAuth({}), createGuild);
 guildRouter.delete("/:guildId/leave", ClerkExpressRequireAuth({}), leaveGuild);
-guildRouter.delete("/:guildId", deleteGuild);
+guildRouter.delete("/:guildId", ClerkExpressRequireAuth({}), deleteGuild);
 
 export default guildRouter;

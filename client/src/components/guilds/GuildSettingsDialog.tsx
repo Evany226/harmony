@@ -81,6 +81,7 @@ export default function GuildSettingsDialog({
                   <AlertDialogWrapper
                     variant="Guild"
                     handleDelete={handleDelete}
+                    guildName={guild.name}
                   >
                     <Separator className="bg-zinc-600" />
                     <li className="flex items-center justify-between px-1.5 py-0.5 rounded-sm hover:bg-zinc-800 cursor-pointer">
