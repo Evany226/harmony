@@ -336,3 +336,38 @@ export async function deleteGuild(guildId: string) {
     throw error;
   }
 }
+
+export async function createChannelMessage(
+  channelId: string,
+  guildId: string,
+  formdata: FormData
+) {
+  const { getToken } = auth();
+  const token = await getToken();
+
+  try {
+    const response = await fetch(`http://localhost:3001/api/guild-messages`, {
+      method: "POST",
+      body: JSON.stringify({
+        channelId: channelId,
+        guildId: guildId,
+        messageContent: formdata.get("content"),
+      }),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Express error updating channel.");
+    }
+
+    revalidatePath("/guilds");
+  } catch (error) {
+    console.error("Error updating channel:", error);
+    throw error;
+  }
+}

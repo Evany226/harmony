@@ -10,6 +10,7 @@ import categoryRouter from "./routes/categoryRoute";
 import channelRouter from "./routes/channelRoute.ts";
 import memberRouter from "./routes/memberRoute";
 import guildReqRouter from "./routes/guildReqRoute";
+import guildMsgRouter from "./routes/guildMsgRoute";
 import { Server } from "socket.io";
 import { Message } from "./types";
 import { clerkClient } from "@clerk/clerk-sdk-node";
@@ -54,6 +55,7 @@ app.use("/api/categories", categoryRouter);
 app.use("/api/channels", channelRouter);
 app.use("/api/members", memberRouter);
 app.use("/api/guild-requests", guildReqRouter);
+app.use("/api/guild-messages", guildMsgRouter);
 
 const PORT = 3001;
 

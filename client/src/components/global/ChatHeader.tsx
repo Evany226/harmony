@@ -2,15 +2,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "../ui/separator";
 import { Skeleton } from "../ui/skeleton";
 
-interface ConvEmptyStateProps {
+interface ChatHeaderProps {
   name: string;
   imageUrl: string;
 }
 
-export default function ConvEmptyState({
-  name,
-  imageUrl,
-}: ConvEmptyStateProps) {
+export default function ChatHeader({ name, imageUrl }: ChatHeaderProps) {
   return (
     <>
       {imageUrl ? (

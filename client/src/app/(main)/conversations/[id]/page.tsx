@@ -7,7 +7,7 @@ import { User, Message } from "@/types/index.js";
 import { useUser } from "@clerk/nextjs";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import ChatInput from "@/components/global/ChatInput";
-import ConvEmptyState from "@/components/empty-states/ConvEmptyState";
+import ChatHeader from "@/components/global/ChatHeader";
 import MessageCard from "@/components/global/MessageCard";
 import ConvPageSkeleton from "@/components/skeletons/ConvPageSkeleton";
 
@@ -134,7 +134,7 @@ export default function ConversationPage({
           <main className="w-full h-[calc(100%-3rem)] flex flex-col">
             <article className="w-3/4 h-full border-r border-zinc-800 flex flex-col relative px-5">
               <div className="h-full w-full flex flex-col overflow-y-auto mb-4">
-                <ConvEmptyState name={chatTitle} imageUrl={users[0].imageUrl} />
+                <ChatHeader name={chatTitle} imageUrl={users[0].imageUrl} />
 
                 {messages.map((message: Message) => {
                   const sender = message.sender;
