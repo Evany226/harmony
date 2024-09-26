@@ -35,8 +35,8 @@ const getAllChannelMessages = async (req: Request, res: Response) => {
 };
 
 const createChannelMessage = async (req: Request, res: Response) => {
-  // const userId = req.auth.userId;
-  const userId = "user_2kvgB9d6HPZNSZGsGDf02nYSx12";
+  const userId = req.auth.userId;
+  // const userId = "user_2kvgB9d6HPZNSZGsGDf02nYSx12";
 
   const { channelId, messageContent, guildId } = req.body as {
     channelId: string;
@@ -61,6 +61,13 @@ const createChannelMessage = async (req: Request, res: Response) => {
         content: messageContent,
         senderId: member.id,
         channelId: channelId,
+      },
+      include: {
+        sender: {
+          include: {
+            user: true,
+          },
+        },
       },
     });
 

@@ -365,7 +365,9 @@ export async function createChannelMessage(
       throw new Error(data.error || "Express error updating channel.");
     }
 
-    revalidatePath("/guilds");
+    revalidatePath(`/guilds/${guildId}/${channelId}`);
+
+    return data;
   } catch (error) {
     console.error("Error updating channel:", error);
     throw error;

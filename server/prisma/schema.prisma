@@ -129,7 +129,7 @@ model ChannelMessages {
   sender   Member @relation("SentChannelMessages", fields: [senderId], references: [id])
 
   channelId String
-  channel   TextChannel @relation(fields: [channelId], references: [id])
+  channel   TextChannel @relation(fields: [channelId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
 }

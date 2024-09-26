@@ -14,8 +14,8 @@ declare global {
 
 //grabs all the guild the user is in
 const getAllGuilds = async (req: Request, res: Response) => {
-  const userId = req.auth.userId;
-  // const userId = "user_2kvgB9d6HPZNSZGsGDf02nYSx12";
+  // const userId = req.auth.userId;
+  const userId = "user_2kvgB9d6HPZNSZGsGDf02nYSx12";
 
   try {
     const allGuilds = await prisma.guild.findMany({

@@ -35,6 +35,7 @@ export default function ChatInput({
           style={{ boxSizing: "border-box" }}
           value={inputValue}
           onChange={handleInputChange}
+          name="content"
         />
         <Button variant="outline" type="submit" disabled={socketLoading}>
           Submit

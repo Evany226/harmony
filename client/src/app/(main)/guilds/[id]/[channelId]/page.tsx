@@ -12,11 +12,15 @@ import {
   getChannel,
   getAllMembers,
 } from "@/lib/guilds";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { ChannelMessages, TextChannel, Member } from "@/types";
 import GuildEmptyState from "@/components/empty-states/GuildEmptyState";
 import MessageCard from "@/components/global/MessageCard";
 import ChatHeader from "@/components/global/ChatHeader";
+import { createChannelMessage } from "@/actions";
+import { useToast } from "@/components/ui/use-toast";
+import { useSocket } from "@/context/SocketContext";
+import { useRouter } from "next/navigation";
 
 export default function ChannelPage({
   params,
@@ -24,11 +28,15 @@ export default function ChannelPage({
   params: { id: string; channelId: string };
 }) {
   const { getToken } = useAuth();
+  const { toast } = useToast();
+  const router = useRouter();
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const [messages, setMessages] = useState<ChannelMessages[]>([]);
   const [channel, setChannel] = useState<TextChannel | null>(null);
   const [members, setMembers] = useState<Member[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const { socket, isConnected } = useSocket();
 
   //href to the first channel in a guild. used for redirecting if the current channel is not found
   const [firstChannel, setFirstChannel] = useState<string>("");
@@ -59,6 +67,51 @@ export default function ChannelPage({
     fetchData();
   }, [getToken, params.channelId, params.id]);
 
+  useEffect(() => {
+    const handleMessage = (msg: ChannelMessages) => {
+      console.log("Received message:", msg);
+      setMessages((prevMessages) => [...prevMessages, msg]);
+    };
+
+    socket.on(`channelMessage ${params.channelId}`, handleMessage);
+
+    //cleans up by turning off functions when useEffect dismounts
+    return () => {
+      socket.off(`channelMessage ${params.channelId}`, handleMessage);
+    };
+  }, [params.channelId, socket]);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.target as HTMLFormElement);
+
+    try {
+      const result = await createChannelMessage(
+        params.channelId,
+        params.id,
+        formData
+      );
+
+      socket.emit("channelMessage", result);
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Failed to send message",
+        description:
+          error.message ||
+          "An error occurred while sending the message. Please try again later.",
+      });
+    }
+  };
+
   if (loading) {
     return <p>Loading...</p>; // You can show a loading state here
   }
@@ -86,7 +139,7 @@ export default function ChannelPage({
         )}
       </header>
       <div className="flex w-full h-[calc(100%-3rem)] ">
-        <main className="w-10/12 h-full border-r border-zinc-800 flex flex-col relative px-5">
+        <main className="w-[calc(100%-16rem)] h-full border-r border-zinc-800 flex flex-col relative px-5">
           <div className="h-full w-full flex flex-col overflow-y-auto mb-4">
             {messages.length === 0 ? (
               <GuildEmptyState
@@ -109,10 +162,11 @@ export default function ChannelPage({
                     />
                   );
                 })}
+                <div ref={messagesEndRef} />
               </>
             )}
           </div>
-          <ChatInput />
+          <ChatInput handleSubmit={handleSubmit} />
         </main>
 
         <UserPanel members={members} />

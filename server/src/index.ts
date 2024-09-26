@@ -12,7 +12,7 @@ import memberRouter from "./routes/memberRoute";
 import guildReqRouter from "./routes/guildReqRoute";
 import guildMsgRouter from "./routes/guildMsgRoute";
 import { Server } from "socket.io";
-import { Message } from "./types";
+import { Message, ChannelMessage } from "./types";
 import { clerkClient } from "@clerk/clerk-sdk-node";
 
 import "dotenv/config"; // To read CLERK_SECRET_KEY and CLERK_PUBLISHABLE_KEY
@@ -95,10 +95,10 @@ io.on("connection", (socket) => {
     io.emit("onlineUsers", onlineUsersArray);
   });
 
-  socket.on("joinRoom", (conversationIds: string[]) => {
-    conversationIds.forEach(async (conversationId) => {
-      await socket.join(conversationId);
-      console.log(`User joined room ${conversationId}`);
+  socket.on("joinRoom", (roomIds: string[]) => {
+    roomIds.forEach(async (roomId) => {
+      await socket.join(roomId);
+      console.log(`User joined room ${roomId}`);
     });
   });
 
@@ -129,6 +129,12 @@ io.on("connection", (socket) => {
   socket.on("notification", (data: Message) => {
     const { conversationId } = data;
     socket.to(conversationId).emit(`notification`, data);
+  });
+
+  socket.on("channelMessage", (data: ChannelMessage) => {
+    const { channelId } = data;
+    console.log(data);
+    io.to(channelId).emit(`channelMessage ${channelId}`, data);
   });
 
   socket.on("disconnecting", () => {

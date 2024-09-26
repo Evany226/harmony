@@ -8,6 +8,7 @@ import { Conversation, Message } from "@/types";
 import { useToast } from "@/components/ui/use-toast";
 import { formatTimestamp } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import { getUserChannelIds } from "@/lib/guilds";
 
 interface SocketContextProps {
   socket: typeof socket;
@@ -32,8 +33,12 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       const token = await getToken();
       const data = await getAllConversations(token as string);
       const ids = data.map((conversation: Conversation) => conversation.id);
-      console.log(ids);
+
+      const channelIds = await getUserChannelIds(token as string);
+      console.log(channelIds);
+
       socket.emit("joinRoom", ids);
+      socket.emit("joinRoom", channelIds);
     };
 
     fetchConversations();
