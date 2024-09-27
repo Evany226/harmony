@@ -180,6 +180,8 @@ export async function createChannel(formdata: FormData) {
     }
 
     revalidatePath("/guilds");
+
+    return data;
   } catch (error) {
     console.error("Error creating channel:", error);
     throw error;

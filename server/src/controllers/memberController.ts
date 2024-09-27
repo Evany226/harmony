@@ -48,4 +48,25 @@ const getAllMembers = async (req: Request, res: Response) => {
   }
 };
 
-export { getAllMembers, getMember };
+const getAllMemberIds = async (req: Request, res: Response) => {
+  const { guildId } = req.params as { guildId: string };
+
+  try {
+    const members = await prisma.member.findMany({
+      where: {
+        guildId: guildId,
+      },
+      select: {
+        userId: true,
+      },
+    });
+
+    const memberIdArr = members.map((member) => member.userId);
+
+    res.json(memberIdArr);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to get members" });
+  }
+};
+
+export { getAllMembers, getMember, getAllMemberIds };

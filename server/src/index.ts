@@ -102,6 +102,32 @@ io.on("connection", (socket) => {
     });
   });
 
+  socket.on("joinGuild", async (guildId: string) => {
+    await socket.join(guildId);
+    socket.to(guildId).emit("updateGuild");
+    console.log(`New User Joined guild: ${guildId}`);
+  });
+
+  socket.on("leaveGuild", async (guildId: string) => {
+    await socket.leave(guildId);
+    socket.to(guildId).emit("updateGuild");
+    console.log("User left guild");
+  });
+
+  socket.on("createNewChannel", (channelId: string, guildId: string) => {
+    console.log(`Current user joined new channel: ${channelId}`);
+    io.to(guildId).emit("newChannel", channelId);
+  });
+
+  socket.on("joinChannel", async (channelId: string) => {
+    await socket.join(channelId);
+    console.log(`User joined new channel: ${channelId}`);
+  });
+
+  socket.on("refresh", (guildId: string) => {
+    socket.to(guildId).emit("refresh");
+  });
+
   socket.on(
     "joinConversation",
     (data: { conversationId: string; participantIds: string[] }) => {
@@ -117,7 +143,7 @@ io.on("connection", (socket) => {
 
       console.log(participantIds);
 
-      socket.to(conversationId).emit("joinConversation");
+      socket.to(conversationId).emit("refresh");
     }
   );
 
@@ -145,5 +171,9 @@ io.on("connection", (socket) => {
     console.log("user disconnected");
     console.log(id);
     onlineUsers = onlineUsers.filter((user) => user.userId !== id);
+    io.emit(
+      "onlineUsers",
+      onlineUsers.map((user) => user.userId)
+    );
   });
 });

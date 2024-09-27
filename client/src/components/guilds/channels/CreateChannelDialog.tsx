@@ -15,17 +15,21 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { useState } from "react";
 import { createChannel } from "@/actions";
+import { useSocket } from "@/context/SocketContext";
 
 interface CreateChannelDialogProps {
   children: React.ReactNode;
   categoryId: string;
+  guildId: string;
 }
 
 export default function CreateChannelDialog({
   children,
   categoryId,
+  guildId,
 }: CreateChannelDialogProps) {
   const { toast } = useToast();
+  const { socket } = useSocket();
 
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
 
@@ -47,6 +51,8 @@ export default function CreateChannelDialog({
     try {
       setDialogOpen(false);
       const result = await createChannel(formData);
+      socket.emit("refresh", guildId);
+      socket.emit("createNewChannel", result.id, guildId);
       toast({
         variant: "default",
         title: "Channel created",

@@ -126,7 +126,7 @@ model ChannelMessages {
   content String
 
   senderId String
-  sender   Member @relation("SentChannelMessages", fields: [senderId], references: [id])
+  sender   Member @relation("SentChannelMessages", fields: [senderId], references: [id], onDelete: Cascade)
 
   channelId String
   channel   TextChannel @relation(fields: [channelId], references: [id], onDelete: Cascade)

@@ -8,7 +8,7 @@ import { Conversation, Message } from "@/types";
 import { useToast } from "@/components/ui/use-toast";
 import { formatTimestamp } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-import { getUserChannelIds } from "@/lib/guilds";
+import { getUserChannelIds, getUserGuildIds } from "@/lib/guilds";
 
 interface SocketContextProps {
   socket: typeof socket;
@@ -35,10 +35,13 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       const ids = data.map((conversation: Conversation) => conversation.id);
 
       const channelIds = await getUserChannelIds(token as string);
-      console.log(channelIds);
+
+      const guildIds = await getUserGuildIds(token as string);
+      console.log(guildIds);
 
       socket.emit("joinRoom", ids);
       socket.emit("joinRoom", channelIds);
+      socket.emit("joinRoom", guildIds);
     };
 
     fetchConversations();
@@ -63,8 +66,13 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       });
     });
 
-    socket.on("joinConversation", () => {
+    socket.on("newChannel", (channelId: string) => {
+      socket.emit("joinChannel", channelId);
+    });
+
+    socket.on("refresh", () => {
       //revalidates the other clients when a new conversation is created
+      console.log("refreshed top g");
       router.refresh();
     });
 
@@ -77,7 +85,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       socket.off("disconnect");
       socket.off("notification");
       socket.off("onlineUsers");
-      socket.off("joinConversation");
+      socket.off("refresh");
     };
   }, [getToken, toast, userId, router]);
 

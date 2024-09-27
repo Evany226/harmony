@@ -14,8 +14,8 @@ declare global {
 
 //grabs all the guild the user is in
 const getAllGuilds = async (req: Request, res: Response) => {
-  // const userId = req.auth.userId;
-  const userId = "user_2kvgB9d6HPZNSZGsGDf02nYSx12";
+  const userId = req.auth.userId;
+  // const userId = "user_2kvgB9d6HPZNSZGsGDf02nYSx12";
 
   try {
     const allGuilds = await prisma.guild.findMany({
@@ -36,6 +36,33 @@ const getAllGuilds = async (req: Request, res: Response) => {
     });
 
     res.json(allGuilds);
+  } catch (error) {
+    console.error("Error fetching guilds:", error);
+    res.status(500).json({ error: "Failed to fetch all guilds" });
+  }
+};
+
+const getAllGuildIds = async (req: Request, res: Response) => {
+  const userId = req.auth.userId;
+  // const userId = "user_2kvgB9d6HPZNSZGsGDf02nYSx12";
+
+  try {
+    const allGuildIds = await prisma.guild.findMany({
+      where: {
+        members: {
+          some: {
+            userId: userId,
+          },
+        },
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    const guildIdArr = allGuildIds.map((guild) => guild.id);
+
+    res.json(guildIdArr);
   } catch (error) {
     console.error("Error fetching guilds:", error);
     res.status(500).json({ error: "Failed to fetch all guilds" });
@@ -171,4 +198,11 @@ const deleteGuild = async (req: Request, res: Response) => {
   }
 };
 
-export { getAllGuilds, createGuild, getGuild, leaveGuild, deleteGuild };
+export {
+  getAllGuilds,
+  createGuild,
+  getGuild,
+  leaveGuild,
+  deleteGuild,
+  getAllGuildIds,
+};

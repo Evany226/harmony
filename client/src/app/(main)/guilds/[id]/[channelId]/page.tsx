@@ -75,11 +75,20 @@ export default function ChannelPage({
 
     socket.on(`channelMessage ${params.channelId}`, handleMessage);
 
+    socket.on("updateGuild", async () => {
+      //revalidates the other clients when a new conversation is created
+      console.log("revalidating");
+      const token = await getToken();
+      const members = await getAllMembers(token as string, params.id);
+      setMembers(members);
+    });
+
     //cleans up by turning off functions when useEffect dismounts
     return () => {
       socket.off(`channelMessage ${params.channelId}`, handleMessage);
+      socket.off("updateGuild");
     };
-  }, [params.channelId, socket]);
+  }, [params.channelId, socket, toast, router, params.id, getToken]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });

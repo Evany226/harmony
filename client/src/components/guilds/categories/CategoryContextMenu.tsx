@@ -13,18 +13,25 @@ import EditCategoryDialog from "./EditCategoryDialog";
 
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 
+import { useSocket } from "@/context/SocketContext";
+
 import { updateCategory, deleteCategory } from "@/actions";
+
+interface CategoryContextMenuProps {
+  children: React.ReactNode;
+  name: string;
+  categoryId: string;
+  guildId: string;
+}
 
 export default function CategoryContextMenu({
   children,
   name,
   categoryId,
-}: {
-  children: React.ReactNode;
-  name: string;
-  categoryId: string;
-}) {
+  guildId,
+}: CategoryContextMenuProps) {
   const { toast } = useToast();
+  const { socket } = useSocket();
 
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
 
@@ -54,6 +61,8 @@ export default function CategoryContextMenu({
     try {
       setDialogOpen(false);
       const result = await updateCategory(formData, categoryId);
+      socket.emit("refresh", guildId);
+
       toast({
         variant: "default",
         title: "Category updated",
@@ -73,6 +82,7 @@ export default function CategoryContextMenu({
   const handleDelete = async () => {
     try {
       await deleteCategory(categoryId);
+      socket.emit("refresh", guildId);
       toast({
         variant: "default",
         title: "Category deleted",

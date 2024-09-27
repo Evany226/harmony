@@ -48,7 +48,11 @@ export default function ChannelLink({
       <div className="flex items-center">
         {isHovering || pathname == href ? (
           <div className="flex items-center">
-            <EditChannelDialog name={channel.name} id={channel.id}>
+            <EditChannelDialog
+              name={channel.name}
+              id={channel.id}
+              guildId={guildId}
+            >
               <Cog8ToothIcon className="w-4 text-gray-400 cursor-pointer hover:text-white" />
             </EditChannelDialog>
           </div>

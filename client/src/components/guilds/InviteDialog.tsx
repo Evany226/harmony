@@ -35,7 +35,10 @@ function InviteDialogItem({
   setUsername,
 }: InviteDialogItemProps) {
   return (
-    <div className="w-full flex items-center flex-between group hover:bg-zinc-700 px-2 py-1 rounded-md cursor-pointer">
+    <div
+      onClick={() => setUsername(friendName)}
+      className="w-full flex items-center flex-between group hover:bg-zinc-700 px-2 py-1 rounded-md cursor-pointer"
+    >
       <div className="w-full flex items-center space-x-3">
         <Avatar>
           <AvatarImage src={imageUrl} />
@@ -58,7 +61,13 @@ function InviteDialogItem({
   );
 }
 
-export default function InviteDialog({ guildId }: { guildId: string }) {
+export default function InviteDialog({
+  guildId,
+  setDialogOpen,
+}: {
+  guildId: string;
+  setDialogOpen: (arg: boolean) => void;
+}) {
   const { getToken } = useAuth();
   const { toast } = useToast();
   const [friends, setFriends] = useState<Friend[]>([]);
@@ -87,6 +96,7 @@ export default function InviteDialog({ guildId }: { guildId: string }) {
     }
 
     try {
+      setDialogOpen(false);
       const result = await createGuildRequest(username, guildId);
       toast({
         title: "Invitation sent!",
@@ -133,7 +143,7 @@ export default function InviteDialog({ guildId }: { guildId: string }) {
           );
         })}
         <Button type="submit" variant="outline" className="w-full py-1 mt-4 ">
-          <p className="text-black font-medium">Create DM</p>
+          <p className="text-black font-medium">Send Invite</p>
         </Button>
       </form>
     </DialogContent>

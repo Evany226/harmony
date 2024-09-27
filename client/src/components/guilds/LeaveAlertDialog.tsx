@@ -7,6 +7,7 @@ import {
 import { Button } from "../ui/button";
 import { leaveGuild } from "@/actions";
 import { useToast } from "../ui/use-toast";
+import { useSocket } from "@/context/SocketContext";
 
 interface LeaveAlertDialogProps {
   name: string;
@@ -20,6 +21,7 @@ export default function LeaveAlertDialog({
   setDialogOpen,
 }: LeaveAlertDialogProps) {
   const { toast } = useToast();
+  const { socket } = useSocket();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -27,6 +29,7 @@ export default function LeaveAlertDialog({
     try {
       setDialogOpen(false);
       await leaveGuild(guildId);
+      socket.emit("leaveGuild", guildId);
       toast({
         variant: "default",
         title: `Left guild successfully.`,

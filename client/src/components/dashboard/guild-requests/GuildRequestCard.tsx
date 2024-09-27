@@ -9,6 +9,7 @@ import { GuildRequest, Guild } from "@/types";
 import { CheckIcon, XMarkIcon } from "@heroicons/react/16/solid";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
+import { useSocket } from "@/context/SocketContext";
 
 import { acceptGuildRequest, rejectGuildRequest } from "@/lib/guilds";
 
@@ -21,10 +22,13 @@ function GuildRequestCard({ guild, requestId }: GuildRequestCardProps) {
   const router = useRouter();
   const { toast } = useToast();
 
+  const { socket } = useSocket();
+
   const handleAccept = async (id: string) => {
     try {
       const result = await acceptGuildRequest(id);
       router.refresh();
+      socket.emit("joinGuild", guild.id);
       toast({
         variant: "default",
         title: "Accepted guild request!",

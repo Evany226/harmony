@@ -17,28 +17,33 @@ import { Separator } from "@/components/ui/separator";
 import { useState } from "react";
 
 import { useToast } from "@/components/ui/use-toast";
+import { useSocket } from "@/context/SocketContext";
 
 import GuildDialogFooter from "../GuildDialogFooter";
 import { updateChannel } from "@/actions";
 
 interface EditChannelDialogProps {
   id: string;
+  guildId: string;
   name: string;
   children: React.ReactNode;
 }
 
 export default function EditChannelDialog({
   id,
+  guildId,
   name,
   children,
 }: EditChannelDialogProps) {
   const { toast } = useToast();
+  const { socket } = useSocket();
 
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const handleDelete = async () => {
     try {
       await deleteChannel(id);
+      socket.emit("refresh", guildId);
       toast({
         variant: "default",
         title: "Channel deleted",
@@ -72,6 +77,7 @@ export default function EditChannelDialog({
       setDialogOpen(false);
       // Call the updateChannel function here
       const result = await updateChannel(formData, id);
+      socket.emit("refresh", guildId);
       toast({
         variant: "default",
         title: "Channel updated",

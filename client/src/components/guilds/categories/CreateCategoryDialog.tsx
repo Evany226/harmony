@@ -13,6 +13,7 @@ import GuildDialogFooter from "../GuildDialogFooter";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { createCategory } from "@/actions";
+import { useSocket } from "@/context/SocketContext";
 import React from "react";
 
 interface CreateCategoryDialogProps {
@@ -25,6 +26,7 @@ export default function CreateCategoryDialog({
   children,
 }: CreateCategoryDialogProps) {
   const { toast } = useToast();
+  const { socket } = useSocket();
 
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
 
@@ -46,6 +48,7 @@ export default function CreateCategoryDialog({
     try {
       setDialogOpen(false);
       const result = await createCategory(formData);
+      socket.emit("refresh", guildId);
       toast({
         variant: "default",
         title: "Category created",

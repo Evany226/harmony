@@ -94,7 +94,9 @@ export default function GuildDropdown({
         />
       )}
 
-      {inviteDialogOpen && <InviteDialog guildId={guild.id} />}
+      {inviteDialogOpen && (
+        <InviteDialog guildId={guild.id} setDialogOpen={setInviteDialogOpen} />
+      )}
 
       {leaveServerAlert && (
         <LeaveAlertDialog

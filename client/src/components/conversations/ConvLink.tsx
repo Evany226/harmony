@@ -4,7 +4,7 @@ import { PlusIcon } from "@heroicons/react/16/solid";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Conversation, User } from "@/types/index";
-import { socket } from "@/app/socket";
+
 import ConvDropdown from "./ConvDropdown";
 import { Skeleton } from "../ui/skeleton";
 import ConnectionStatus from "../global/ConnectionStatus";
@@ -39,7 +39,7 @@ export function ConvLink({ users, href, status }: ConvLinkProps) {
               pathname == href ? "bg-zinc-700" : ""
             }`}
           >
-            <div className="relative w-10 h-10">
+            <div className="relative min-w-10 h-10">
               <Avatar className="w-7 h-7 absolute top-0 left-0">
                 <AvatarImage src={users[0].imageUrl} />
                 <AvatarFallback>
@@ -48,7 +48,7 @@ export function ConvLink({ users, href, status }: ConvLinkProps) {
               </Avatar>
 
               <Avatar
-                className={`group-hover:border-neutral-800 w-7 h-7 absolute bottom-0 right-0 border-2  ${
+                className={`group-hover:border-neutral-800 w-7 h-7 absolute bottom-0 right-0 border-2 ${
                   pathname == href ? "border-zinc-700" : "border-neutral-900"
                 }`}
               >
@@ -59,7 +59,7 @@ export function ConvLink({ users, href, status }: ConvLinkProps) {
               </Avatar>
               <ConnectionStatus isConnected={status} />
             </div>
-            <div className="flex items-center ml-3 max-w-full no-wrap overflow-hidden">
+            <div className="flex items-center ml-3 w-[calc(100% - 2.5rem)] overflow-hidden">
               <p className="text-base text-gray-300 font-medium overflow-hidden whitespace-nowrap text-ellipsis">
                 {header}
               </p>
