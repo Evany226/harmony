@@ -8,7 +8,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { deleteChannel } from "@/actions";
+import { deleteChannel, updateChannel } from "@/actions/actions";
 import TextareaAutosize from "react-textarea-autosize";
 import { TrashIcon } from "@heroicons/react/24/solid";
 import { useAuth } from "@clerk/nextjs";
@@ -20,7 +20,6 @@ import { useToast } from "@/components/ui/use-toast";
 import { useSocket } from "@/context/SocketContext";
 
 import GuildDialogFooter from "../GuildDialogFooter";
-import { updateChannel } from "@/actions";
 
 interface EditChannelDialogProps {
   id: string;

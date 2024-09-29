@@ -17,10 +17,11 @@ import { ChannelMessages, TextChannel, Member } from "@/types";
 import GuildEmptyState from "@/components/empty-states/GuildEmptyState";
 import MessageCard from "@/components/global/MessageCard";
 import ChatHeader from "@/components/global/ChatHeader";
-import { createChannelMessage } from "@/actions";
+import { createChannelMessage } from "@/actions/actions";
 import { useToast } from "@/components/ui/use-toast";
 import { useSocket } from "@/context/SocketContext";
 import { useRouter } from "next/navigation";
+import { GuildPageSkeleton } from "@/components/skeletons/GuildPageSkeleton";
 
 export default function ChannelPage({
   params,
@@ -122,7 +123,7 @@ export default function ChannelPage({
   };
 
   if (loading) {
-    return <p>Loading...</p>; // You can show a loading state here
+    return <GuildPageSkeleton />; // You can show a loading state here
   }
 
   if (!channel) {

@@ -188,7 +188,7 @@ export const rejectGuildRequest = async (id: string) => {
 };
 
 export const getUserChannelIds = async (token: string) => {
-  const response = await fetch(`http://localhost:3001/api/channels/`, {
+  const response = await fetch(`http://localhost:3001/api/users/channelids`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -206,7 +206,7 @@ export const getUserChannelIds = async (token: string) => {
 };
 
 export const getUserGuildIds = async (token: string) => {
-  const response = await fetch(`http://localhost:3001/api/guilds/fetch/ids`, {
+  const response = await fetch(`http://localhost:3001/api/users/guildIds`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

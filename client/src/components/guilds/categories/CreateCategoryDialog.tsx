@@ -12,7 +12,7 @@ import GuildDialogFooter from "../GuildDialogFooter";
 
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import { createCategory } from "@/actions";
+import { createCategory } from "@/actions/actions";
 import { useSocket } from "@/context/SocketContext";
 import React from "react";
 

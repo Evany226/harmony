@@ -14,7 +14,7 @@ import { getAllFriends } from "@/lib/friends";
 import { useAuth } from "@clerk/nextjs";
 import { useToast } from "../ui/use-toast";
 
-import { createGuildRequest } from "@/actions";
+import { createGuildRequest } from "@/actions/actions";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "../ui/skeleton";

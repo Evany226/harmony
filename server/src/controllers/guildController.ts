@@ -26,6 +26,9 @@ const getAllGuilds = async (req: Request, res: Response) => {
           },
         },
       },
+      orderBy: {
+        createdAt: "desc",
+      },
       include: {
         categories: {
           include: {
@@ -42,33 +45,6 @@ const getAllGuilds = async (req: Request, res: Response) => {
   }
 };
 
-const getAllGuildIds = async (req: Request, res: Response) => {
-  const userId = req.auth.userId;
-  // const userId = "user_2kvgB9d6HPZNSZGsGDf02nYSx12";
-
-  try {
-    const allGuildIds = await prisma.guild.findMany({
-      where: {
-        members: {
-          some: {
-            userId: userId,
-          },
-        },
-      },
-      select: {
-        id: true,
-      },
-    });
-
-    const guildIdArr = allGuildIds.map((guild) => guild.id);
-
-    res.json(guildIdArr);
-  } catch (error) {
-    console.error("Error fetching guilds:", error);
-    res.status(500).json({ error: "Failed to fetch all guilds" });
-  }
-};
-
 const getGuild = async (req: Request, res: Response) => {
   const guildId = req.params.id;
 
@@ -77,6 +53,7 @@ const getGuild = async (req: Request, res: Response) => {
       where: {
         id: guildId,
       },
+
       include: {
         members: {
           include: {
@@ -84,6 +61,9 @@ const getGuild = async (req: Request, res: Response) => {
           },
         },
         categories: {
+          orderBy: {
+            createdAt: "desc",
+          },
           include: {
             channels: true,
           },
@@ -198,11 +178,4 @@ const deleteGuild = async (req: Request, res: Response) => {
   }
 };
 
-export {
-  getAllGuilds,
-  createGuild,
-  getGuild,
-  leaveGuild,
-  deleteGuild,
-  getAllGuildIds,
-};
+export { getAllGuilds, createGuild, getGuild, leaveGuild, deleteGuild };

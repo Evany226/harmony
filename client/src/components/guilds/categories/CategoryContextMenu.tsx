@@ -15,7 +15,7 @@ import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 
 import { useSocket } from "@/context/SocketContext";
 
-import { updateCategory, deleteCategory } from "@/actions";
+import { updateCategory, deleteCategory } from "@/actions/actions";
 
 interface CategoryContextMenuProps {
   children: React.ReactNode;

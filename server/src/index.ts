@@ -2,15 +2,17 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 
 import cors from "cors";
-import friendsRouter from "./routes/friendRoutes";
+import friendRouter from "./routes/friendRoute";
 import friendReqRouter from "./routes/friendReqRoute";
-import conversationRouter from "./routes/conversationRoute";
+import convRouter from "./routes/convRoute";
+import convMsgRouter from "./routes/convMsgRoute";
 import guildRouter from "./routes/guildRoute";
 import categoryRouter from "./routes/categoryRoute";
 import channelRouter from "./routes/channelRoute.ts";
 import memberRouter from "./routes/memberRoute";
 import guildReqRouter from "./routes/guildReqRoute";
 import guildMsgRouter from "./routes/guildMsgRoute";
+import userRouter from "./routes/userRoute";
 import { Server } from "socket.io";
 import { Message, ChannelMessage } from "./types";
 import { clerkClient } from "@clerk/clerk-sdk-node";
@@ -47,15 +49,17 @@ app.get(
   }
 );
 
-app.use("/api/friends", friendsRouter);
+app.use("/api/friends", friendRouter);
 app.use("/api/requests", friendReqRouter);
-app.use("/api/conversations", conversationRouter);
+app.use("/api/conversations", convRouter);
+app.use("/api/messages", convMsgRouter);
 app.use("/api/guilds", guildRouter);
 app.use("/api/categories", categoryRouter);
 app.use("/api/channels", channelRouter);
 app.use("/api/members", memberRouter);
 app.use("/api/guild-requests", guildReqRouter);
 app.use("/api/guild-messages", guildMsgRouter);
+app.use("/api/users", userRouter);
 
 const PORT = 3001;
 

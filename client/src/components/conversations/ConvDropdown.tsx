@@ -12,7 +12,7 @@ import { useAuth } from "@clerk/nextjs";
 import { useState, useEffect } from "react";
 import { Friend, User } from "@/types";
 import { Button } from "../ui/button";
-import { createConversation } from "@/actions";
+import { createConversation } from "@/actions/actions";
 import { useToast } from "../ui/use-toast";
 import { socket } from "@/app/socket";
 

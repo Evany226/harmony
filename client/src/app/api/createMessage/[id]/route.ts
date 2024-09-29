@@ -8,7 +8,7 @@ export async function POST(
   if (request.method === "POST") {
     const { getToken } = auth();
     const id = params.id;
-    const baseUrl = `http://localhost:3001/api/conversations/${id}/message`;
+    const baseUrl = `http://localhost:3001/api/messages/`;
 
     try {
       const { message } = await request.json();
@@ -21,6 +21,7 @@ export async function POST(
         },
         body: JSON.stringify({
           content: message,
+          conversationId: id,
         }),
       });
 

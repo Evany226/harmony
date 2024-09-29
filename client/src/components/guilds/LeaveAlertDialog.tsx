@@ -5,7 +5,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "../ui/button";
-import { leaveGuild } from "@/actions";
+import { leaveGuild } from "@/actions/actions";
 import { useToast } from "../ui/use-toast";
 import { useSocket } from "@/context/SocketContext";
 

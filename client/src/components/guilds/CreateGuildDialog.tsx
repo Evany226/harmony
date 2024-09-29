@@ -13,7 +13,7 @@ import GuildDialogFooter from "./GuildDialogFooter";
 import { CameraIcon } from "@heroicons/react/24/solid";
 import { PlusIcon } from "@heroicons/react/16/solid";
 import { Button } from "../ui/button";
-import { createNewGuild } from "@/actions";
+import { createNewGuild } from "@/actions/actions";
 import { useToast } from "../ui/use-toast";
 import { useState } from "react";
 

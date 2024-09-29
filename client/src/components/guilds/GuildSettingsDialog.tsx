@@ -17,7 +17,7 @@ import { Button } from "../ui/button";
 import { CameraIcon, PlusIcon } from "@heroicons/react/24/solid";
 import AlertDialogWrapper from "../global/AlertDialogWrapper";
 import { useToast } from "../ui/use-toast";
-import { deleteGuild } from "@/actions";
+import { deleteGuild } from "@/actions/actions";
 
 const tabs = [{ name: "Overview" }, { name: "Roles" }, { name: "Emojis" }];
 

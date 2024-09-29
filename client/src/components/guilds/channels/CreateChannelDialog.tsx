@@ -14,7 +14,7 @@ import { HashtagIcon, SpeakerWaveIcon } from "@heroicons/react/24/solid";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { useState } from "react";
-import { createChannel } from "@/actions";
+import { createChannel } from "@/actions/actions";
 import { useSocket } from "@/context/SocketContext";
 
 interface CreateChannelDialogProps {
