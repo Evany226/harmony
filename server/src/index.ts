@@ -159,6 +159,7 @@ io.on("connection", (socket) => {
   socket.on("notification", (data: Message) => {
     const { conversationId } = data;
     socket.to(conversationId).emit(`notification`, data);
+    socket.to(conversationId).emit(`unread ${conversationId}`);
   });
 
   socket.on("channelMessage", (data: ChannelMessage) => {

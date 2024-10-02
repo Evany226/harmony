@@ -14,10 +14,9 @@ model User {
   username      String?
   hasImage      Boolean        @default(false)
   imageUrl      String?
-  messagesSent  Message[]      @relation("SentMessages")
-  conversations Conversation[] @relation("UserConversations")
+  participants Participant[]  @relation("UserParticipant") //for conversations
   guilds        Guild[]        @relation("GuildOwners")
-  members       Member[]       @relation("UserMember")
+  members       Member[]       @relation("UserMember") // for guilds
   guildRequests GuildRequests[] @relation("GuildInvites")
 }
 
@@ -28,12 +27,26 @@ model Friend {
   toUserId   String
 }
 
+model Participant {
+  id   String @id @default(uuid())
+
+  userId String
+  user User   @relation("UserParticipant", fields: [userId], references: [id])
+
+  conversationId String
+  conversation Conversation @relation("ParticipantConversation",fields: [conversationId], references: [id])
+
+  sentMessages  Message[]      @relation("SentMessages")
+
+  lastViewed DateTime @default(now())
+}
+
 model Message {
   id      String @id @default(uuid())
   content String
 
   senderId String
-  sender   User   @relation("SentMessages", fields: [senderId], references: [id])
+  sender   Participant   @relation("SentMessages", fields: [senderId], references: [id])
 
   conversationId String
   conversation   Conversation @relation(fields: [conversationId], references: [id])
@@ -45,10 +58,13 @@ model Conversation {
   id String @id @default(uuid())
 
   messages Message[]
-  users    User[]    @relation("UserConversations")
+  participants Participant[] @relation("ParticipantConversation")
 
+  
   createdAt DateTime @default(now())
 }
+
+
 
 model Guild {
   id   String @id @default(uuid())

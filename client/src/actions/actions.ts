@@ -19,7 +19,7 @@ export async function createConversation(formData: FormData) {
   try {
     const response = await fetch("http://localhost:3001/api/conversations", {
       method: "POST",
-      body: JSON.stringify({ participantIds: selectedFriends }),
+      body: JSON.stringify({ otherUserIds: selectedFriends }),
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -374,4 +374,28 @@ export async function createChannelMessage(
     console.error("Error updating channel:", error);
     throw error;
   }
+}
+
+export async function updateLastViewed(token: string, conversationId: string) {
+  const response = await fetch(
+    `http://localhost:3001/api/messages/updateLastViewed`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ conversationId }),
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.error);
+  }
+
+  revalidatePath(`/conversations`);
+
+  return data;
 }

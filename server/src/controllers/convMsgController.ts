@@ -21,7 +21,11 @@ const getAllMessages = async (req: Request, res: Response) => {
         conversationId: conversationId,
       },
       include: {
-        sender: true,
+        sender: {
+          include: {
+            user: true,
+          },
+        },
       },
     });
 
@@ -41,14 +45,29 @@ const createMessage = async (req: Request, res: Response) => {
   };
 
   try {
+    const participant = await prisma.participant.findFirst({
+      where: {
+        userId: userId,
+        conversationId: conversationId,
+      },
+    });
+
+    if (!participant) {
+      return res.status(404).json({ error: "Participant not found" });
+    }
+
     const newMessage = await prisma.message.create({
       data: {
         content: content,
-        senderId: userId,
+        senderId: participant.id,
         conversationId: conversationId,
       },
       include: {
-        sender: true,
+        sender: {
+          include: {
+            user: true,
+          },
+        },
       },
     });
 
@@ -59,4 +78,82 @@ const createMessage = async (req: Request, res: Response) => {
   }
 };
 
-export { getAllMessages, createMessage };
+const getUnreadMessages = async (req: Request, res: Response) => {
+  const userId = req.auth.userId;
+  const { conversationId } = req.params as { conversationId: string };
+  // const userId = "user_2kvgB9d6HPZNSZGsGDf02nYSx12";
+
+  try {
+    const participant = await prisma.participant.findFirst({
+      where: {
+        userId: userId,
+        conversationId: conversationId,
+      },
+    });
+
+    if (!participant) {
+      return res.status(404).json({ error: "Participant not found" });
+    }
+
+    const unreadMessages = await prisma.message.findMany({
+      where: {
+        conversationId: conversationId,
+        sender: {
+          userId: {
+            not: userId,
+          },
+        },
+        createdAt: {
+          gt: participant.lastViewed,
+        },
+      },
+      include: {
+        sender: {
+          include: {
+            user: true,
+          },
+        },
+      },
+    });
+
+    res.json(unreadMessages.length);
+  } catch (error) {
+    console.error("Error fetching unread messages:", error);
+    res.status(500).json({ error: "Failed to fetch unread messages" });
+  }
+};
+
+const updateLastViewed = async (req: Request, res: Response) => {
+  const userId = req.auth.userId;
+  const { conversationId } = req.params as { conversationId: string };
+  // const userId = "user_2kvgB9d6HPZNSZGsGDf02nYSx12";
+
+  try {
+    const participant = await prisma.participant.findFirst({
+      where: {
+        userId: userId,
+        conversationId: conversationId,
+      },
+    });
+
+    if (!participant) {
+      return res.status(404).json({ error: "Participant not found" });
+    }
+
+    const updatedParticipant = await prisma.participant.update({
+      where: {
+        id: participant.id,
+      },
+      data: {
+        lastViewed: new Date(),
+      },
+    });
+
+    res.json(updatedParticipant);
+  } catch (error) {
+    console.error("Error updating last viewed:", error);
+    res.status(500).json({ error: "Failed to update last viewed" });
+  }
+};
+
+export { getAllMessages, createMessage, getUnreadMessages, updateLastViewed };

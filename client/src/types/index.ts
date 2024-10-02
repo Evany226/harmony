@@ -12,19 +12,35 @@ export interface User {
   username: string;
   hasImage: boolean;
   imageUrl: string;
+  participants: Participant[];
+  guilds: Guild[];
+  members: Member[];
+  guildRequests: GuildRequest[];
 }
 
 export interface Conversation {
   id: string;
   createdAt: string;
-  users: User[];
+  participants: Participant[];
+}
+
+export interface Participant {
+  id: string;
+
+  userId: string;
+  user: User;
+
+  conversationId: string;
+  conversation: Conversation;
+  sentMessages: Message[];
+  lastViewed: string;
 }
 
 export interface Message {
   id: string;
   content: string;
   senderId: string;
-  sender: User;
+  sender: Participant;
   conversationId: string;
   createdAt: string;
 }

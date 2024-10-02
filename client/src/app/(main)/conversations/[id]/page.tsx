@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { getConversation, getAllMessages } from "@/lib/conversations";
 import { useAuth } from "@clerk/nextjs";
-import { User, Message } from "@/types/index.js";
+import { User, Message, Participant } from "@/types/index.js";
 import { useUser } from "@clerk/nextjs";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import ChatInput from "@/components/global/ChatInput";
@@ -15,6 +15,7 @@ import { createMessage } from "@/lib/conversations";
 import { useToast } from "@/components/ui/use-toast";
 import { useSocket } from "@/context/SocketContext";
 import { useRouter } from "next/navigation";
+import { updateLastViewed } from "@/actions/actions";
 
 export default function ConversationPage({
   params,
@@ -45,6 +46,8 @@ export default function ConversationPage({
         params.id
       );
 
+      await updateLastViewed(token as string, params.id);
+
       if (!conversationObject) {
         router.push("/404");
       }
@@ -52,9 +55,14 @@ export default function ConversationPage({
 
       setMessages(messages);
 
-      const users = conversationObject.users.filter(
-        (user: User) => currUser && user.id !== currUser.id
+      const participants = conversationObject.participants.filter(
+        (participant: Participant) =>
+          currUser && participant.userId !== currUser.id
       );
+
+      const users = participants.map((participant: Participant) => {
+        return participant.user;
+      });
 
       setUsers(users);
       setImage(users[0].imageUrl);
@@ -137,7 +145,7 @@ export default function ConversationPage({
                 <ChatHeader name={chatTitle} imageUrl={users[0].imageUrl} />
 
                 {messages.map((message: Message) => {
-                  const sender = message.sender;
+                  const sender = message.sender.user;
 
                   return (
                     <MessageCard

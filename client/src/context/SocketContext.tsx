@@ -57,11 +57,13 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
 
     socket.on("notification", (data: Message) => {
       const { content, sender } = data;
+
+      const senderUser = sender.user;
       console.log("notification received");
       toast({
-        title: `${sender.username}`,
+        title: `${senderUser.username}`,
         description: `${content}`,
-        image: sender.imageUrl,
+        image: senderUser.imageUrl,
         createdAt: `${formatTimestamp(data.createdAt)}`,
       });
     });
@@ -72,7 +74,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
 
     socket.on("refresh", () => {
       //revalidates the other clients when a new conversation is created
-      console.log("refreshed top g");
+      console.log("refreshed");
       router.refresh();
     });
 

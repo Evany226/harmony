@@ -18,19 +18,21 @@ const getAllConversations = async (req: Request, res: Response) => {
   try {
     const allConversations = await prisma.conversation.findMany({
       where: {
-        users: {
+        participants: {
           some: {
-            // some makes it so at least one of the users has an id of userId
-            id: userId,
+            userId: userId,
           },
         },
       },
       include: {
-        users: {
+        participants: {
           where: {
-            id: {
+            userId: {
               not: userId,
             },
+          },
+          include: {
+            user: true,
           },
         },
       },
@@ -53,7 +55,11 @@ const getConversation = async (req: Request, res: Response) => {
         id: conversationId,
       },
       include: {
-        users: true,
+        participants: {
+          include: {
+            user: true,
+          },
+        },
       },
     });
 
@@ -68,17 +74,15 @@ const getConversation = async (req: Request, res: Response) => {
 const createConversation = async (req: Request, res: Response) => {
   const userId = req.auth.userId;
   // const userId = "user_2kvgB9d6HPZNSZGsGDf02nYSx12";
-  const { participantIds } = req.body as { participantIds: string[] };
+  const { otherUserIds } = req.body as { otherUserIds: string[] };
 
   //includes userId
-  const allParticipantIds = [userId, ...participantIds].sort();
+  const allUserIds = [userId, ...otherUserIds].sort();
 
-  console.log(allParticipantIds);
-
-  const userConditions = allParticipantIds.map((userId) => ({
-    users: {
+  const userConditions = allUserIds.map((userId) => ({
+    participants: {
       some: {
-        id: userId,
+        userId: userId,
       },
     },
   }));
@@ -87,16 +91,16 @@ const createConversation = async (req: Request, res: Response) => {
     const existingConversation = await prisma.conversation.findMany({
       where: {
         AND: userConditions,
-        users: {
+        participants: {
           every: {
-            id: {
-              in: allParticipantIds,
+            userId: {
+              in: allUserIds,
             },
           },
         },
       },
       include: {
-        users: true,
+        participants: true,
       },
     });
 
@@ -106,12 +110,20 @@ const createConversation = async (req: Request, res: Response) => {
 
     const newConversation = await prisma.conversation.create({
       data: {
-        users: {
-          connect: allParticipantIds.map((id) => ({ id })),
+        participants: {
+          createMany: {
+            data: allUserIds.map((userId) => ({
+              userId: userId,
+            })),
+          },
         },
       },
       include: {
-        users: true, // Include all posts in the returned object
+        participants: {
+          include: {
+            user: true,
+          },
+        },
       },
     });
 

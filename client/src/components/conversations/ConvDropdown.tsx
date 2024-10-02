@@ -10,7 +10,7 @@ import ConvDropdownItem from "./ConvDropdownItem";
 import { getAllFriends } from "@/lib/friends";
 import { useAuth } from "@clerk/nextjs";
 import { useState, useEffect } from "react";
-import { Friend, User } from "@/types";
+import { Friend, User, Participant } from "@/types";
 import { Button } from "../ui/button";
 import { createConversation } from "@/actions/actions";
 import { useToast } from "../ui/use-toast";
@@ -45,10 +45,11 @@ export default function ConvDropdown({
       const result = await createConversation(formData);
       socket.emit("joinConversation", {
         conversationId: result.id,
-        participantIds: result.users.map((user: User) => user.id),
+        participantIds: result.participants.map(
+          (participant: Participant) => participant.userId
+        ),
       });
 
-      console.log(result.users.map((user: User) => user.id));
       toast({
         variant: "default",
         title: "Conversation created",
