@@ -13,6 +13,8 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { getUnreadMessages } from "@/lib/conversations";
 import { useAuth } from "@clerk/nextjs";
+import { updateLastViewed } from "@/actions/actions";
+import { useCallback } from "react";
 
 interface ConvLinkProps {
   users: User[];
@@ -47,18 +49,26 @@ export function ConvLink({ users, href, status, id }: ConvLinkProps) {
     fetchData();
   }, [getToken, id]);
 
+  const updateUnreadMessages = useCallback(async () => {
+    const token = await getToken();
+    await updateLastViewed(token as string, id);
+
+    setUnreadMessages(0);
+  }, [getToken, id]);
+
   useEffect(() => {
     socket.on(`unread ${id}`, () => {
-      if (pathname !== `/conversations/${id}`) {
-        setUnreadMessages((prev) => prev + 1);
+      setUnreadMessages((prev) => prev + 1);
+      if (pathname === `/conversations/${id}`) {
+        updateUnreadMessages();
       }
     });
 
     //cleans up by turning off functions when useEffect dismounts
     return () => {
-      socket.off(`message ${id}`);
+      socket.off(`unread ${id}`);
     };
-  }, [id, socket, pathname]);
+  }, [id, socket, pathname, updateUnreadMessages]);
 
   if (!users) {
     return <p>Failed to load users</p>;
@@ -67,7 +77,7 @@ export function ConvLink({ users, href, status, id }: ConvLinkProps) {
   return (
     <>
       {users.length > 1 ? (
-        <Link href={href} onClick={() => setUnreadMessages(0)}>
+        <Link href={href} onClick={updateUnreadMessages}>
           <div
             className={`group flex items-center w-full bg-neutral-900 px-2 py-2 mt-1 rounded-sm hover:bg-neutral-800 cursor-pointer ${
               pathname == href ? "bg-zinc-700" : ""
@@ -93,18 +103,21 @@ export function ConvLink({ users, href, status, id }: ConvLinkProps) {
               </Avatar>
               <ConnectionStatus isConnected={status} />
             </div>
-            <div className="flex items-center ml-3 w-[calc(100% - 2.5rem)] overflow-hidden">
+            <div className="flex items-center ml-3 w-64 overflow-hidden relative">
               <p className="text-base text-gray-300 font-medium overflow-hidden whitespace-nowrap text-ellipsis">
                 {header}
               </p>
+
               {unreadMessages > 0 && (
-                <p className="text-red-400 ml-2">{unreadMessages}</p>
+                <div className="absolute right-0 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
+                  <p className="text-white text-sm">{unreadMessages}</p>
+                </div>
               )}
             </div>
           </div>
         </Link>
       ) : (
-        <Link href={href} onClick={() => setUnreadMessages(0)}>
+        <Link href={href} onClick={updateUnreadMessages}>
           <div
             className={`flex items-center w-full bg-neutral-900 px-2 py-2 mt-1 rounded-sm hover:bg-neutral-800 cursor-pointer ${
               pathname == href ? "bg-zinc-700" : ""
@@ -124,7 +137,9 @@ export function ConvLink({ users, href, status, id }: ConvLinkProps) {
                 {header}
               </p>
               {unreadMessages > 0 && (
-                <p className="text-red-400 ml-2">{unreadMessages}</p>
+                <div className="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
+                  <p className="text-white text-sm">{unreadMessages}</p>
+                </div>
               )}
             </div>
           </div>
@@ -160,15 +175,13 @@ export default function ConvLinkWrapper({
             );
 
             return (
-              <>
-                <ConvLink
-                  key={conversation.id}
-                  users={allUsers}
-                  href={`/conversations/${conversation.id}`}
-                  status={onlineStatus}
-                  id={conversation.id}
-                />
-              </>
+              <ConvLink
+                key={conversation.id}
+                users={allUsers}
+                href={`/conversations/${conversation.id}`}
+                status={onlineStatus}
+                id={conversation.id}
+              />
             );
           })}
         </div>

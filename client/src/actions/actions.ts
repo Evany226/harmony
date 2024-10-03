@@ -395,7 +395,5 @@ export async function updateLastViewed(token: string, conversationId: string) {
     throw new Error(data.error);
   }
 
-  revalidatePath(`/conversations`);
-
   return data;
 }

@@ -108,11 +108,7 @@ const getUnreadMessages = async (req: Request, res: Response) => {
         },
       },
       include: {
-        sender: {
-          include: {
-            user: true,
-          },
-        },
+        sender: true,
       },
     });
 
@@ -143,6 +139,7 @@ const updateLastViewed = async (req: Request, res: Response) => {
     const updatedParticipant = await prisma.participant.update({
       where: {
         id: participant.id,
+        conversationId: conversationId,
       },
       data: {
         lastViewed: new Date(),

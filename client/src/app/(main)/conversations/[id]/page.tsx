@@ -15,7 +15,8 @@ import { createMessage } from "@/lib/conversations";
 import { useToast } from "@/components/ui/use-toast";
 import { useSocket } from "@/context/SocketContext";
 import { useRouter } from "next/navigation";
-import { updateLastViewed } from "@/actions/actions";
+
+import { usePathname } from "next/navigation";
 
 export default function ConversationPage({
   params,
@@ -35,6 +36,7 @@ export default function ConversationPage({
   const { getToken } = useAuth();
   const { toast } = useToast();
   const router = useRouter();
+  const pathname = usePathname();
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -45,8 +47,6 @@ export default function ConversationPage({
         token as string,
         params.id
       );
-
-      await updateLastViewed(token as string, params.id);
 
       if (!conversationObject) {
         router.push("/404");
