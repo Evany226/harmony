@@ -376,9 +376,12 @@ export async function createChannelMessage(
   }
 }
 
-export async function updateLastViewed(token: string, conversationId: string) {
+export async function updateLastViewed(conversationId: string) {
+  const { getToken } = auth();
+  const token = await getToken();
+
   const response = await fetch(
-    `http://localhost:3001/api/messages/updateLastViewed`,
+    `http://localhost:3001/api/unread/updateLastViewed`,
     {
       method: "PUT",
       headers: {

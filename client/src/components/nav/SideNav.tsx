@@ -7,13 +7,14 @@ import { auth } from "@clerk/nextjs/server";
 import { Guild, Category } from "@/types";
 import CreateGuildDialog from "../guilds/CreateGuildDialog";
 import SideNavTooltip from "./SideNavTooltip";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Skeleton } from "../ui/skeleton";
 
 export default async function SideNav() {
   const { getToken } = auth();
   const token = await getToken();
 
   const guilds = await getAllGuilds(token as string);
-
   return (
     <ScrollArea className="flex-col h-full w-[5.5rem] fixed top-0 left-0 bg-zinc-900">
       <section className="flex flex-col items-center w-full justify-center mt-2 -b">

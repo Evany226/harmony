@@ -13,6 +13,7 @@ import memberRouter from "./routes/memberRoute";
 import guildReqRouter from "./routes/guildReqRoute";
 import guildMsgRouter from "./routes/guildMsgRoute";
 import userRouter from "./routes/userRoute";
+import unreadMsgRouter from "./routes/unreadMsgRoute";
 import { Server } from "socket.io";
 import { Message, ChannelMessage } from "./types";
 import { clerkClient } from "@clerk/clerk-sdk-node";
@@ -60,6 +61,7 @@ app.use("/api/members", memberRouter);
 app.use("/api/guild-requests", guildReqRouter);
 app.use("/api/guild-messages", guildMsgRouter);
 app.use("/api/users", userRouter);
+app.use("/api/unread", unreadMsgRouter);
 
 const PORT = 3001;
 
@@ -102,7 +104,6 @@ io.on("connection", (socket) => {
   socket.on("joinRoom", (roomIds: string[]) => {
     roomIds.forEach(async (roomId) => {
       await socket.join(roomId);
-      console.log(`User joined room ${roomId}`);
     });
   });
 
@@ -141,7 +142,6 @@ io.on("connection", (socket) => {
         const user = onlineUsers.find((user) => user.userId === userId);
         if (user) {
           io.in(user.socketId).socketsJoin(conversationId);
-          console.log(`Second client joined ${conversationId}`);
         }
       });
 

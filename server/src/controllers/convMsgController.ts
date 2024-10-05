@@ -27,6 +27,9 @@ const getAllMessages = async (req: Request, res: Response) => {
           },
         },
       },
+      orderBy: {
+        createdAt: "asc",
+      },
     });
 
     res.json(messages);
@@ -71,72 +74,7 @@ const createMessage = async (req: Request, res: Response) => {
       },
     });
 
-    res.json(newMessage);
-  } catch (error) {
-    console.error("Error creating message:", error);
-    res.status(500).json({ error: "Failed to create message" });
-  }
-};
-
-const getUnreadMessages = async (req: Request, res: Response) => {
-  const userId = req.auth.userId;
-  const { conversationId } = req.params as { conversationId: string };
-  // const userId = "user_2kvgB9d6HPZNSZGsGDf02nYSx12";
-
-  try {
-    const participant = await prisma.participant.findFirst({
-      where: {
-        userId: userId,
-        conversationId: conversationId,
-      },
-    });
-
-    if (!participant) {
-      return res.status(404).json({ error: "Participant not found" });
-    }
-
-    const unreadMessages = await prisma.message.findMany({
-      where: {
-        conversationId: conversationId,
-        sender: {
-          userId: {
-            not: userId,
-          },
-        },
-        createdAt: {
-          gt: participant.lastViewed,
-        },
-      },
-      include: {
-        sender: true,
-      },
-    });
-
-    res.json(unreadMessages.length);
-  } catch (error) {
-    console.error("Error fetching unread messages:", error);
-    res.status(500).json({ error: "Failed to fetch unread messages" });
-  }
-};
-
-const updateLastViewed = async (req: Request, res: Response) => {
-  const userId = req.auth.userId;
-  const { conversationId } = req.params as { conversationId: string };
-  // const userId = "user_2kvgB9d6HPZNSZGsGDf02nYSx12";
-
-  try {
-    const participant = await prisma.participant.findFirst({
-      where: {
-        userId: userId,
-        conversationId: conversationId,
-      },
-    });
-
-    if (!participant) {
-      return res.status(404).json({ error: "Participant not found" });
-    }
-
-    const updatedParticipant = await prisma.participant.update({
+    await prisma.participant.update({
       where: {
         id: participant.id,
         conversationId: conversationId,
@@ -146,11 +84,11 @@ const updateLastViewed = async (req: Request, res: Response) => {
       },
     });
 
-    res.json(updatedParticipant);
+    res.json(newMessage);
   } catch (error) {
-    console.error("Error updating last viewed:", error);
-    res.status(500).json({ error: "Failed to update last viewed" });
+    console.error("Error creating message:", error);
+    res.status(500).json({ error: "Failed to create message" });
   }
 };
 
-export { getAllMessages, createMessage, getUnreadMessages, updateLastViewed };
+export { getAllMessages, createMessage };

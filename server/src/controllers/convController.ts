@@ -36,6 +36,9 @@ const getAllConversations = async (req: Request, res: Response) => {
           },
         },
       },
+      orderBy: {
+        createdAt: "asc",
+      },
     });
 
     res.json(allConversations);

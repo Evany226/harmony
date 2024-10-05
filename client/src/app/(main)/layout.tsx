@@ -1,6 +1,7 @@
 import React from "react";
 import SideNav from "@/components/nav/SideNav";
 import { SocketProvider } from "@/context/SocketContext";
+import { NotificationProvider } from "@/context/NotificationContext";
 
 export default function MainLayout({
   children,
@@ -8,9 +9,13 @@ export default function MainLayout({
   children: React.ReactNode;
 }) {
   return (
-    <main className="flex w-full h-[100vh] bg-gray-100">
-      <SideNav />
-      <SocketProvider> {children}</SocketProvider>
-    </main>
+    <SocketProvider>
+      <NotificationProvider>
+        <main className="flex w-full h-[100vh] bg-gray-100">
+          <SideNav />
+          {children}
+        </main>
+      </NotificationProvider>
+    </SocketProvider>
   );
 }

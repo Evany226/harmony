@@ -14,7 +14,6 @@ import { useState, useEffect } from "react";
 import { getUnreadMessages } from "@/lib/conversations";
 import { useAuth } from "@clerk/nextjs";
 import { updateLastViewed } from "@/actions/actions";
-import { useCallback } from "react";
 
 interface ConvLinkProps {
   users: User[];
@@ -49,26 +48,29 @@ export function ConvLink({ users, href, status, id }: ConvLinkProps) {
     fetchData();
   }, [getToken, id]);
 
-  const updateUnreadMessages = useCallback(async () => {
-    const token = await getToken();
-    await updateLastViewed(token as string, id);
-
-    setUnreadMessages(0);
-  }, [getToken, id]);
-
   useEffect(() => {
-    socket.on(`unread ${id}`, () => {
-      setUnreadMessages((prev) => prev + 1);
-      if (pathname === `/conversations/${id}`) {
-        updateUnreadMessages();
+    const handleUnreadMessage = () => {
+      if (pathname !== href) {
+        setUnreadMessages((prev) => prev + 1);
       }
-    });
-
-    //cleans up by turning off functions when useEffect dismounts
-    return () => {
-      socket.off(`unread ${id}`);
     };
-  }, [id, socket, pathname, updateUnreadMessages]);
+
+    // Attach the socket event listener
+    socket.on(`unread ${id}`, handleUnreadMessage);
+
+    if (pathname === href) {
+      const update = async () => {
+        await updateLastViewed(id);
+        setUnreadMessages(0);
+      }; // Ensure it's called on conversation open
+
+      update();
+    }
+
+    return () => {
+      socket.off(`unread ${id}`, handleUnreadMessage);
+    };
+  }, [id, socket, pathname, href]);
 
   if (!users) {
     return <p>Failed to load users</p>;
@@ -77,7 +79,7 @@ export function ConvLink({ users, href, status, id }: ConvLinkProps) {
   return (
     <>
       {users.length > 1 ? (
-        <Link href={href} onClick={updateUnreadMessages}>
+        <Link href={href}>
           <div
             className={`group flex items-center w-full bg-neutral-900 px-2 py-2 mt-1 rounded-sm hover:bg-neutral-800 cursor-pointer ${
               pathname == href ? "bg-zinc-700" : ""
@@ -117,7 +119,7 @@ export function ConvLink({ users, href, status, id }: ConvLinkProps) {
           </div>
         </Link>
       ) : (
-        <Link href={href} onClick={updateUnreadMessages}>
+        <Link href={href}>
           <div
             className={`flex items-center w-full bg-neutral-900 px-2 py-2 mt-1 rounded-sm hover:bg-neutral-800 cursor-pointer ${
               pathname == href ? "bg-zinc-700" : ""
