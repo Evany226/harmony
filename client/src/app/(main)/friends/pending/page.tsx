@@ -8,10 +8,8 @@ export default async function Pending() {
   const data = await getPending(token as string);
 
   return (
-    <div className="w-full h-full">
-      <div className="flex flex-col items-center w-3/4 h-full px-4 py-3 border-r border-zinc-800">
-        <FriendsWrapper friends={data} variant="Pending" />
-      </div>
+    <div className="flex flex-col items-center w-3/4 h-full py-3 border-r border-zinc-800 overflow-y-hidden">
+      <FriendsWrapper friends={data} variant="Pending" />
     </div>
   );
 }

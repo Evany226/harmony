@@ -156,6 +156,11 @@ io.on("connection", (socket) => {
     io.to(conversationId).emit(`message ${conversationId}`, data);
   });
 
+  socket.on("editMessage", (data: Message) => {
+    const { conversationId } = data;
+    io.to(conversationId).emit(`editMessage ${conversationId}`, data);
+  });
+
   socket.on("notification", (data: Message) => {
     const { conversationId } = data;
     socket.to(conversationId).emit(`notification`, data);
@@ -166,6 +171,11 @@ io.on("connection", (socket) => {
     const { channelId } = data;
     console.log(data);
     io.to(channelId).emit(`channelMessage ${channelId}`, data);
+  });
+
+  socket.on("editChannelMessage", (data: ChannelMessage) => {
+    const { channelId } = data;
+    io.to(channelId).emit(`editChannelMessage ${channelId}`, data);
   });
 
   socket.on("disconnecting", () => {

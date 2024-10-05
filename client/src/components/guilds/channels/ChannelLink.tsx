@@ -26,7 +26,7 @@ export default function ChannelLink({
 
   return (
     <div
-      className={`group py-1 rounded-sm flex items-center justify-between px-2 ${
+      className={`group py-1 rounded-sm flex items-center justify-between px-1 ${
         pathname == href ? "bg-zinc-700" : "hover:bg-neutral-800"
       }`}
       onMouseOver={() => setIsHovering(true)}
@@ -35,7 +35,7 @@ export default function ChannelLink({
       <Link href={href} className="flex items-center w-full">
         <HashtagIcon className="w-4 text-gray-300 cursor-pointer" />
         <p
-          className={`text-sm font-medium ml-2 ${
+          className={`text-sm font-medium ml-1 ${
             pathname == href
               ? "text-white"
               : "text-zinc-400 group-hover:text-white"

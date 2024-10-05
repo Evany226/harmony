@@ -78,4 +78,28 @@ const createChannelMessage = async (req: Request, res: Response) => {
   }
 };
 
-export { createChannelMessage, getAllChannelMessages };
+const editChannelMessage = async (req: Request, res: Response) => {
+  const { messageId, messageContent } = req.body as {
+    messageId: string;
+    messageContent: string;
+  };
+
+  try {
+    const updatedMessage = await prisma.channelMessages.update({
+      where: {
+        id: messageId,
+      },
+      data: {
+        content: messageContent,
+        edited: true,
+      },
+    });
+
+    res.json(updatedMessage);
+  } catch (error) {
+    console.error("Error updating message:", error);
+    res.status(500).json({ error: "Failed to update message" });
+  }
+};
+
+export { createChannelMessage, getAllChannelMessages, editChannelMessage };

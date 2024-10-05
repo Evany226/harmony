@@ -91,4 +91,28 @@ const createMessage = async (req: Request, res: Response) => {
   }
 };
 
-export { getAllMessages, createMessage };
+const editMessage = async (req: Request, res: Response) => {
+  const { content, messageId } = req.body as {
+    content: string;
+    messageId: string;
+  };
+
+  try {
+    const updatedMessage = await prisma.message.update({
+      where: {
+        id: messageId,
+      },
+      data: {
+        content: content,
+        edited: true,
+      },
+    });
+
+    res.json(updatedMessage);
+  } catch (error) {
+    console.error("Error updating message:", error);
+    res.status(500).json({ error: "Failed to update message" });
+  }
+};
+
+export { getAllMessages, createMessage, editMessage };

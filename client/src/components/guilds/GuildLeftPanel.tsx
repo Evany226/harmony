@@ -9,6 +9,7 @@ import { ChevronDownIcon } from "@heroicons/react/24/outline";
 
 import { getGuild, getMember } from "@/lib/guilds";
 import GuildDropdown from "./GuildDropdown";
+import { ScrollArea } from "../ui/scroll-area";
 
 export default async function GuildLeftPanel({ guildId }: { guildId: string }) {
   const { getToken } = auth();
@@ -28,7 +29,7 @@ export default async function GuildLeftPanel({ guildId }: { guildId: string }) {
         </header>
       </GuildDropdown>
 
-      <div className="flex flex-col h-[calc(100%-7rem)] px-2 py-2 max-w-64 space-y-4 mt-2">
+      <ScrollArea className="flex flex-col h-[calc(100%-7rem)] px-3 max-w-64">
         {guild.categories.map((category: Category) => (
           <CategoryWrapper
             key={category.id}
@@ -39,11 +40,11 @@ export default async function GuildLeftPanel({ guildId }: { guildId: string }) {
           />
         ))}
         <CreateCategoryDialog guildId={guildId}>
-          <Button variant="outline" className="w-full">
+          <Button variant="outline" className="w-full mt-4 mb-2">
             Create Category
           </Button>
         </CreateCategoryDialog>
-      </div>
+      </ScrollArea>
 
       <ProfileCard />
     </div>

@@ -74,10 +74,22 @@ export default function ChannelPage({
       setMessages((prevMessages) => [...prevMessages, msg]);
     };
 
+    const handleEditMessage = (msg: ChannelMessages) => {
+      setMessages((prevMessages) =>
+        prevMessages.map((message) =>
+          message.id === msg.id
+            ? { ...message, content: msg.content, edited: msg.edited }
+            : message
+        )
+      );
+    };
+
     socket.on(`channelMessage ${params.channelId}`, handleMessage);
 
+    socket.on(`editChannelMessage ${params.channelId}`, handleEditMessage);
+
     socket.on("updateGuild", async () => {
-      //revalidates the other clients when a new conversation is created
+      //revalidates the other clients when a new member joins
       console.log("revalidating");
       const token = await getToken();
       const members = await getAllMembers(token as string, params.id);
@@ -88,6 +100,7 @@ export default function ChannelPage({
     return () => {
       socket.off(`channelMessage ${params.channelId}`, handleMessage);
       socket.off("updateGuild");
+      socket.off(`editChannelMessage ${params.channelId}`, handleEditMessage);
     };
   }, [params.channelId, socket, toast, router, params.id, getToken]);
 
@@ -102,6 +115,15 @@ export default function ChannelPage({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
+
+    if (formData.get("content") === "") {
+      toast({
+        variant: "destructive",
+        title: "Message cannot be empty",
+        description: "Please enter a message.",
+      });
+      return;
+    }
 
     try {
       const result = await createChannelMessage(
@@ -149,7 +171,7 @@ export default function ChannelPage({
         )}
       </header>
       <div className="flex w-full h-[calc(100%-3rem)] ">
-        <main className="w-[calc(100%-16rem)] h-full border-r border-zinc-800 flex flex-col relative px-5">
+        <main className="w-[calc(100%-16rem)] h-full border-r border-zinc-800 flex flex-col relative">
           <div className="h-full w-full flex flex-col overflow-y-auto mb-4">
             {messages.length === 0 ? (
               <GuildEmptyState
@@ -160,15 +182,11 @@ export default function ChannelPage({
               <>
                 <ChatHeader name={channel.name} imageUrl={"/logo-past.png"} />
                 {messages.map((message: ChannelMessages) => {
-                  const sender = message.sender;
-
                   return (
                     <MessageCard
                       key={message.id}
-                      name={sender.user.username}
-                      message={message.content}
-                      createdAt={message.createdAt}
-                      imageUrl={sender.user.imageUrl}
+                      message={message}
+                      variant="channel"
                     />
                   );
                 })}
@@ -176,7 +194,9 @@ export default function ChannelPage({
               </>
             )}
           </div>
-          <ChatInput handleSubmit={handleSubmit} />
+          <div className="px-5">
+            <ChatInput handleSubmit={handleSubmit} />
+          </div>
         </main>
 
         <UserPanel members={members} />

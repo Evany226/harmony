@@ -400,3 +400,56 @@ export async function updateLastViewed(conversationId: string) {
 
   return data;
 }
+
+export async function editMessage(messageId: string, formData: FormData) {
+  const { getToken } = auth();
+  const token = await getToken();
+
+  const response = await fetch(`http://localhost:3001/api/messages/`, {
+    method: "PUT",
+    body: JSON.stringify({
+      messageId: messageId,
+      content: formData.get("content"),
+    }),
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.error || "Express error updating message.");
+  }
+
+  return data;
+}
+
+export async function editChannelMessage(
+  messageId: string,
+  formData: FormData
+) {
+  const { getToken } = auth();
+  const token = await getToken();
+
+  const response = await fetch(`http://localhost:3001/api/guild-messages/`, {
+    method: "PUT",
+    body: JSON.stringify({
+      messageId: messageId,
+      messageContent: formData.get("content"),
+    }),
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.error || "Express error updating message.");
+  }
+
+  return data;
+}

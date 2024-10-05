@@ -84,11 +84,24 @@ export default function ConversationPage({
       setMessages((prevMessages) => [...prevMessages, msg]);
     };
 
+    const handleEdit = (msg: Message) => {
+      console.log("Received edited message:", msg);
+      setMessages((prevMessages) =>
+        prevMessages.map((message) =>
+          message.id === msg.id
+            ? { ...message, content: msg.content, edited: msg.edited }
+            : message
+        )
+      );
+    };
+
     socket.on(`message ${params.id}`, handleMessage);
+    socket.on(`editMessage ${params.id}`, handleEdit);
 
     //cleans up by turning off functions when useEffect dismounts
     return () => {
       socket.off(`message ${params.id}`, handleMessage);
+      socket.off(`editMessage ${params.id}`, handleEdit);
     };
   }, [params.id, socket]);
 
@@ -140,31 +153,29 @@ export default function ConversationPage({
           </header>
 
           <main className="w-full h-[calc(100%-3rem)] flex flex-col">
-            <article className="w-3/4 h-full border-r border-zinc-800 flex flex-col relative px-5">
+            <article className="w-3/4 h-full border-r border-zinc-800 flex flex-col relative px-0">
               <div className="h-full w-full flex flex-col overflow-y-auto mb-4">
                 <ChatHeader name={chatTitle} imageUrl={users[0].imageUrl} />
 
                 {messages.map((message: Message) => {
-                  const sender = message.sender.user;
-
                   return (
                     <MessageCard
                       key={message.id}
-                      name={sender.username}
-                      message={message.content}
-                      createdAt={message.createdAt}
-                      imageUrl={sender.imageUrl}
+                      message={message}
+                      variant="conversation"
                     />
                   );
                 })}
                 <div ref={messagesEndRef} />
               </div>
-              <ChatInput
-                inputValue={inputValue}
-                setInputValue={setInputValue}
-                handleSubmit={handleSubmit}
-                socketLoading={socketLoading}
-              />
+              <div className="px-5">
+                <ChatInput
+                  inputValue={inputValue}
+                  setInputValue={setInputValue}
+                  handleSubmit={handleSubmit}
+                  socketLoading={socketLoading}
+                />
+              </div>
             </article>
           </main>
         </>

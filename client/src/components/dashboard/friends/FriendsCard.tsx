@@ -21,6 +21,7 @@ import { Dropdown } from "../../global/Dropdown";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSocket } from "@/context/SocketContext";
 import ConnectionStatus from "@/components/global/ConnectionStatus";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface FriendsProps {
   friend: Friend;
@@ -174,7 +175,7 @@ export default function FriendsWrapper({
   if (variant !== "Online") {
     return (
       <>
-        <section className="flex-col w-full h-full">
+        <ScrollArea className="flex-col w-full h-full px-4">
           <div className="flex flex-col justify-start">
             <h2 className="text-gray-400 text-sm font-medium mb-2 ml-2">
               {variant} - {friends.length}
@@ -182,7 +183,7 @@ export default function FriendsWrapper({
             <Separator orientation="horizontal" />
           </div>
 
-          <div className="flex-col">
+          <div className="flex-col w-full h-full">
             {friends.map((friend) => {
               const onlineStatus = onlineUsers.includes(friend.id);
 
@@ -190,20 +191,20 @@ export default function FriendsWrapper({
                 <Friends
                   key={friend.id}
                   friend={friend}
-                  pending={variant === "Pending"}
+                  pending={false}
                   status={onlineStatus}
                 />
               );
             })}
           </div>
-        </section>
+        </ScrollArea>
       </>
     );
   }
 
   return (
     <>
-      <section className="flex-col w-full h-full">
+      <ScrollArea className="flex-col w-full h-full px-4">
         <div className="flex flex-col justify-start">
           <h2 className="text-gray-400 text-sm font-medium mb-2 ml-2">
             {variant} - {onlineFriends.length}
@@ -211,7 +212,7 @@ export default function FriendsWrapper({
           <Separator orientation="horizontal" />
         </div>
 
-        <div className="flex-col">
+        <div className="flex-col w-full h-full">
           {onlineFriends.map((friend) => {
             const onlineStatus = onlineUsers.includes(friend.id);
 
@@ -225,7 +226,7 @@ export default function FriendsWrapper({
             );
           })}
         </div>
-      </section>
+      </ScrollArea>
     </>
   );
 }

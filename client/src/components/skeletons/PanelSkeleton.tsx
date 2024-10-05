@@ -1,5 +1,6 @@
 import { Skeleton } from "../ui/skeleton";
 import FriendsNavButton from "../dashboard/friends/FriendsNavButton";
+import GuildNavButton from "../dashboard/guild-requests/GuildNavButton";
 
 function ConvLinkSkeleton() {
   return (
@@ -28,6 +29,7 @@ export default function PanelSkeleton() {
 
       <div className="flex flex-col p-3">
         <FriendsNavButton />
+        <GuildNavButton />
 
         <section className="flex-col w-full max-h-full mt-4">
           <div className="w-full flex items-center justify-between">

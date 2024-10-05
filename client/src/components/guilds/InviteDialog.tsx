@@ -15,6 +15,7 @@ import { useAuth } from "@clerk/nextjs";
 import { useToast } from "../ui/use-toast";
 
 import { createGuildRequest } from "@/actions/actions";
+import { ScrollArea } from "../ui/scroll-area";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "../ui/skeleton";
@@ -130,18 +131,20 @@ export default function InviteDialog({
         ></input>
       </div>
       <form onSubmit={handleSubmit}>
-        {friends.map((friend) => {
-          return (
-            <InviteDialogItem
-              id={friend.id}
-              key={friend.id}
-              friendName={friend.username}
-              imageUrl={friend.imageUrl}
-              username={username}
-              setUsername={setUsername}
-            />
-          );
-        })}
+        <ScrollArea className="w-full h-40 px-2 my-2">
+          {friends.map((friend) => {
+            return (
+              <InviteDialogItem
+                id={friend.id}
+                key={friend.id}
+                friendName={friend.username}
+                imageUrl={friend.imageUrl}
+                username={username}
+                setUsername={setUsername}
+              />
+            );
+          })}
+        </ScrollArea>
         <Button type="submit" variant="outline" className="w-full py-1 mt-4 ">
           <p className="text-black font-medium">Send Invite</p>
         </Button>

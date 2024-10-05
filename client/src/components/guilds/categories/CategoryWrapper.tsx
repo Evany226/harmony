@@ -37,7 +37,7 @@ export default function CategoryWrapper({
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center mt-3">
         <CategoryContextMenu
           name={name}
           categoryId={categoryId}
@@ -57,11 +57,9 @@ export default function CategoryWrapper({
           </CollapsibleTrigger>
         </CategoryContextMenu>
 
-        <aside className="">
-          <CreateChannelDialog categoryId={categoryId} guildId={guildId}>
-            <PlusIcon className="w-4 text-gray-300 cursor-pointer" />
-          </CreateChannelDialog>
-        </aside>
+        <CreateChannelDialog categoryId={categoryId} guildId={guildId}>
+          <PlusIcon className="w-4 text-gray-300 cursor-pointer mr-1" />
+        </CreateChannelDialog>
       </div>
 
       <CollapsibleContent className="flex flex-col mt-1">

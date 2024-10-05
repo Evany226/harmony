@@ -86,7 +86,11 @@ export function ConvLink({ users, href, status, id }: ConvLinkProps) {
             }`}
           >
             <div className="relative min-w-10 h-10">
-              <Avatar className="w-7 h-7 absolute top-0 left-0">
+              <Avatar
+                className={`group-hover:border-neutral-800 w-7 h-7 absolute top-0 left-0 border-2 ${
+                  pathname == href ? "border-zinc-700" : "border-neutral-900"
+                }`}
+              >
                 <AvatarImage src={users[0].imageUrl} />
                 <AvatarFallback>
                   <Skeleton className="w-full h-full" />

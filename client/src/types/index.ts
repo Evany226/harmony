@@ -39,6 +39,7 @@ export interface Participant {
 export interface Message {
   id: string;
   content: string;
+  edited: boolean;
   senderId: string;
   sender: Participant;
   conversationId: string;
@@ -92,6 +93,7 @@ export interface TextChannel {
 export interface ChannelMessages {
   id: string;
   content: string;
+  edited: boolean;
   senderId: string;
   sender: Member;
   channelId: string;
