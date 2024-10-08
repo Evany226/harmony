@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
 import { useSocket } from "@/context/SocketContext";
 
-import { acceptGuildRequest, rejectGuildRequest } from "@/lib/guilds";
+import { acceptGuildRequest, rejectGuildRequest } from "@/actions/guilds";
 
 interface GuildRequestCardProps {
   guild: Guild;

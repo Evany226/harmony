@@ -37,24 +37,6 @@ export async function getPending(token: string) {
   return data;
 }
 
-export async function sendFriendRequest(username: string) {
-  const response = await fetch("/api/friendRequest", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ username }),
-  });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.error);
-  }
-
-  return data;
-}
-
 export async function acceptFriendRequest(id: string) {
   const response = await fetch(`/api/acceptRequest/${id}`, {
     method: "PUT",

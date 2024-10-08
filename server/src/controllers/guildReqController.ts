@@ -95,6 +95,8 @@ const createGuildRequest = async (req: Request, res: Response) => {
 const acceptGuildRequest = async (req: Request, res: Response) => {
   const { guildRequestId } = req.params;
 
+  console.log(guildRequestId);
+
   try {
     const request = await prisma.guildRequests.update({
       where: {
@@ -118,6 +120,9 @@ const acceptGuildRequest = async (req: Request, res: Response) => {
     const firstCategory = await prisma.category.findFirst({
       where: {
         guildId: request.fromGuildId,
+        channels: {
+          some: {},
+        },
       },
       include: {
         channels: true,

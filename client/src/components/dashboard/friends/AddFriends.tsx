@@ -2,9 +2,9 @@
 
 import { Button } from "../../ui/button";
 import React, { useState } from "react";
-import { sendFriendRequest } from "@/lib/friends";
 import { useToast } from "../../ui/use-toast";
 import Loading from "../../global/Loading";
+import { createFriendRequest } from "@/actions/friends";
 
 export default function AddFriendsForm() {
   const [username, setUsername] = useState<string>("");
@@ -32,7 +32,7 @@ export default function AddFriendsForm() {
     setIsLoading(true);
 
     try {
-      const result = await sendFriendRequest(username);
+      const result = await createFriendRequest(username);
       setUsername("");
       toast({
         variant: "default",

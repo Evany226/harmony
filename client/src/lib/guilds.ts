@@ -153,40 +153,6 @@ export const getPendingGuildReq = async (token: string) => {
   return data;
 };
 
-export const acceptGuildRequest = async (id: string) => {
-  const response = await fetch(`/api/acceptGuildRequest/${id}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.error);
-  }
-
-  return data;
-};
-
-export const rejectGuildRequest = async (id: string) => {
-  const response = await fetch(`/api/rejectGuildRequest/${id}`, {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.error);
-  }
-
-  return data;
-};
-
 export const getUserChannelIds = async (token: string) => {
   const response = await fetch(`http://localhost:3001/api/users/channelids`, {
     method: "GET",

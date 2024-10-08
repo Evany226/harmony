@@ -62,7 +62,7 @@ const getGuild = async (req: Request, res: Response) => {
         },
         categories: {
           orderBy: {
-            createdAt: "desc",
+            createdAt: "asc",
           },
           include: {
             channels: true,

@@ -10,11 +10,7 @@ import {
 import { Separator } from "../../ui/separator";
 import { Friend } from "@/types";
 import { TooltipWrapper } from "../../global/TooltipWrapper";
-import {
-  acceptFriendRequest,
-  rejectFriendRequest,
-  removeFriend,
-} from "@/lib/friends";
+
 import { useToast } from "../../ui/use-toast";
 import { useRouter } from "next/navigation";
 import { Dropdown } from "../../global/Dropdown";
@@ -22,6 +18,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useSocket } from "@/context/SocketContext";
 import ConnectionStatus from "@/components/global/ConnectionStatus";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  acceptFriendRequest,
+  rejectFriendRequest,
+  removeFriend,
+} from "@/actions/friends";
 
 interface FriendsProps {
   friend: Friend;
@@ -191,7 +192,7 @@ export default function FriendsWrapper({
                 <Friends
                   key={friend.id}
                   friend={friend}
-                  pending={false}
+                  pending={variant === "Pending"}
                   status={onlineStatus}
                 />
               );

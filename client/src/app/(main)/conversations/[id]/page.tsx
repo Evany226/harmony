@@ -11,7 +11,7 @@ import ChatHeader from "@/components/global/ChatHeader";
 import MessageCard from "@/components/global/MessageCard";
 import ConvPageSkeleton from "@/components/skeletons/ConvPageSkeleton";
 
-import { createMessage } from "@/lib/conversations";
+import { createMessage } from "@/actions/conv";
 import { useToast } from "@/components/ui/use-toast";
 import { useSocket } from "@/context/SocketContext";
 import { useRouter } from "next/navigation";

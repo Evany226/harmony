@@ -94,7 +94,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       socket.off("onlineUsers");
       socket.off("refresh");
     };
-  }, [getToken, toast, userId, router]);
+  }, [getToken, toast, userId, router, user]);
 
   return (
     <SocketContext.Provider value={{ socket, isConnected, onlineUsers }}>
