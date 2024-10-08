@@ -8,6 +8,7 @@ import { Suspense } from "react";
 
 export default async function ConversationsPanel() {
   const { getToken } = auth();
+  const user = await currentUser();
   const token = await getToken();
   const data = await getAllConversations(token as string);
 

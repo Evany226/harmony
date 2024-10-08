@@ -45,9 +45,10 @@ model Message {
   id      String @id @default(uuid())
   content String
   edited Boolean @default(false)
+  isAlert Boolean @default(false)
 
-  senderId String
-  sender   Participant   @relation("SentMessages", fields: [senderId], references: [id])
+  senderId String?
+  sender   Participant?   @relation("SentMessages", fields: [senderId], references: [id])
 
   conversationId String
   conversation   Conversation @relation(fields: [conversationId], references: [id])
@@ -142,9 +143,10 @@ model ChannelMessages {
   id      String @id @default(uuid())
   content String
   edited Boolean @default(false)
+  isAlert Boolean @default(false)
 
-  senderId String
-  sender   Member @relation("SentChannelMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  senderId String?
+  sender   Member? @relation("SentChannelMessages", fields: [senderId], references: [id], onDelete: Cascade)
 
   channelId String
   channel   TextChannel @relation(fields: [channelId], references: [id], onDelete: Cascade)

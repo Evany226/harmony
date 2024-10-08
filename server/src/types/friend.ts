@@ -23,6 +23,7 @@ export interface Message {
   id: string;
   content: string;
   edited: boolean;
+  isAlert: boolean;
   senderId: string;
   conversationId: string;
   createdAt: string;
@@ -77,6 +78,7 @@ export interface ChannelMessage {
   id: string;
   content: string;
   edited: boolean;
+  isAlert: boolean;
   senderId: string;
   sender: Member;
   channelId: string;

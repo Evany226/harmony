@@ -26,7 +26,7 @@ export default function ConversationPage({
   const [chatTitle, setChatTitle] = useState<string>("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [users, setUsers] = useState<User[]>([]);
-  const [image, setImage] = useState<string>("");
+  const [image, setImage] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [inputValue, setInputValue] = useState<string>("");
   const [socketLoading, setSocketLoading] = useState<boolean>(false);
@@ -65,7 +65,11 @@ export default function ConversationPage({
       });
 
       setUsers(users);
-      setImage(users[0].imageUrl);
+      if (users.length > 1) {
+        setImage([users[0].imageUrl, users[1].imageUrl]);
+      } else {
+        setImage([users[0].imageUrl]);
+      }
 
       const header = await users.map((user: User) => user.username).join(" | ");
       setChatTitle(header);
@@ -144,13 +148,29 @@ export default function ConversationPage({
     <>
       {users.length > 0 ? (
         <>
-          <header className="flex w-full h-12 bg-zinc-900 border-b border-zinc-800 px-2 py-3 space-x-3 items-center ">
-            <Avatar className="w-7 h-7 ml-2">
-              <AvatarImage src={image} />
-              <AvatarFallback></AvatarFallback>
-            </Avatar>
-            <h1 className="text-gray-300 font-semibold">{chatTitle}</h1>
-          </header>
+          {users.length > 1 ? (
+            <header className="flex w-full h-12 bg-zinc-900 border-b border-zinc-800 px-2 py-3 space-x-3 items-center ">
+              <div className="w-10 h-10 relative ml-2">
+                <Avatar className="w-7 h-7 absolute top-0 left-0 border-2 border-neutral-900">
+                  <AvatarImage src={image[0]} />
+                  <AvatarFallback></AvatarFallback>
+                </Avatar>
+                <Avatar className="w-7 h-7 absolute right-0 bottom-0 border-2 border-neutral-900">
+                  <AvatarImage src={image[1]} />
+                  <AvatarFallback></AvatarFallback>
+                </Avatar>
+              </div>
+              <h1 className="text-gray-300 font-semibold">{chatTitle}</h1>
+            </header>
+          ) : (
+            <header className="flex w-full h-12 bg-zinc-900 border-b border-zinc-800 px-2 py-3 space-x-3 items-center ">
+              <Avatar className="w-7 h-7 ml-2">
+                <AvatarImage src={image[0]} />
+                <AvatarFallback></AvatarFallback>
+              </Avatar>
+              <h1 className="text-gray-300 font-semibold">{chatTitle}</h1>
+            </header>
+          )}
 
           <main className="w-full h-[calc(100%-3rem)] flex flex-col">
             <article className="w-3/4 h-full border-r border-zinc-800 flex flex-col relative px-0">

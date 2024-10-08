@@ -2,6 +2,7 @@
 
 import prisma from "../lib/prisma";
 import { Request, Response } from "express";
+import { clerkClient } from "@clerk/clerk-sdk-node";
 
 import { StrictAuthProp } from "@clerk/clerk-sdk-node";
 
@@ -111,6 +112,8 @@ const createConversation = async (req: Request, res: Response) => {
       return res.status(400).json({ error: "Conversation already exists" });
     }
 
+    const currentUser = await clerkClient.users.getUser(userId);
+
     const newConversation = await prisma.conversation.create({
       data: {
         participants: {
@@ -118,6 +121,12 @@ const createConversation = async (req: Request, res: Response) => {
             data: allUserIds.map((userId) => ({
               userId: userId,
             })),
+          },
+        },
+        messages: {
+          create: {
+            content: `Conversation started by user:${currentUser.username}`,
+            isAlert: true,
           },
         },
       },

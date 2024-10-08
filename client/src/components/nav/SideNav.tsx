@@ -9,9 +9,13 @@ import CreateGuildDialog from "../guilds/CreateGuildDialog";
 import SideNavTooltip from "./SideNavTooltip";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Skeleton } from "../ui/skeleton";
+import { currentUser } from "@clerk/nextjs/server";
+import { SignedIn } from "@clerk/nextjs";
 
 export default async function SideNav() {
   const { getToken } = auth();
+  const user = await currentUser();
+
   const token = await getToken();
 
   const guilds = await getAllGuilds(token as string);

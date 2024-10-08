@@ -103,6 +103,9 @@ const acceptGuildRequest = async (req: Request, res: Response) => {
       data: {
         status: "confirmed",
       },
+      include: {
+        toUser: true,
+      },
     });
 
     const newMember = await prisma.member.create({
@@ -111,6 +114,25 @@ const acceptGuildRequest = async (req: Request, res: Response) => {
         guildId: request.fromGuildId,
       },
     });
+
+    const firstCategory = await prisma.category.findFirst({
+      where: {
+        guildId: request.fromGuildId,
+      },
+      include: {
+        channels: true,
+      },
+    });
+
+    if (firstCategory) {
+      await prisma.channelMessages.create({
+        data: {
+          content: `${request.toUser.username} has joined the guild. Welcome them with open arms!`,
+          isAlert: true,
+          channelId: firstCategory.channels[0].id,
+        },
+      });
+    }
 
     res.json(newMember);
   } catch (error) {

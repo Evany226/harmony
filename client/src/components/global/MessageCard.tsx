@@ -7,13 +7,14 @@ import {
   PencilIcon,
   EllipsisHorizontalIcon,
   FaceSmileIcon,
+  ArrowLongRightIcon,
 } from "@heroicons/react/24/solid";
 import { Message, ChannelMessages } from "@/types";
 import EditMessageDropdown from "./EditMessageDropdown";
 import { useToast } from "../ui/use-toast";
 import { editMessage, editChannelMessage } from "@/actions/actions";
 import { useSocket } from "@/context/SocketContext";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@clerk/nextjs";
 
 interface MessageCardProps {
@@ -22,7 +23,7 @@ interface MessageCardProps {
 }
 
 export default function MessageCard({ message, variant }: MessageCardProps) {
-  const sender = message.sender.user;
+  const sender = message.sender?.user;
   const { toast } = useToast();
 
   const { socket } = useSocket();
@@ -78,6 +79,15 @@ export default function MessageCard({ message, variant }: MessageCardProps) {
       });
     }
   };
+
+  if (message.isAlert) {
+    return (
+      <div className="flex items-center w-full py-2 px-5 space-x-2">
+        <ArrowLongRightIcon className="h-5 w-5 text-purple-500" />
+        <p className="font-medium text-gray-300">{message.content}</p>
+      </div>
+    );
+  }
 
   return (
     <div

@@ -7,6 +7,7 @@ interface ChatInputProps {
   setInputValue?: (value: string) => void;
   handleSubmit?: (e: React.FormEvent<HTMLFormElement>) => void;
   socketLoading?: boolean;
+  formRef?: React.RefObject<HTMLFormElement>;
 }
 
 export default function ChatInput({
@@ -14,6 +15,7 @@ export default function ChatInput({
   setInputValue,
   handleSubmit,
   socketLoading,
+  formRef,
 }: ChatInputProps) {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log(e.target.value);
@@ -26,6 +28,7 @@ export default function ChatInput({
     <form
       className="w-full bg-neutral-800 py-1.5 px-4 rounded-lg mb-6"
       onSubmit={handleSubmit}
+      ref={formRef}
     >
       <div className="flex items-center">
         <PlusCircleIcon className="w-7 text-gray-300" />

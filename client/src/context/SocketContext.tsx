@@ -9,6 +9,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { formatTimestamp } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { getUserChannelIds, getUserGuildIds } from "@/lib/guilds";
+import { useUser } from "@clerk/nextjs";
 
 interface SocketContextProps {
   socket: typeof socket;
@@ -20,6 +21,7 @@ const SocketContext = createContext<SocketContextProps | undefined>(undefined);
 
 export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const { getToken, userId } = useAuth();
+  const { user } = useUser();
   const { toast } = useToast();
   const router = useRouter();
 
@@ -44,7 +46,9 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       socket.emit("joinRoom", guildIds);
     };
 
-    fetchConversations();
+    if (user) {
+      fetchConversations();
+    }
 
     socket.on("connect", () => {
       setIsConnected(true);
@@ -80,6 +84,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
 
     socket.on("onlineUsers", (data: string[]) => {
       setOnlineUsers(data);
+      router.refresh();
     });
 
     return () => {

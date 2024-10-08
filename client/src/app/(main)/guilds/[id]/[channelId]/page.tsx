@@ -32,6 +32,7 @@ export default function ChannelPage({
   const { toast } = useToast();
   const router = useRouter();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   const [messages, setMessages] = useState<ChannelMessages[]>([]);
   const [channel, setChannel] = useState<TextChannel | null>(null);
@@ -133,6 +134,7 @@ export default function ChannelPage({
       );
 
       socket.emit("channelMessage", result);
+      formRef.current?.reset();
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -195,7 +197,7 @@ export default function ChannelPage({
             )}
           </div>
           <div className="px-5">
-            <ChatInput handleSubmit={handleSubmit} />
+            <ChatInput handleSubmit={handleSubmit} formRef={formRef} />
           </div>
         </main>
 
