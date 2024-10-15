@@ -13,6 +13,7 @@ import { Friend } from "@/types";
 import { getAllFriends } from "@/lib/friends";
 import { useAuth } from "@clerk/nextjs";
 import { useToast } from "../ui/use-toast";
+import { useSocket } from "@/context/SocketContext";
 
 import { createGuildRequest } from "@/actions/actions";
 import { ScrollArea } from "../ui/scroll-area";
@@ -71,6 +72,7 @@ export default function InviteDialog({
 }) {
   const { getToken } = useAuth();
   const { toast } = useToast();
+  const { socket } = useSocket();
   const [friends, setFriends] = useState<Friend[]>([]);
   const [username, setUsername] = useState<string>("");
 
@@ -99,6 +101,7 @@ export default function InviteDialog({
     try {
       setDialogOpen(false);
       const result = await createGuildRequest(username, guildId);
+      socket.emit("inviteRefresh", result.toUserId);
       toast({
         title: "Invitation sent!",
         description: `You have invited ${username} to the guild.`,

@@ -18,6 +18,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useSocket } from "@/context/SocketContext";
 import ConnectionStatus from "@/components/global/ConnectionStatus";
 import { ScrollArea } from "@/components/ui/scroll-area";
+
 import {
   acceptFriendRequest,
   rejectFriendRequest,
@@ -38,10 +39,12 @@ interface FriendsWrapperProps {
 export function Friends({ friend, pending, status }: FriendsProps) {
   const { toast } = useToast();
   const router = useRouter();
+  const { socket } = useSocket();
 
   const handleAccept = async (id: string) => {
     try {
       const result = await acceptFriendRequest(id);
+      socket.emit("inviteRefresh", friend.id);
       router.refresh();
       toast({
         variant: "default",
@@ -86,6 +89,7 @@ export function Friends({ friend, pending, status }: FriendsProps) {
     try {
       const result = await removeFriend(id);
       router.refresh();
+      socket.emit("inviteRefresh", friend.id);
       toast({
         variant: "default",
         title: "Friend removed!",

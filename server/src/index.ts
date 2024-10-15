@@ -151,6 +151,14 @@ io.on("connection", (socket) => {
     }
   );
 
+  socket.on("inviteRefresh", (userId: string) => {
+    const user = onlineUsers.find((user) => user.userId === userId);
+
+    if (user) {
+      io.in(user.socketId).emit("refresh");
+    }
+  });
+
   socket.on("message", (data: Message) => {
     const { conversationId } = data;
     io.to(conversationId).emit(`message ${conversationId}`, data);

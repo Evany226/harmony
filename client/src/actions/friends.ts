@@ -26,6 +26,8 @@ export async function createFriendRequest(username: string) {
     }
 
     revalidatePath("/guilds");
+
+    return data;
   } catch (error) {
     console.error("Error creating guild request:", error);
     throw error;

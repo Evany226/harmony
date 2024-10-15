@@ -5,10 +5,12 @@ import React, { useState } from "react";
 import { useToast } from "../../ui/use-toast";
 import Loading from "../../global/Loading";
 import { createFriendRequest } from "@/actions/friends";
+import { useSocket } from "@/context/SocketContext";
 
 export default function AddFriendsForm() {
   const [username, setUsername] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { socket } = useSocket();
 
   const { toast } = useToast();
 
@@ -33,6 +35,7 @@ export default function AddFriendsForm() {
 
     try {
       const result = await createFriendRequest(username);
+      socket.emit("inviteRefresh", result.toUserId);
       setUsername("");
       toast({
         variant: "default",

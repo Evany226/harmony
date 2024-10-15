@@ -24,9 +24,9 @@ function GuildRequestCard({ guild, requestId }: GuildRequestCardProps) {
 
   const { socket } = useSocket();
 
-  const handleAccept = async (id: string) => {
+  const handleAccept = async (id: string, guildId: string) => {
     try {
-      const result = await acceptGuildRequest(id);
+      const result = await acceptGuildRequest(id, guildId);
       router.refresh();
       socket.emit("joinGuild", guild.id);
       toast({
@@ -89,7 +89,7 @@ function GuildRequestCard({ guild, requestId }: GuildRequestCardProps) {
         <aside className="flex items-center mr-2">
           <TooltipWrapper text="Accept">
             <button
-              onClick={() => handleAccept(requestId)}
+              onClick={() => handleAccept(requestId, guild.id)}
               className="bg-zinc-800 mr-2 rounded-2xl p-1.5 cursor-pointer group-hover:bg-neutral-900"
             >
               <CheckIcon className="w-6 text-gray-400" />

@@ -205,13 +205,15 @@ export async function createGuildRequest(username: string, guildId: string) {
     }
 
     revalidatePath("/guilds");
+
+    return data;
   } catch (error) {
     console.error("Error creating guild request:", error);
     throw error;
   }
 }
 
-export const acceptGuildRequest = async (id: string) => {
+export const acceptGuildRequest = async (id: string, guildId: string) => {
   const { getToken } = auth();
   const token = await getToken();
 

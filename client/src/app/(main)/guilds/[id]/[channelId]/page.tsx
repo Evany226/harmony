@@ -95,6 +95,12 @@ export default function ChannelPage({
       const token = await getToken();
       const members = await getAllMembers(token as string, params.id);
       setMembers(members);
+
+      const messages = await getAllChannelMessages(
+        token as string,
+        params.channelId
+      );
+      setMessages(messages);
     });
 
     //cleans up by turning off functions when useEffect dismounts
