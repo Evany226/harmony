@@ -16,7 +16,6 @@ import userRouter from "./routes/userRoute";
 import unreadMsgRouter from "./routes/unreadMsgRoute";
 import { Server } from "socket.io";
 import { Message, ChannelMessage } from "./types";
-import { clerkClient } from "@clerk/clerk-sdk-node";
 
 import "dotenv/config"; // To read CLERK_SECRET_KEY and CLERK_PUBLISHABLE_KEY
 import {
@@ -25,6 +24,7 @@ import {
   StrictAuthProp,
 } from "@clerk/clerk-sdk-node";
 import express, { Request } from "express";
+import { AccessToken } from "livekit-server-sdk";
 
 //https://clerk.com/docs/backend-requests/handling/nodejs
 declare global {
@@ -37,6 +37,29 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+const createToken = async () => {
+  // If this room doesn't exist, it'll be automatically created when the first
+  // client joins
+  const roomName = "quickstart-room";
+  // Identifier to be used for participant.
+  // It's available as LocalParticipant.identity with livekit-client SDK
+  const participantName = "quickstart-username";
+
+  const at = new AccessToken(
+    process.env.LIVEKIT_API_KEY,
+    process.env.LIVEKIT_API_SECRET,
+    {
+      identity: participantName,
+      // Token to expire after 10 minutes
+      ttl: 600,
+    }
+  );
+  at.addGrant({ roomJoin: true, room: roomName });
+
+  // eslint-disable-next-line @typescript-eslint/await-thenable
+  return await at.toJwt();
+};
 
 app.get(
   "/",
@@ -62,6 +85,16 @@ app.use("/api/guild-requests", guildReqRouter);
 app.use("/api/guild-messages", guildMsgRouter);
 app.use("/api/users", userRouter);
 app.use("/api/unread", unreadMsgRouter);
+
+app.get("/api/livekit/get-token", async (_req, res) => {
+  try {
+    const test = await createToken();
+
+    res.send(test);
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 const PORT = 3001;
 

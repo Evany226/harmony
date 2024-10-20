@@ -5,11 +5,13 @@ import { getConversation, getAllMessages } from "@/lib/conversations";
 import { useAuth } from "@clerk/nextjs";
 import { User, Message, Participant } from "@/types/index.js";
 import { useUser } from "@clerk/nextjs";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+
 import ChatInput from "@/components/global/ChatInput";
 import ChatHeader from "@/components/global/ChatHeader";
 import MessageCard from "@/components/global/MessageCard";
 import ConvPageSkeleton from "@/components/skeletons/ConvPageSkeleton";
+import ConvPageHeader from "@/components/conversations/ConvPageHeader";
+import ConvProfilePanel from "@/components/conversations/ConvProfilePanel";
 
 import { createMessage } from "@/actions/conv";
 import { useToast } from "@/components/ui/use-toast";
@@ -23,7 +25,7 @@ export default function ConversationPage({
 }: {
   params: { id: string };
 }) {
-  const [chatTitle, setChatTitle] = useState<string>("");
+  const [headerText, setHeaderText] = useState<string>("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [image, setImage] = useState<string[]>([]);
@@ -72,7 +74,7 @@ export default function ConversationPage({
       }
 
       const header = await users.map((user: User) => user.username).join(" | ");
-      setChatTitle(header);
+      setHeaderText(header);
 
       setLoading(false);
     };
@@ -148,34 +150,17 @@ export default function ConversationPage({
     <>
       {users.length > 0 ? (
         <>
-          {users.length > 1 ? (
-            <header className="flex w-full h-12 bg-zinc-900 border-b border-zinc-800 px-2 py-3 space-x-3 items-center ">
-              <div className="w-10 h-10 relative ml-2">
-                <Avatar className="w-7 h-7 absolute top-0 left-0 border-2 border-neutral-900">
-                  <AvatarImage src={image[0]} />
-                  <AvatarFallback></AvatarFallback>
-                </Avatar>
-                <Avatar className="w-7 h-7 absolute right-0 bottom-0 border-2 border-neutral-900">
-                  <AvatarImage src={image[1]} />
-                  <AvatarFallback></AvatarFallback>
-                </Avatar>
-              </div>
-              <h1 className="text-gray-300 font-semibold">{chatTitle}</h1>
-            </header>
-          ) : (
-            <header className="flex w-full h-12 bg-zinc-900 border-b border-zinc-800 px-2 py-3 space-x-3 items-center ">
-              <Avatar className="w-7 h-7 ml-2">
-                <AvatarImage src={image[0]} />
-                <AvatarFallback></AvatarFallback>
-              </Avatar>
-              <h1 className="text-gray-300 font-semibold">{chatTitle}</h1>
-            </header>
-          )}
+          <ConvPageHeader
+            headerText={headerText}
+            image1={image[0]}
+            image2={image[1]}
+            hasMultipleUsers={users.length > 1}
+          />
 
-          <main className="w-full h-[calc(100%-3rem)] flex flex-col">
-            <article className="w-3/4 h-full border-r border-zinc-800 flex flex-col relative px-0">
+          <main className="w-full h-[calc(100%-3rem)] flex">
+            <article className="w-4/5 h-full border-r border-zinc-800 flex flex-col relative px-0">
               <div className="h-full w-full flex flex-col overflow-y-auto mb-4">
-                <ChatHeader name={chatTitle} imageUrl={users[0].imageUrl} />
+                <ChatHeader name={headerText} imageUrl={users[0].imageUrl} />
 
                 {messages.map((message: Message) => {
                   return (
@@ -197,6 +182,8 @@ export default function ConversationPage({
                 />
               </div>
             </article>
+
+            <ConvProfilePanel imageUrl={image[0]} name={headerText} />
           </main>
         </>
       ) : (
