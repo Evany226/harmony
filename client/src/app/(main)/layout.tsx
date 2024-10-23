@@ -11,12 +11,14 @@ export default function MainLayout({
 }) {
   return (
     <SignedIn>
-      <SocketProvider>
-        <main className="flex w-full h-[100vh] bg-gray-100">
-          <SideNav />
-          {children}
-        </main>
-      </SocketProvider>
+      <NotificationProvider>
+        <SocketProvider>
+          <main className="flex w-full h-[100vh] bg-gray-100">
+            <SideNav />
+            {children}
+          </main>
+        </SocketProvider>
+      </NotificationProvider>
     </SignedIn>
   );
 }

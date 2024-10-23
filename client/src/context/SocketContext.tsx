@@ -10,6 +10,7 @@ import { formatTimestamp } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { getUserChannelIds, getUserGuildIds } from "@/lib/guilds";
 import { useUser } from "@clerk/nextjs";
+import { useNotification } from "./NotificationContext";
 
 interface SocketContextProps {
   socket: typeof socket;
@@ -23,6 +24,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const { getToken, userId } = useAuth();
   const { user } = useUser();
   const { toast } = useToast();
+  const { createAlert } = useNotification();
   const router = useRouter();
 
   const [isConnected, setIsConnected] = useState(socket.connected);
@@ -87,14 +89,22 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       router.refresh();
     });
 
+    socket.on(
+      "incomingVoiceCall",
+      (conversationId: string, imageUrl: string) => {
+        createAlert("John Doe", conversationId, imageUrl);
+      }
+    );
+
     return () => {
       socket.off("connect");
       socket.off("disconnect");
       socket.off("notification");
       socket.off("onlineUsers");
       socket.off("refresh");
+      socket.off("incomingVoiceCall");
     };
-  }, [getToken, toast, userId, router, user]);
+  }, [createAlert, getToken, toast, userId, router, user]);
 
   return (
     <SocketContext.Provider value={{ socket, isConnected, onlineUsers }}>

@@ -16,6 +16,7 @@ import userRouter from "./routes/userRoute";
 import unreadMsgRouter from "./routes/unreadMsgRoute";
 import { Server } from "socket.io";
 import { Message, ChannelMessage } from "./types";
+import { v4 as uuidv4 } from "uuid";
 
 import "dotenv/config"; // To read CLERK_SECRET_KEY and CLERK_PUBLISHABLE_KEY
 import {
@@ -38,13 +39,17 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const createToken = async () => {
+const createToken = async ({
+  roomName,
+  participantName,
+}: {
+  roomName: string;
+  participantName: string;
+}) => {
   // If this room doesn't exist, it'll be automatically created when the first
   // client joins
-  const roomName = "quickstart-room";
   // Identifier to be used for participant.
   // It's available as LocalParticipant.identity with livekit-client SDK
-  const participantName = "quickstart-username";
 
   const at = new AccessToken(
     process.env.LIVEKIT_API_KEY,
@@ -86,11 +91,15 @@ app.use("/api/guild-messages", guildMsgRouter);
 app.use("/api/users", userRouter);
 app.use("/api/unread", unreadMsgRouter);
 
-app.get("/api/livekit/get-token", async (_req, res) => {
+app.post("/api/livekit/get-token", async (req, res) => {
   try {
-    const test = await createToken();
+    const { roomName, participantName } = req.body as {
+      roomName: string;
+      participantName: string;
+    };
+    const test = await createToken({ roomName, participantName });
 
-    res.send(test);
+    res.json(test);
   } catch (error) {
     console.log(error);
   }
@@ -206,6 +215,12 @@ io.on("connection", (socket) => {
     const { conversationId } = data;
     socket.to(conversationId).emit(`notification`, data);
     socket.to(conversationId).emit(`unread ${conversationId}`);
+  });
+
+  socket.on("newVoiceCall", (conversationId: string, imageUrl: string) => {
+    socket
+      .to(conversationId)
+      .emit(`incomingVoiceCall`, conversationId, imageUrl);
   });
 
   socket.on("channelMessage", (data: ChannelMessage) => {

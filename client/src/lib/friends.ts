@@ -37,12 +37,16 @@ export async function getPending(token: string) {
   return data;
 }
 
-export async function getLiveKitToken() {
+export async function getLiveKitToken(roomName: string, userId: string) {
   const response = await fetch("http://localhost:3001/api/livekit/get-token", {
-    method: "GET",
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
+    body: JSON.stringify({
+      roomName: roomName,
+      participantName: userId,
+    }),
   });
 
   const data = await response.json();

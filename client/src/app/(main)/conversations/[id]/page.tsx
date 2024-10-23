@@ -12,11 +12,13 @@ import MessageCard from "@/components/global/MessageCard";
 import ConvPageSkeleton from "@/components/skeletons/ConvPageSkeleton";
 import ConvPageHeader from "@/components/conversations/ConvPageHeader";
 import ConvProfilePanel from "@/components/conversations/ConvProfilePanel";
+import VoiceCallOverlay from "@/components/conference/VoiceCallOverlay";
 
 import { createMessage } from "@/actions/conv";
 import { useToast } from "@/components/ui/use-toast";
 import { useSocket } from "@/context/SocketContext";
 import { useRouter } from "next/navigation";
+import { useNotification } from "@/context/NotificationContext";
 
 import { usePathname } from "next/navigation";
 
@@ -33,6 +35,7 @@ export default function ConversationPage({
   const [inputValue, setInputValue] = useState<string>("");
   const [socketLoading, setSocketLoading] = useState<boolean>(false);
   const { socket, isConnected } = useSocket();
+  const { isVoiceCallOpen, setIsVoiceCallOpen } = useNotification();
 
   const { user: currUser } = useUser();
   const { getToken } = useAuth();
@@ -42,6 +45,7 @@ export default function ConversationPage({
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  //fetch
   useEffect(() => {
     const fetchData = async () => {
       const token = await getToken();
@@ -84,6 +88,7 @@ export default function ConversationPage({
     }
   }, [getToken, params.id, currUser, router]);
 
+  //handle incoming sockets
   useEffect(() => {
     const handleMessage = (msg: Message) => {
       console.log("Received message:", msg);
@@ -146,6 +151,11 @@ export default function ConversationPage({
     }
   };
 
+  const startVoiceCall = () => {
+    setIsVoiceCallOpen(true);
+    socket.emit("newVoiceCall", params.id, currUser?.imageUrl);
+  };
+
   return (
     <>
       {users.length > 0 ? (
@@ -155,11 +165,17 @@ export default function ConversationPage({
             image1={image[0]}
             image2={image[1]}
             hasMultipleUsers={users.length > 1}
+            startVoiceCall={startVoiceCall}
           />
 
           <main className="w-full h-[calc(100%-3rem)] flex">
             <article className="w-4/5 h-full border-r border-zinc-800 flex flex-col relative px-0">
-              <div className="h-full w-full flex flex-col overflow-y-auto mb-4">
+              {isVoiceCallOpen && <VoiceCallOverlay convId={params.id} />}
+              <div
+                className={`h-full w-full flex flex-col overflow-y-auto mb-4 ${
+                  isVoiceCallOpen && "h-1/3"
+                }`}
+              >
                 <ChatHeader name={headerText} imageUrl={users[0].imageUrl} />
 
                 {messages.map((message: Message) => {

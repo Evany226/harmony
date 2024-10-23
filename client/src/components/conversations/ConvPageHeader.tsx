@@ -12,6 +12,7 @@ interface ConvPageHeaderProps {
   image1: string;
   image2?: string;
   hasMultipleUsers: boolean;
+  startVoiceCall: () => void;
 }
 
 export default function ConvPageHeader({
@@ -19,6 +20,7 @@ export default function ConvPageHeader({
   image1,
   image2,
   hasMultipleUsers,
+  startVoiceCall,
 }: ConvPageHeaderProps) {
   return (
     <header className="flex justify-between w-full h-12 bg-zinc-900 border-b border-zinc-800 px-3 py-3 items-center">
@@ -44,7 +46,10 @@ export default function ConvPageHeader({
       </div>
 
       <div className="flex space-x-4 items-center mr-2">
-        <PhoneArrowUpRightIcon className="w-6 h-6 text-gray-400 hover:text-gray-300 cursor-pointer" />
+        <PhoneArrowUpRightIcon
+          className="w-6 h-6 text-gray-400 hover:text-gray-300 cursor-pointer"
+          onClick={startVoiceCall}
+        />
         <VideoCameraIcon className="w-6 h-6 text-gray-400 hover:text-gray-300 cursor-pointer" />
         <UserCircleIcon className="w-6 h-6 text-gray-400 hover:text-gray-300 cursor-pointer" />
         <div className="flex items-center bg-zinc-800 rounded-sm py-1 px-2">
