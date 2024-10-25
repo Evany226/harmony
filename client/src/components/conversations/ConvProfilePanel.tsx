@@ -1,5 +1,4 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Separator } from "../ui/separator";
 import { Skeleton } from "../ui/skeleton";
 
 interface ConvProfilePanelProps {

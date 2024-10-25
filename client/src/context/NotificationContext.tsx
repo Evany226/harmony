@@ -38,6 +38,10 @@ export const NotificationProvider = ({
     setUsername(username);
     setImage(imageUrl);
     setConversationId(conversationId);
+    setTimeout(() => {
+      setAlert(false);
+      console.log("timed out ");
+    }, 10000);
   };
 
   return (
@@ -73,7 +77,9 @@ export const NotificationProvider = ({
               </div>
               <div
                 className="bg-red-600 rounded-full p-2 cursor-pointer"
-                onClick={() => setAlert(false)}
+                onClick={() => {
+                  setAlert(false);
+                }}
               >
                 <XMarkIcon className="w-7 h-7 text-gray-300" />
               </div>

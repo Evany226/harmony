@@ -16,6 +16,7 @@ import userRouter from "./routes/userRoute";
 import unreadMsgRouter from "./routes/unreadMsgRoute";
 import { Server } from "socket.io";
 import { Message, ChannelMessage } from "./types";
+import { Room, RoomServiceClient } from "livekit-server-sdk";
 import { v4 as uuidv4 } from "uuid";
 
 import "dotenv/config"; // To read CLERK_SECRET_KEY and CLERK_PUBLISHABLE_KEY
@@ -26,6 +27,13 @@ import {
 } from "@clerk/clerk-sdk-node";
 import express, { Request } from "express";
 import { AccessToken } from "livekit-server-sdk";
+
+const livekitHost = "wss://harmony-zknfyk4k.livekit.cloud";
+const roomService = new RoomServiceClient(
+  livekitHost,
+  process.env.LIVEKIT_API_KEY,
+  process.env.LIVEKIT_API_SECRET
+);
 
 //https://clerk.com/docs/backend-requests/handling/nodejs
 declare global {
@@ -102,6 +110,32 @@ app.post("/api/livekit/get-token", async (req, res) => {
     res.json(test);
   } catch (error) {
     console.log(error);
+  }
+});
+
+app.post("/api/livekit/room-empty", async (req, res) => {
+  const { roomName } = req.body as { roomName: string };
+
+  try {
+    const rooms = await roomService.listRooms();
+    const room = rooms.find((room) => room.name === roomName);
+
+    if (!room) {
+      res.json({ empty: true });
+      return;
+    }
+
+    const result = await roomService.listParticipants(roomName);
+
+    if (result.length === 0) {
+      res.json({ empty: true });
+    } else {
+      res.json({ empty: false });
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    console.error("Error checking room:", error);
+    res.status(500).json({ error: "Error checking room" });
   }
 });
 
@@ -221,6 +255,29 @@ io.on("connection", (socket) => {
     socket
       .to(conversationId)
       .emit(`incomingVoiceCall`, conversationId, imageUrl);
+
+    io.to(conversationId).emit(`checkRoomEmpty ${conversationId}`, false);
+  });
+
+  socket.on("checkRoomEmpty", async (conversationId: string) => {
+    const rooms = await roomService.listRooms();
+    const room = rooms.find((room) => room.name === conversationId);
+
+    let isEmpty;
+
+    if (!room) {
+      isEmpty = true;
+    }
+
+    const result = await roomService.listParticipants(conversationId);
+
+    if (result.length === 0) {
+      isEmpty = true;
+    } else {
+      isEmpty = false;
+    }
+
+    io.to(conversationId).emit(`checkRoomEmpty ${conversationId}`, isEmpty);
   });
 
   socket.on("channelMessage", (data: ChannelMessage) => {

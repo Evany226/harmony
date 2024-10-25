@@ -13,12 +13,15 @@ import ConvPageSkeleton from "@/components/skeletons/ConvPageSkeleton";
 import ConvPageHeader from "@/components/conversations/ConvPageHeader";
 import ConvProfilePanel from "@/components/conversations/ConvProfilePanel";
 import VoiceCallOverlay from "@/components/conference/VoiceCallOverlay";
+import PendingVoiceCall from "@/components/conference/PendingVoiceCall";
 
 import { createMessage } from "@/actions/conv";
 import { useToast } from "@/components/ui/use-toast";
 import { useSocket } from "@/context/SocketContext";
 import { useRouter } from "next/navigation";
 import { useNotification } from "@/context/NotificationContext";
+import { useParticipants } from "@livekit/components-react";
+import { checkRoomEmpty } from "@/lib/friends";
 
 import { usePathname } from "next/navigation";
 
@@ -31,11 +34,13 @@ export default function ConversationPage({
   const [messages, setMessages] = useState<Message[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [image, setImage] = useState<string[]>([]);
+  const [allImages, setAllImages] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [inputValue, setInputValue] = useState<string>("");
   const [socketLoading, setSocketLoading] = useState<boolean>(false);
   const { socket, isConnected } = useSocket();
   const { isVoiceCallOpen, setIsVoiceCallOpen } = useNotification();
+  const [isRoomEmpty, setIsRoomEmpty] = useState<boolean>(true);
 
   const { user: currUser } = useUser();
   const { getToken } = useAuth();
@@ -71,14 +76,15 @@ export default function ConversationPage({
       });
 
       setUsers(users);
-      if (users.length > 1) {
-        setImage([users[0].imageUrl, users[1].imageUrl]);
-      } else {
-        setImage([users[0].imageUrl]);
-      }
+
+      const allImages = users.map((user: User) => user.imageUrl);
+      setAllImages(allImages);
 
       const header = await users.map((user: User) => user.username).join(" | ");
       setHeaderText(header);
+
+      const isEmpty = await checkRoomEmpty(params.id);
+      setIsRoomEmpty(isEmpty.empty);
 
       setLoading(false);
     };
@@ -106,13 +112,19 @@ export default function ConversationPage({
       );
     };
 
+    const updateRoom = (isEmpty: boolean) => {
+      setIsRoomEmpty(isEmpty);
+    };
+
     socket.on(`message ${params.id}`, handleMessage);
     socket.on(`editMessage ${params.id}`, handleEdit);
+    socket.on(`checkRoomEmpty ${params.id}`, updateRoom);
 
     //cleans up by turning off functions when useEffect dismounts
     return () => {
       socket.off(`message ${params.id}`, handleMessage);
       socket.off(`editMessage ${params.id}`, handleEdit);
+      socket.off(`checkRoomEmpty ${params.id}`, updateRoom);
     };
   }, [params.id, socket]);
 
@@ -152,8 +164,36 @@ export default function ConversationPage({
   };
 
   const startVoiceCall = () => {
-    setIsVoiceCallOpen(true);
-    socket.emit("newVoiceCall", params.id, currUser?.imageUrl);
+    if (!isVoiceCallOpen) {
+      setIsVoiceCallOpen(true);
+      socket.emit("newVoiceCall", params.id, currUser?.imageUrl);
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Already in a voice call.",
+        description: `${
+          pathname === `/conversations/${params.id}`
+            ? "You are already in this voice call."
+            : "You cannot start a new voice call while already in one. Please leave first."
+        }`,
+      });
+    }
+  };
+
+  const lateJoinVoiceCall = () => {
+    if (!isVoiceCallOpen) {
+      setIsVoiceCallOpen(true);
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Already in a voice call.",
+        description: `${
+          pathname === `/conversations/${params.id}`
+            ? "You are already in this voice call."
+            : "You cannot start a new voice call while already in one. Please leave first."
+        }`,
+      });
+    }
   };
 
   return (
@@ -162,8 +202,8 @@ export default function ConversationPage({
         <>
           <ConvPageHeader
             headerText={headerText}
-            image1={image[0]}
-            image2={image[1]}
+            image1={allImages[0]}
+            image2={allImages[1]}
             hasMultipleUsers={users.length > 1}
             startVoiceCall={startVoiceCall}
           />
@@ -171,9 +211,16 @@ export default function ConversationPage({
           <main className="w-full h-[calc(100%-3rem)] flex">
             <article className="w-4/5 h-full border-r border-zinc-800 flex flex-col relative px-0">
               {isVoiceCallOpen && <VoiceCallOverlay convId={params.id} />}
+
+              {!isRoomEmpty && !isVoiceCallOpen && (
+                <PendingVoiceCall
+                  allImages={allImages}
+                  lateJoin={lateJoinVoiceCall}
+                />
+              )}
               <div
-                className={`h-full w-full flex flex-col overflow-y-auto mb-4 ${
-                  isVoiceCallOpen && "h-1/3"
+                className={`w-full flex flex-col overflow-y-auto mb-4 ${
+                  isVoiceCallOpen ? "h-1/2" : "h-full"
                 }`}
               >
                 <ChatHeader name={headerText} imageUrl={users[0].imageUrl} />
@@ -199,7 +246,7 @@ export default function ConversationPage({
               </div>
             </article>
 
-            <ConvProfilePanel imageUrl={image[0]} name={headerText} />
+            <ConvProfilePanel imageUrl={allImages[0]} name={headerText} />
           </main>
         </>
       ) : (

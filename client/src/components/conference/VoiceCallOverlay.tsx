@@ -3,6 +3,8 @@
 import { getLiveKitToken } from "@/lib/friends";
 import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
+import { useNotification } from "@/context/NotificationContext";
+import { socket } from "@/app/socket";
 
 import {
   ControlBar,
@@ -26,6 +28,7 @@ interface VoiceCallOverlayProps {
 export default function VoiceCallOverlay({ convId }: VoiceCallOverlayProps) {
   const [token, setToken] = useState("");
   const { user } = useUser();
+  const { setIsVoiceCallOpen } = useNotification();
   const userName = user?.username;
 
   useEffect(() => {
@@ -46,13 +49,19 @@ export default function VoiceCallOverlay({ convId }: VoiceCallOverlayProps) {
     return <div>Getting token...</div>;
   }
 
+  const handleLeaveRoom = () => {
+    setIsVoiceCallOpen(false);
+    socket.emit("checkRoomEmpty", convId);
+  };
+
   return (
-    <div className="w-full h-2/3 bg-neutral-950">
+    <div className="w-full h-1/2 bg-neutral-950">
       <LiveKitRoom
         video={true}
         audio={true}
         token={token}
         serverUrl={serverUrl}
+        onDisconnected={handleLeaveRoom}
         // Use the default LiveKit theme for nice styles.
         data-lk-theme="default"
         style={{ height: "100%" }}
