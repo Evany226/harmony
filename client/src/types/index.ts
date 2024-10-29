@@ -50,6 +50,7 @@ export interface Message {
 export interface Guild {
   id: string;
   name: string;
+  imageUrl?: string;
   ownerId: string;
   owner: User;
   members: Member[];

@@ -14,11 +14,12 @@ import guildReqRouter from "./routes/guildReqRoute";
 import guildMsgRouter from "./routes/guildMsgRoute";
 import userRouter from "./routes/userRoute";
 import unreadMsgRouter from "./routes/unreadMsgRoute";
+import guildImageRouter from "./routes/guildImgRoute";
 import { Server } from "socket.io";
 import { Message, ChannelMessage } from "./types";
-import { Room, RoomServiceClient } from "livekit-server-sdk";
-import { v4 as uuidv4 } from "uuid";
+import bodyParser from "body-parser";
 
+import { roomService } from "./lib/livekit";
 import "dotenv/config"; // To read CLERK_SECRET_KEY and CLERK_PUBLISHABLE_KEY
 import {
   ClerkExpressRequireAuth,
@@ -26,14 +27,6 @@ import {
   StrictAuthProp,
 } from "@clerk/clerk-sdk-node";
 import express, { Request } from "express";
-import { AccessToken } from "livekit-server-sdk";
-
-const livekitHost = "wss://harmony-zknfyk4k.livekit.cloud";
-const roomService = new RoomServiceClient(
-  livekitHost,
-  process.env.LIVEKIT_API_KEY,
-  process.env.LIVEKIT_API_SECRET
-);
 
 //https://clerk.com/docs/backend-requests/handling/nodejs
 declare global {
@@ -42,37 +35,10 @@ declare global {
   }
 }
 
-const app = express();
+export const app = express();
 
 app.use(cors());
 app.use(express.json());
-
-const createToken = async ({
-  roomName,
-  participantName,
-}: {
-  roomName: string;
-  participantName: string;
-}) => {
-  // If this room doesn't exist, it'll be automatically created when the first
-  // client joins
-  // Identifier to be used for participant.
-  // It's available as LocalParticipant.identity with livekit-client SDK
-
-  const at = new AccessToken(
-    process.env.LIVEKIT_API_KEY,
-    process.env.LIVEKIT_API_SECRET,
-    {
-      identity: participantName,
-      // Token to expire after 10 minutes
-      ttl: 600,
-    }
-  );
-  at.addGrant({ roomJoin: true, room: roomName });
-
-  // eslint-disable-next-line @typescript-eslint/await-thenable
-  return await at.toJwt();
-};
 
 app.get(
   "/",
@@ -98,46 +64,7 @@ app.use("/api/guild-requests", guildReqRouter);
 app.use("/api/guild-messages", guildMsgRouter);
 app.use("/api/users", userRouter);
 app.use("/api/unread", unreadMsgRouter);
-
-app.post("/api/livekit/get-token", async (req, res) => {
-  try {
-    const { roomName, participantName } = req.body as {
-      roomName: string;
-      participantName: string;
-    };
-    const test = await createToken({ roomName, participantName });
-
-    res.json(test);
-  } catch (error) {
-    console.log(error);
-  }
-});
-
-app.post("/api/livekit/room-empty", async (req, res) => {
-  const { roomName } = req.body as { roomName: string };
-
-  try {
-    const rooms = await roomService.listRooms();
-    const room = rooms.find((room) => room.name === roomName);
-
-    if (!room) {
-      res.json({ empty: true });
-      return;
-    }
-
-    const result = await roomService.listParticipants(roomName);
-
-    if (result.length === 0) {
-      res.json({ empty: true });
-    } else {
-      res.json({ empty: false });
-    }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
-    console.error("Error checking room:", error);
-    res.status(500).json({ error: "Error checking room" });
-  }
-});
+app.use("/api/guild-image", guildImageRouter);
 
 const PORT = 3001;
 

@@ -79,14 +79,27 @@ const getGuild = async (req: Request, res: Response) => {
 };
 
 const createGuild = async (req: Request, res: Response) => {
-  const userId = req.auth.userId;
-  // const userId = "user_2kvgB9d6HPZNSZGsGDf02nYSx12";
+  // const userId = req.auth.userId;
+  const userId = "user_2kvgB9d6HPZNSZGsGDf02nYSx12";
   const { name } = req.body as { name: string };
+
+  if (!name) {
+    return res.status(400).json({ error: "Guild name is required" });
+  }
+
+  const file = req.file as Express.MulterS3.File;
+
+  if (!file) {
+    return res.status(400).json({ error: "Image is required" });
+  }
+
+  console.log(file);
 
   try {
     const newGuild = await prisma.guild.create({
       data: {
         name: name,
+        imageUrl: file.location,
         ownerId: userId,
         members: {
           create: {

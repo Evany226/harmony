@@ -40,6 +40,18 @@ export default function CreateGuildDialog({
       return;
     }
 
+    const photos = formData.get("photos");
+
+    if (!photos || !(photos instanceof File) || photos.size === 0) {
+      toast({
+        variant: "destructive",
+        title: "Failed to create guild",
+        description:
+          "Please upload a guild image. The image field cannot be empty.",
+      });
+      return;
+    }
+
     try {
       setDialogOpen(false);
       const result = await createNewGuild(formData);
@@ -72,16 +84,27 @@ export default function CreateGuildDialog({
             start talking.
           </DialogDescription>
         </DialogHeader>
-        <form className=" w-full flex flex-col" onSubmit={handleSubmit}>
-          <main className="w-full flex justify-center">
-            <div className="h-20 w-20 rounded-full border-2 border-dashed flex flex-col items-center justify-center relative">
-              <CameraIcon className="h-6 w-6 text-gray-300" />
-              <p className="text-gray-300 text-xs font-semibold">UPLOAD</p>
+        <form className="w-full flex flex-col" onSubmit={handleSubmit}>
+          <label
+            htmlFor="file-upload"
+            className="w-full flex justify-center cursor-pointer"
+          >
+            <div className="h-20 w-20 rounded-full border-2 border-dashed flex flex-col items-center justify-center relative cursor-pointer">
+              <CameraIcon className="h-6 w-6 text-gray-300 cursor-pointer" />
+              <p className="text-gray-300 text-xs font-semibold cursor-pointer">
+                UPLOAD
+              </p>
+              <input
+                type="file"
+                id="file-upload"
+                name="photos"
+                className="absolute -z-1 opacity-0 cursor-pointer"
+              ></input>
               <div className="absolute top-0 right-0 rounded-full bg-purple-700">
                 <PlusIcon className="h-5 w-5 text-gray-300" />
               </div>
             </div>
-          </main>
+          </label>
 
           <aside className="flex flex-col space-y-2">
             <label className="text-gray-300 text-sm font-semibold">

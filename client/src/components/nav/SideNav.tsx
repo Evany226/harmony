@@ -36,7 +36,7 @@ export default async function SideNav() {
         </SideNavTooltip>
       </section>
 
-      <section className="flex flex-col h-full w-full items-center mt-2">
+      <section className="flex flex-col h-full w-full items-center mt-2 space-y-1">
         {guilds.map((guild: Guild) => {
           const hasChannels =
             guild.categories.length > 0 &&
@@ -57,12 +57,21 @@ export default async function SideNav() {
                     : `/guilds/${guild.id}`
                 }
               >
-                <Image
-                  src="/harmony-logo.png"
-                  width={60}
-                  height={60}
-                  alt="Logo"
-                />
+                {guild.imageUrl ? (
+                  <Avatar className="w-12 h-12">
+                    <AvatarImage src={guild.imageUrl} alt={guild.name} />
+                    <AvatarFallback>
+                      <Skeleton className="h-16 w-16" />
+                    </AvatarFallback>
+                  </Avatar>
+                ) : (
+                  <Image
+                    src="/logo-past.png"
+                    width={60}
+                    height={60}
+                    alt="Logo"
+                  />
+                )}
               </Link>
             </SideNavTooltip>
           );

@@ -71,6 +71,7 @@ model Conversation {
 model Guild {
   id   String @id @default(uuid())
   name String
+  imageUrl String?
 
   ownerId String
   owner   User   @relation("GuildOwners", fields: [ownerId], references: [id])

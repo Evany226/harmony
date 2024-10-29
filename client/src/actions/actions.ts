@@ -24,6 +24,7 @@ export const {
   updateCategory,
   deleteCategory,
   createGuildRequest,
+  uploadGuildImage,
 } = guildActions;
 
 export const { acceptFriendRequest } = friendActions;
