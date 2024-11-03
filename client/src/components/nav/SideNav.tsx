@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { PlusCircleIcon } from "@heroicons/react/24/solid";
+import { PlusIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import { getAllGuilds } from "@/lib/guilds";
 import { auth } from "@clerk/nextjs/server";
@@ -36,7 +36,7 @@ export default async function SideNav() {
         </SideNavTooltip>
       </section>
 
-      <section className="flex flex-col h-full w-full items-center mt-2 space-y-1">
+      <section className="flex flex-col h-full w-full items-center mt-2 space-y-2">
         {guilds.map((guild: Guild) => {
           const hasChannels =
             guild.categories.length > 0 &&
@@ -77,7 +77,9 @@ export default async function SideNav() {
           );
         })}
         <CreateGuildDialog>
-          <PlusCircleIcon className="w-16 text-zinc-700 hover:text-zinc-600 cursor-pointer" />
+          <div className="w-12 h-12 rounded-full bg-zinc-700 hover:bg-zinc-600 flex items-center justify-center">
+            <PlusIcon className="w-6 text-zinc-900 cursor-pointer stroke-[4px]" />
+          </div>
         </CreateGuildDialog>
       </section>
     </ScrollArea>

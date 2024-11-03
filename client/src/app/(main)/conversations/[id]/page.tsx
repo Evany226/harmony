@@ -21,7 +21,7 @@ import { useSocket } from "@/context/SocketContext";
 import { useRouter } from "next/navigation";
 import { useNotification } from "@/context/NotificationContext";
 import { useParticipants } from "@livekit/components-react";
-import { checkRoomEmpty } from "@/lib/friends";
+import { checkRoomEmpty } from "@/lib/conversations";
 
 import { usePathname } from "next/navigation";
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { getLiveKitToken } from "@/lib/friends";
+import { getLiveKitToken } from "@/lib/conversations";
 import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import { useNotification } from "@/context/NotificationContext";

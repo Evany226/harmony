@@ -90,7 +90,7 @@ export default function CreateCategoryDialog({
 
           <GuildDialogFooter
             text="Create"
-            setDialogOpen={setDialogOpen}
+            dialogFunc={() => setDialogOpen(false)}
             variant="Category"
           />
         </form>

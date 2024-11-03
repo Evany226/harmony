@@ -47,7 +47,7 @@ export default function EditCategoryDialog({
 
         <Separator className="mt-4" />
         <GuildDialogFooter
-          setDialogOpen={setDialogOpen}
+          dialogFunc={() => setDialogOpen(false)}
           text="Save"
           hasDelete={true}
           handleDelete={handleDelete}

@@ -123,7 +123,7 @@ export default function CreateChannelDialog({
           </aside>
 
           <GuildDialogFooter
-            setDialogOpen={setDialogOpen}
+            dialogFunc={() => setDialogOpen(false)}
             text="Create"
             variant="Channel"
           />

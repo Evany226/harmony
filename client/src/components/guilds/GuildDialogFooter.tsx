@@ -4,12 +4,12 @@ import AlertDialogWrapper from "../global/AlertDialogWrapper";
 
 export default function GuildDialogFooter({
   text,
-  setDialogOpen,
+  dialogFunc,
   hasDelete,
   handleDelete,
   variant,
 }: {
-  setDialogOpen?: (arg: boolean) => void;
+  dialogFunc?: () => void;
   text: string;
   hasDelete?: boolean;
   handleDelete?: () => void;
@@ -28,12 +28,12 @@ export default function GuildDialogFooter({
         )}
       </div>
       <div className="flex items-center">
-        {setDialogOpen && (
+        {dialogFunc && (
           <Button
             variant="ghost"
             className="text-gray-300 focus:bg-zinc-800 hover:text-white hover:underline hover:bg-zinc-800"
             type="button"
-            onClick={() => setDialogOpen(false)}
+            onClick={dialogFunc}
           >
             Cancel
           </Button>

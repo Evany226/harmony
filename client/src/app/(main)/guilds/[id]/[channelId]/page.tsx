@@ -5,13 +5,8 @@ import { HashtagIcon } from "@heroicons/react/24/solid";
 import ChatInput from "@/components/global/ChatInput";
 import UserPanel from "@/components/guilds/users/UserPanel";
 import { Separator } from "@/components/ui/separator";
-import { redirect } from "next/navigation";
-import {
-  getFirstChannel,
-  getAllChannelMessages,
-  getChannel,
-  getAllMembers,
-} from "@/lib/guilds";
+
+import { getAllChannelMessages, getChannel, getAllMembers } from "@/lib/guilds";
 import { useEffect, useState, useRef } from "react";
 import { ChannelMessages, TextChannel, Member } from "@/types";
 import GuildEmptyState from "@/components/empty-states/GuildEmptyState";
@@ -40,12 +35,10 @@ export default function ChannelPage({
   const [loading, setLoading] = useState<boolean>(true);
   const { socket, isConnected } = useSocket();
 
-  //href to the first channel in a guild. used for redirecting if the current channel is not found
-  const [firstChannel, setFirstChannel] = useState<string>("");
-
   useEffect(() => {
     const fetchData = async () => {
       const token = await getToken();
+
       const messages = await getAllChannelMessages(
         token as string,
         params.channelId
@@ -57,9 +50,6 @@ export default function ChannelPage({
 
       const members = await getAllMembers(token as string, params.id);
       setMembers(members);
-
-      const firstChannel = await getFirstChannel(token as string, params.id);
-      setFirstChannel(firstChannel);
 
       setLoading(false);
 
@@ -85,11 +75,15 @@ export default function ChannelPage({
       );
     };
 
+    socket.on("newChannel", (channelId: string) => {
+      socket.emit("joinChannel", channelId);
+    });
+
     socket.on(`channelMessage ${params.channelId}`, handleMessage);
 
     socket.on(`editChannelMessage ${params.channelId}`, handleEditMessage);
 
-    socket.on("updateGuild", async () => {
+    socket.on(`updateGuild ${params.id}`, async () => {
       //revalidates the other clients when a new member joins
       console.log("revalidating");
       const token = await getToken();
@@ -103,11 +97,16 @@ export default function ChannelPage({
       setMessages(messages);
     });
 
+    socket.on(`deleteChannel ${params.channelId}`, (channelId) => {
+      router.push(`/guilds/${params.id}`);
+    });
+
     //cleans up by turning off functions when useEffect dismounts
     return () => {
       socket.off(`channelMessage ${params.channelId}`, handleMessage);
       socket.off("updateGuild");
       socket.off(`editChannelMessage ${params.channelId}`, handleEditMessage);
+      socket.off(`deleteChannel ${params.channelId}`);
     };
   }, [params.channelId, socket, toast, router, params.id, getToken]);
 
@@ -157,58 +156,56 @@ export default function ChannelPage({
   }
 
   if (!channel) {
-    if (firstChannel !== "") {
-      redirect(firstChannel);
-    } else {
-      redirect(`/guilds/${params.id}`);
-    }
+    router.push(`/guilds/${params.id}`);
+  } else {
+    return (
+      <>
+        <header className="flex w-full h-12 bg-zinc-900 border-b border-zinc-800 px-2 py-3 items-center">
+          <HashtagIcon className="w-5 text-gray-300 cursor-pointer ml-2" />
+          <h1 className="text-gray-300 font-semibold ml-1 text-sm">
+            {channel.name}
+          </h1>
+          {channel.topic && (
+            <>
+              <Separator className="mx-3" orientation="vertical" />
+              <p className="text-gray-400 font-medium text-xs">
+                {channel.topic}
+              </p>
+            </>
+          )}
+        </header>
+        <div className="flex w-full h-[calc(100%-3rem)] ">
+          <main className="w-[calc(100%-16rem)] h-full border-r border-zinc-800 flex flex-col relative">
+            <div className="h-full w-full flex flex-col overflow-y-auto mb-4">
+              {messages.length === 0 ? (
+                <GuildEmptyState
+                  name={channel.name}
+                  imageUrl={"/logo-past.png"}
+                />
+              ) : (
+                <>
+                  <ChatHeader name={channel.name} imageUrl={"/logo-past.png"} />
+                  {messages.map((message: ChannelMessages) => {
+                    return (
+                      <MessageCard
+                        key={message.id}
+                        message={message}
+                        variant="channel"
+                      />
+                    );
+                  })}
+                  <div ref={messagesEndRef} />
+                </>
+              )}
+            </div>
+            <div className="px-5">
+              <ChatInput handleSubmit={handleSubmit} formRef={formRef} />
+            </div>
+          </main>
+
+          <UserPanel members={members} />
+        </div>
+      </>
+    );
   }
-
-  return (
-    <>
-      <header className="flex w-full h-12 bg-zinc-900 border-b border-zinc-800 px-2 py-3 items-center">
-        <HashtagIcon className="w-5 text-gray-300 cursor-pointer ml-2" />
-        <h1 className="text-gray-300 font-semibold ml-1 text-sm">
-          {channel.name}
-        </h1>
-        {channel.topic && (
-          <>
-            <Separator className="mx-3" orientation="vertical" />
-            <p className="text-gray-400 font-medium text-xs">{channel.topic}</p>
-          </>
-        )}
-      </header>
-      <div className="flex w-full h-[calc(100%-3rem)] ">
-        <main className="w-[calc(100%-16rem)] h-full border-r border-zinc-800 flex flex-col relative">
-          <div className="h-full w-full flex flex-col overflow-y-auto mb-4">
-            {messages.length === 0 ? (
-              <GuildEmptyState
-                name={channel.name}
-                imageUrl={"/logo-past.png"}
-              />
-            ) : (
-              <>
-                <ChatHeader name={channel.name} imageUrl={"/logo-past.png"} />
-                {messages.map((message: ChannelMessages) => {
-                  return (
-                    <MessageCard
-                      key={message.id}
-                      message={message}
-                      variant="channel"
-                    />
-                  );
-                })}
-                <div ref={messagesEndRef} />
-              </>
-            )}
-          </div>
-          <div className="px-5">
-            <ChatInput handleSubmit={handleSubmit} formRef={formRef} />
-          </div>
-        </main>
-
-        <UserPanel members={members} />
-      </div>
-    </>
-  );
 }

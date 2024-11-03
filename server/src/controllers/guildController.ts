@@ -93,7 +93,11 @@ const createGuild = async (req: Request, res: Response) => {
     return res.status(400).json({ error: "Image is required" });
   }
 
-  console.log(file);
+  if (file.mimetype.split("/")[0] !== "image") {
+    return res
+      .status(400)
+      .json({ error: "Invalid image type. Valid types are: png, jpg, jpeg" });
+  }
 
   try {
     const newGuild = await prisma.guild.create({

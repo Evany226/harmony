@@ -42,7 +42,7 @@ export default function EditChannelDialog({
   const handleDelete = async () => {
     try {
       await deleteChannel(id);
-      socket.emit("refresh", guildId);
+      socket.emit(`deleteChannel`, id);
       toast({
         variant: "default",
         title: "Channel deleted",
@@ -133,7 +133,7 @@ export default function EditChannelDialog({
 
           <Separator className="mt-4" />
           <GuildDialogFooter
-            setDialogOpen={setDialogOpen}
+            dialogFunc={() => setDialogOpen(false)}
             handleDelete={handleDelete}
             text="Save"
             hasDelete={true}

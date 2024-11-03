@@ -15,9 +15,9 @@ import guildMsgRouter from "./routes/guildMsgRoute";
 import userRouter from "./routes/userRoute";
 import unreadMsgRouter from "./routes/unreadMsgRoute";
 import guildImageRouter from "./routes/guildImgRoute";
+import liveKitRouter from "./routes/livekitRoute";
 import { Server } from "socket.io";
 import { Message, ChannelMessage } from "./types";
-import bodyParser from "body-parser";
 
 import { roomService } from "./lib/livekit";
 import "dotenv/config"; // To read CLERK_SECRET_KEY and CLERK_PUBLISHABLE_KEY
@@ -65,6 +65,7 @@ app.use("/api/guild-messages", guildMsgRouter);
 app.use("/api/users", userRouter);
 app.use("/api/unread", unreadMsgRouter);
 app.use("/api/guild-image", guildImageRouter);
+app.use("/api/livekit", liveKitRouter);
 
 const PORT = 3001;
 
@@ -112,24 +113,35 @@ io.on("connection", (socket) => {
 
   socket.on("joinGuild", async (guildId: string) => {
     await socket.join(guildId);
-    socket.to(guildId).emit("updateGuild");
+    socket.to(guildId).emit(`updateGuild ${guildId}`);
     console.log(`New User Joined guild: ${guildId}`);
   });
 
   socket.on("leaveGuild", async (guildId: string) => {
     await socket.leave(guildId);
-    socket.to(guildId).emit("updateGuild");
+    socket.to(guildId).emit(`updateGuild ${guildId}`);
     console.log("User left guild");
+  });
+
+  socket.on("deleteGuild", async (guildId: string) => {
+    await socket.leave(guildId);
+    socket.to(guildId).emit("refresh");
   });
 
   socket.on("createNewChannel", (channelId: string, guildId: string) => {
     console.log(`Current user joined new channel: ${channelId}`);
-    io.to(guildId).emit("newChannel", channelId);
+    io.to(guildId).emit(`newChannel`, channelId);
   });
 
   socket.on("joinChannel", async (channelId: string) => {
     await socket.join(channelId);
     console.log(`User joined new channel: ${channelId}`);
+  });
+
+  socket.on("deleteChannel", async (channelId: string) => {
+    io.to(channelId).emit(`deleteChannel ${channelId}`, channelId);
+    io.to(channelId).emit("refresh");
+    await socket.leave(channelId);
   });
 
   socket.on("refresh", (guildId: string) => {

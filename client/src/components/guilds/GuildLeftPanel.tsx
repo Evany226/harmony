@@ -6,6 +6,7 @@ import CategoryWrapper from "@/components/guilds/categories/CategoryWrapper";
 import { Category } from "@/types";
 import { Button } from "../ui/button";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
+import { redirect } from "next/navigation";
 
 import { getGuild, getMember } from "@/lib/guilds";
 import GuildDropdown from "./GuildDropdown";
@@ -15,6 +16,10 @@ export default async function GuildLeftPanel({ guildId }: { guildId: string }) {
   const { getToken } = auth();
   const token = await getToken();
   const guild = await getGuild(token as string, guildId);
+
+  if (!guild) {
+    redirect("/friends");
+  }
 
   const currentMember = await getMember(token as string, guildId);
 

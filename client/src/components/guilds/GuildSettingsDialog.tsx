@@ -18,6 +18,8 @@ import { CameraIcon, PlusIcon } from "@heroicons/react/24/solid";
 import AlertDialogWrapper from "../global/AlertDialogWrapper";
 import { useToast } from "../ui/use-toast";
 import { deleteGuild } from "@/actions/actions";
+import { StyledString } from "next/dist/build/swc";
+import { useSocket } from "@/context/SocketContext";
 
 const tabs = [{ name: "Overview" }, { name: "Roles" }, { name: "Emojis" }];
 
@@ -33,12 +35,14 @@ export default function GuildSettingsDialog({
   currentMember,
 }: GuildSettingsDialogProps) {
   const { toast } = useToast();
+  const { socket } = useSocket();
 
   const [selectedTab, setSelectedTab] = useState(0);
 
   const handleDelete = async () => {
     try {
       const result = await deleteGuild(guild.id);
+      socket.emit("deleteGuild", guild.id);
       toast({
         variant: "default",
         title: "Guild deleted",
@@ -99,7 +103,7 @@ export default function GuildSettingsDialog({
 
         <aside className="h-full w-8/12 bg-neutral-800 ">
           {selectedTab === 0 && (
-            <OverviewTab setDialogOpen={setDialogOpen} guildName={guild.name} />
+            <OverviewTab setDialogOpen={setDialogOpen} guild={guild} />
           )}
           {selectedTab === 1 && (
             <div>
@@ -120,11 +124,22 @@ export default function GuildSettingsDialog({
 }
 
 interface OverviewTabProps {
-  guildName: string;
+  guild: Guild;
   setDialogOpen: (arg: boolean) => void;
 }
 
-function OverviewTab({ guildName, setDialogOpen }: OverviewTabProps) {
+function OverviewTab({ guild, setDialogOpen }: OverviewTabProps) {
+  const [fileObject, setFileObject] = useState<File | null>(null);
+  const [fileURL, setFileURL] = useState<string>(guild.imageUrl);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setFileObject(file);
+      setFileURL(URL.createObjectURL(file));
+    }
+  };
+
   return (
     <form className="w-3/5 h-full pt-12 px-6 flex flex-col space-y-6">
       <div className="flex flex-col space-y-1 ">
@@ -154,7 +169,7 @@ function OverviewTab({ guildName, setDialogOpen }: OverviewTabProps) {
               className="outline-0 rounded-md w-full text-sm bg-neutral-900 py-2 px-3 text-gray-300"
               placeholder="New Category"
               name="name"
-              defaultValue={guildName}
+              defaultValue={guild.name}
             ></input>
           </div>
         </div>
