@@ -61,12 +61,10 @@ export default function CreateGuildDialog({
     }
 
     if (fileObject) {
-      formData.append("photos", fileObject);
+      formData.set("photos", fileObject);
     }
 
     const photos = formData.get("photos");
-
-    console.log(photos);
 
     if (!photos || !(photos instanceof File) || photos.size === 0) {
       toast({
@@ -101,13 +99,15 @@ export default function CreateGuildDialog({
   };
 
   return (
-    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+    <Dialog
+      open={dialogOpen}
+      onOpenChange={() => {
+        setDialogOpen(!dialogOpen);
+        handleRemoveFile();
+      }}
+    >
       <DialogTrigger>{children}</DialogTrigger>
-      <DialogContent
-        className="bg-zinc-800"
-        onPointerDownOutside={() => handleRemoveFile()}
-        onEscapeKeyDown={() => handleRemoveFile()}
-      >
+      <DialogContent className="bg-zinc-800">
         <DialogHeader>
           <DialogTitle className="text-gray-300 ">
             Create Your Guild
@@ -127,7 +127,7 @@ export default function CreateGuildDialog({
           onSubmit={handleSubmit}
         >
           <div className="w-full flex flex-col items-center justify-center space-y-2">
-            <div className="h-20 w-20 rounded-full border-2 flex flex-col items-center justify-center relative cursor-pointer">
+            <div className="h-20 w-20 rounded-full border-2 flex flex-col items-center justify-center cursor-pointer relative">
               {fileURL ? (
                 <Image
                   src={fileURL}
@@ -140,20 +140,22 @@ export default function CreateGuildDialog({
                 <>
                   <label
                     htmlFor="file-upload"
-                    className="flex flex-col items-center justify-center"
+                    className="cursor-pointer w-full h-full flex flex-col items-center justify-center"
                   >
-                    <CameraIcon className="h-6 w-6 text-gray-300 cursor-pointer" />
-                    <p className="text-gray-300 text-xs font-semibold cursor-pointer">
-                      UPLOAD
-                    </p>
                     <input
                       accept=".jpg,.png,.jpeg"
                       type="file"
                       id="file-upload"
                       name="photos"
-                      className="absolute -z-1 opacity-0 cursor-pointer"
+                      className="hidden cursor-pointer w-full h-full rounded-full "
                       onChange={handleFileChange}
                     ></input>
+
+                    <CameraIcon className="h-6 w-6 text-gray-300 cursor-pointer" />
+                    <p className="text-gray-300 text-xs font-semibold cursor-pointer">
+                      UPLOAD
+                    </p>
+
                     <div className="absolute top-0 right-0 rounded-full bg-purple-700">
                       <PlusIcon className="h-5 w-5 text-gray-300" />
                     </div>
@@ -186,8 +188,6 @@ export default function CreateGuildDialog({
           <GuildDialogFooter
             dialogFunc={() => {
               setDialogOpen(false);
-              setFileURL("");
-              setFileObject(null);
             }}
             text="Create"
           />

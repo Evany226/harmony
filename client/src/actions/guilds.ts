@@ -30,6 +30,35 @@ export async function createNewGuild(formData: FormData) {
   }
 }
 
+export async function updateGuild(formData: FormData) {
+  const { getToken } = auth();
+  const token = await getToken();
+
+  try {
+    const response = await fetch(
+      `http://localhost:3001/api/guilds/upload-image`,
+      {
+        method: "PUT",
+        body: formData,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Express error updating guild.");
+    }
+
+    revalidatePath("/guilds");
+  } catch (error) {
+    console.error("Error updating guild:", error);
+    throw error;
+  }
+}
+
 export async function deleteGuild(guildId: string) {
   const { getToken } = auth();
   const token = await getToken();

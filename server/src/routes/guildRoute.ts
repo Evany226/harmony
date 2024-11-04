@@ -6,6 +6,7 @@ import {
   getGuild,
   leaveGuild,
   deleteGuild,
+  updateGuild,
 } from "../controllers/guildController";
 
 import { upload } from "../lib/awsS3";
@@ -20,10 +21,16 @@ guildRouter.post(
   "/",
 
   upload.single("photos"),
-  // ClerkExpressRequireAuth({}),
+  ClerkExpressRequireAuth({}),
   createGuild
 );
 guildRouter.delete("/:guildId/leave", ClerkExpressRequireAuth({}), leaveGuild);
 guildRouter.delete("/:guildId", ClerkExpressRequireAuth({}), deleteGuild);
+guildRouter.put(
+  "/upload-image",
+  upload.single("file"),
+  ClerkExpressRequireAuth({}),
+  updateGuild
+);
 
 export default guildRouter;

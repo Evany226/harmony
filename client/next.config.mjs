@@ -2,7 +2,12 @@
 const nextConfig = {
   reactStrictMode: false,
   images: {
-    domains: ["eyharmony.nyc3.digitaloceanspaces.com"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "eyharmony.nyc3.digitaloceanspaces.com",
+      },
+    ],
   },
 };
 

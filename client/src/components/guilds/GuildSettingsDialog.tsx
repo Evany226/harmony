@@ -8,6 +8,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+
+import Image from "next/image";
 import { Separator } from "../ui/separator";
 
 import { TrashIcon } from "@heroicons/react/24/solid";
@@ -16,10 +18,10 @@ import { Guild, Member } from "@/types";
 import { Button } from "../ui/button";
 import { CameraIcon, PlusIcon } from "@heroicons/react/24/solid";
 import AlertDialogWrapper from "../global/AlertDialogWrapper";
-import { useToast } from "../ui/use-toast";
-import { deleteGuild } from "@/actions/actions";
+import { deleteGuild, updateGuild } from "@/actions/actions";
 import { StyledString } from "next/dist/build/swc";
 import { useSocket } from "@/context/SocketContext";
+import { useToast } from "../ui/use-toast";
 
 const tabs = [{ name: "Overview" }, { name: "Roles" }, { name: "Emojis" }];
 
@@ -132,16 +134,66 @@ function OverviewTab({ guild, setDialogOpen }: OverviewTabProps) {
   const [fileObject, setFileObject] = useState<File | null>(null);
   const [fileURL, setFileURL] = useState<string>(guild.imageUrl);
 
+  const { toast } = useToast();
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setFileObject(file);
-      setFileURL(URL.createObjectURL(file));
+    console.log(e.target.files);
+    if (e.target.files) {
+      setFileObject(e.target.files[0]);
+      setFileURL(URL.createObjectURL(e.target.files[0]));
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.target as HTMLFormElement);
+
+    formData.append("guildId", guild.id);
+
+    if (!formData.get("name")) {
+      toast({
+        variant: "destructive",
+        title: "Failed to create guild",
+        description:
+          "The guild name field cannot be empty. Please enter a valid guild name.",
+      });
+      return;
+    }
+
+    console.log(fileObject);
+
+    if (fileObject) {
+      formData.set("file", fileObject);
+    }
+
+    formData.forEach((value, key) => {
+      console.log(`${key}:`, value);
+    });
+
+    try {
+      setDialogOpen(false);
+      const result = await updateGuild(formData);
+      toast({
+        variant: "default",
+        title: "Guild updated",
+        description: "You have successfully updated the guild.",
+      });
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Failed to update guild",
+        description:
+          error.message ||
+          "An error occurred while updating the guild. Please try again later.",
+      });
+    } finally {
+      setFileURL("");
+      setFileObject(null);
     }
   };
 
   return (
-    <form className="w-3/5 h-full pt-12 px-6 flex flex-col space-y-6">
+    <div className="w-3/5 h-full pt-12 px-6 flex flex-col space-y-6">
       <div className="flex flex-col space-y-1 ">
         <h2 className="text-gray-300 text-xl font-semibold">Guild Overview</h2>
         <p className="text-gray-400 text-sm font-medium">
@@ -150,16 +202,48 @@ function OverviewTab({ guild, setDialogOpen }: OverviewTabProps) {
         </p>
       </div>
 
-      <main className="w-full flex space-x-4 ">
+      <form
+        className="w-full flex space-x-4 my-2"
+        onSubmit={handleSubmit}
+        id="myform"
+      >
         <div className="w-1/4 flex flex-col justify-center items-center">
-          <div className="h-24 w-24 rounded-full border-2 border-dashed flex flex-col items-center justify-center relative">
-            <CameraIcon className="h-6 w-6 text-gray-300" />
-            <p className="text-gray-300 text-xs font-semibold">UPLOAD</p>
-            <div className="absolute top-0 right-0 rounded-full bg-purple-700">
-              <PlusIcon className="h-5 w-5 text-gray-300" />
-            </div>
+          <div className="h-24 w-24 rounded-full border-2 flex flex-col items-center justify-center cursor-pointer relative z-1 mb-4 ">
+            <label className="cursor-pointer w-full h-full flex flex-col items-center justify-center">
+              <input
+                accept=".jpg,.png,.jpeg"
+                type="file"
+                name="file"
+                className="hidden cursor-pointer h-full w-full rounded-full cursor-pointer"
+                onChange={handleFileChange}
+              ></input>
+              {fileURL ? (
+                <>
+                  <div className="h-full flex flex-col items-center">
+                    <Image
+                      src={fileURL}
+                      alt="guild-image"
+                      width={80}
+                      height={80}
+                      className="rounded-full w-full h-full"
+                    />
+                  </div>
+                  <div className="absolute top-24 text-gray-300 text-sm font-medium mt-1">
+                    Change Icon
+                  </div>
+                </>
+              ) : (
+                <>
+                  <CameraIcon className="h-6 w-6 text-gray-300 cursor-pointer" />
+                  <p className="text-gray-300 text-xs font-semibold cursor-pointer">
+                    UPLOAD
+                  </p>
+                </>
+              )}
+            </label>
           </div>
         </div>
+
         <div className="w-3/4 flex flex-col mt-2">
           <div className="flex flex-col space-y-2">
             <label className="text-gray-300 text-sm font-semibold">
@@ -173,7 +257,7 @@ function OverviewTab({ guild, setDialogOpen }: OverviewTabProps) {
             ></input>
           </div>
         </div>
-      </main>
+      </form>
 
       <Separator className="bg-zinc-600" />
       <div className="flex justify-end">
@@ -181,10 +265,11 @@ function OverviewTab({ guild, setDialogOpen }: OverviewTabProps) {
           variant="outline"
           className="px-3 py-1 ml-2 rounded-sm bg-purple-700 border-0 text-gray-300 hover:bg-purple-800 hover:text-white"
           type="submit"
+          form="myform"
         >
           Save
         </Button>
       </div>
-    </form>
+    </div>
   );
 }
