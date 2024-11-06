@@ -21,11 +21,14 @@ const getChannel = async (req: Request, res: Response) => {
 const createChannel = async (req: Request, res: Response) => {
   const { categoryId, name } = req.body as { categoryId: string; name: string };
 
+  const { isVoice } = req.body as { isVoice: boolean };
+
   try {
     const newChannel = await prisma.textChannel.create({
       data: {
         categoryId: categoryId,
         name: name,
+        isVoice: isVoice ?? false,
       },
     });
 

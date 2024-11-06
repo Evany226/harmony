@@ -43,6 +43,7 @@ export default function CreateCategoryDialog({
         description:
           "The category name field cannot be empty. Please enter a valid category name.",
       });
+      return;
     }
 
     try {

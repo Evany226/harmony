@@ -14,7 +14,7 @@ export default function DashboardLayout({
         <ConversationsPanel />
       </Suspense>
 
-      <div className="flex flex-col w-[100%] h-full bg-zinc-900 ">
+      <div className="flex flex-col w-full h-full bg-zinc-900 ">
         <header className="flex w-full h-12 bg-zinc-900 border-b border-zinc-800 px-2 py-3 space-x-3 items-center">
           <FriendNavLinks />
         </header>

@@ -39,20 +39,37 @@ export default function CreateChannelDialog({
     const formData = new FormData(e.target as HTMLFormElement);
     formData.set("categoryId", categoryId);
 
-    if (formData.get("name") === "") {
+    const channelType = formData.get("channel");
+    const name = formData.get("name");
+
+    console.log(formData.get("channel"));
+
+    if (!channelType) {
+      toast({
+        variant: "destructive",
+        title: "Failed to create channel",
+        description:
+          "The channel type field cannot be empty. Please select a valid channel type.",
+      });
+      return;
+    }
+
+    if (!name) {
       toast({
         variant: "destructive",
         title: "Failed to create channel",
         description:
           "The channel name field cannot be empty. Please enter a valid channel name.",
       });
+      return;
     }
+
+    formData.set("name", name.toString().toLowerCase());
 
     try {
       setDialogOpen(false);
       const result = await createChannel(formData);
       socket.emit("refresh", guildId);
-      socket.emit("createNewChannel", result.id, guildId);
       toast({
         variant: "default",
         title: "Channel created",
@@ -85,27 +102,50 @@ export default function CreateChannelDialog({
             <label className="text-gray-300 text-sm font-semibold">
               CHANNEL TYPE
             </label>
-            <div className="flex items-center w-full bg-zinc-900 border border-zinc-700 py-2 px-3">
-              <HashtagIcon className="w-5 text-gray-300" />
-              <div className="flex flex-col">
-                <p className="text-gray-300 text-base font-medium ml-2">Text</p>
-                <p className="text-gray-400 text-sm ml-2">
-                  Send messages, images, emojis, opinions and puns.
-                </p>
-              </div>
-            </div>
 
-            <div className="flex items-center w-full bg-zinc-900 border border-zinc-700 py-2 px-3">
-              <SpeakerWaveIcon className="w-5 text-gray-300" />
-              <div className="flex flex-col">
-                <p className="text-gray-300 text-base font-medium ml-2">
-                  Voice
-                </p>
-                <p className="text-gray-400 text-sm ml-2">
-                  Hang out together with a voice call.
-                </p>
+            <label className="flex items-center w-full bg-zinc-900 border border-zinc-700 py-2 px-3 justify-between hover:bg-zinc-700 cursor-pointer">
+              <div className="flex items-center w-11/12">
+                <HashtagIcon className="w-5 text-gray-300" />
+                <div className="flex flex-col">
+                  <p className="text-gray-300 text-base font-medium ml-2">
+                    Text
+                  </p>
+                  <p className="text-gray-400 text-sm ml-2">
+                    Send messages, images, emojis, opinions and puns.
+                  </p>
+                </div>
               </div>
-            </div>
+              <div className="h-full w-1/12 flex items-center justify-center">
+                <input
+                  type="radio"
+                  name="channel"
+                  className=""
+                  value="text"
+                ></input>
+              </div>
+            </label>
+
+            <label className="flex items-center w-full bg-zinc-900 border border-zinc-700 py-2 px-3 hover:bg-zinc-700 cursor-pointer">
+              <div className="flex items-center w-11/12">
+                <SpeakerWaveIcon className="w-5 text-gray-300" />
+                <div className="flex flex-col">
+                  <p className="text-gray-300 text-base font-medium ml-2">
+                    Voice
+                  </p>
+                  <p className="text-gray-400 text-sm ml-2">
+                    Hang out together with a voice call.
+                  </p>
+                </div>
+              </div>
+              <div className="h-full w-1/12 flex items-center justify-center">
+                <input
+                  type="radio"
+                  name="channel"
+                  className=""
+                  value="voice"
+                ></input>
+              </div>
+            </label>
           </section>
 
           <aside className="flex flex-col space-y-2 mt-4">

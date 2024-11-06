@@ -128,15 +128,17 @@ io.on("connection", (socket) => {
     socket.to(guildId).emit("refresh");
   });
 
-  socket.on("createNewChannel", (channelId: string, guildId: string) => {
-    console.log(`Current user joined new channel: ${channelId}`);
-    io.to(guildId).emit(`newChannel`, channelId);
-  });
+  // socket.on("createNewChannel", async (channelId: string, guildId: string) => {
+  //   console.log(`Current user joined new channel: ${channelId}`);
+  //   await socket.join(channelId);
+  //   socket.to(guildId).emit(`newChannel`, channelId);
+  // });
 
-  socket.on("joinChannel", async (channelId: string) => {
-    await socket.join(channelId);
-    console.log(`User joined new channel: ${channelId}`);
-  });
+  // socket.on("joinChannel", async (channelId: string) => {
+  //   await socket.join(channelId);
+  //   console.log("joinedChannel");
+  //   socket.emit("refresh");
+  // });
 
   socket.on("deleteChannel", async (channelId: string) => {
     io.to(channelId).emit(`deleteChannel ${channelId}`, channelId);
@@ -221,7 +223,6 @@ io.on("connection", (socket) => {
 
   socket.on("channelMessage", (data: ChannelMessage) => {
     const { channelId } = data;
-    console.log(data);
     io.to(channelId).emit(`channelMessage ${channelId}`, data);
   });
 

@@ -19,6 +19,7 @@ import { useState } from "react";
 
 import { TextChannel } from "@/types";
 import ChannelLink from "../channels/ChannelLink";
+import VoiceChannelLink from "../channels/VoiceChanneLink";
 
 interface CategoryWrapperProps {
   name: string;
@@ -64,12 +65,23 @@ export default function CategoryWrapper({
 
       <CollapsibleContent className="flex flex-col mt-1">
         {channels.map((channel: TextChannel) => (
-          <ChannelLink
-            key={channel.id}
-            channel={channel}
-            href={`/guilds/${guildId}/${channel.id}`}
-            guildId={guildId}
-          />
+          <>
+            {channel.isVoice ? (
+              <VoiceChannelLink
+                key={channel.id}
+                channel={channel}
+                href={`/guilds/${guildId}/${channel.id}`}
+                guildId={guildId}
+              />
+            ) : (
+              <ChannelLink
+                key={channel.id}
+                channel={channel}
+                href={`/guilds/${guildId}/${channel.id}`}
+                guildId={guildId}
+              />
+            )}
+          </>
         ))}
       </CollapsibleContent>
     </Collapsible>

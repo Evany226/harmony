@@ -11,7 +11,7 @@ export default function ProfileCard() {
   return (
     <>
       {isSignedIn ? (
-        <div className="flex items-center w-full h-14 px-3 bg-stone-900 border-t border-zinc-800 bottom-0 absolute">
+        <div className="flex items-center w-full h-14 px-2 bg-stone-900 border-t border-zinc-800 bottom-0 absolute">
           {/* <Avatar>
             <AvatarImage
               src={
@@ -24,20 +24,18 @@ export default function ProfileCard() {
           <UserButton />
 
           <div className="flex-col ml-2">
-            <h2 className="text-gray-300 font-medium text-sm">
-              {user.username}
-            </h2>
+            <h2 className="text-gray-300 font-bold text-xs">{user.username}</h2>
             <div className="flex items-center">
               <p className="text-xs font-normal text-gray-400">Online</p>
 
-              <SignOutButton redirectUrl={"/"}>
+              {/* <SignOutButton redirectUrl={"/"}>
                 <button
                   className="bg-white text-black rounded-sm px-1 ml-1 text-sm"
                   onClick={() => socket.disconnect()}
                 >
                   Logout
                 </button>
-              </SignOutButton>
+              </SignOutButton> */}
             </div>
           </div>
         </div>

@@ -128,10 +128,11 @@ model Category {
 }
 
 model TextChannel {
-  id   String @id @default(uuid())
+  id   String @id @default(uuid()) 
   name String
   topic String?
-
+  isVoice Boolean? @default(false)
+ 
   categoryId String
   category   Category @relation("CategoryChannels", fields: [categoryId], references: [id], onDelete: Cascade)
 
@@ -139,6 +140,7 @@ model TextChannel {
 
   createdAt DateTime @default(now())
 }
+
 
 model ChannelMessages {
   id      String @id @default(uuid())

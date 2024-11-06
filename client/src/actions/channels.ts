@@ -8,12 +8,15 @@ export async function createChannel(formdata: FormData) {
   const { getToken } = auth();
   const token = await getToken();
 
+  const isVoice = formdata.get("channel") === "voice";
+
   try {
     const response = await fetch("http://localhost:3001/api/channels", {
       method: "POST",
       body: JSON.stringify({
         categoryId: formdata.get("categoryId"),
         name: formdata.get("name"),
+        isVoice: isVoice,
       }),
       headers: {
         "Content-Type": "application/json",

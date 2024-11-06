@@ -86,6 +86,7 @@ export interface TextChannel {
   id: string;
   name: string;
   topic: string;
+  isVoice: boolean;
   guildId: string;
   guild: Guild;
   messages: ChannelMessages[];

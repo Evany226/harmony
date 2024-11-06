@@ -74,8 +74,9 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       });
     });
 
-    socket.on("newChannel", (channelId: string) => {
+    socket.on(`newChannel`, (channelId: string) => {
       socket.emit("joinChannel", channelId);
+      console.log("once");
     });
 
     socket.on("refresh", () => {

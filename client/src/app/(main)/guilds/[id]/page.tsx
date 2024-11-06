@@ -33,16 +33,17 @@ export default async function GuildPage({
       <div className="flex w-full h-[calc(100%-3rem)] ">
         <main className="w-[calc(100%-16rem)] h-full border-r border-zinc-800 flex flex-col relative">
           <div className="h-full w-full flex flex-col items-center justify-center">
-            <section className="w-1/3 flex flex-col items-center justify-center space-y-2 p-2 ">
+            <section className="flex flex-col items-center justify-center space-y-2 p-2 ">
               <h2 className="text-gray-300 font-bold text-3xl">
                 Welcome to {guild.name}
               </h2>
-              <p className="text-gray-400 text-sm font-semibold text-center">
-                This is your brand new shiny guild. You can chat, hangout
+              <p className="text-gray-400 text-normal font-semibold text-center">
+                This is your brand new shiny guild. You can chat, hangout{" "}
+                <br></br>
                 whatever you want. Here are some steps to help you get started.
               </p>
             </section>
-            <section className="w-1/3 space-y-2">
+            <section className="space-y-2 mt-4">
               <div className="bg-neutral-950 p-4 rounded-md flex items-center space-x-2">
                 <UserPlusIcon className="h-6 w-6 text-gray-300" />
                 <p className="text-gray-300 text-sm font-medium">
