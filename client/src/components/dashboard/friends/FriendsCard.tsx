@@ -6,6 +6,7 @@ import {
   EllipsisVerticalIcon,
   CheckIcon,
   XMarkIcon,
+  MagnifyingGlassIcon,
 } from "@heroicons/react/16/solid";
 import { Separator } from "../../ui/separator";
 import { Friend } from "@/types";
@@ -18,6 +19,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useSocket } from "@/context/SocketContext";
 import ConnectionStatus from "@/components/global/ConnectionStatus";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import React, { useState } from "react";
 
 import {
   acceptFriendRequest,
@@ -173,14 +175,51 @@ export default function FriendsWrapper({
 }: FriendsWrapperProps) {
   const { onlineUsers } = useSocket();
 
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [filteredUsers, setFilteredUsers] = useState<Friend[]>(friends);
+
   const onlineFriends = friends.filter((friend) =>
     onlineUsers.includes(friend.id)
   );
 
+  const [onlineFilteredUsers, setOnlineFilteredUsers] =
+    useState<Friend[]>(onlineFriends);
+
+  const handleUsers = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const searchTerm = e.target.value;
+    setSearchTerm(searchTerm);
+
+    const filteredItems = friends.filter((friend) =>
+      friend.username.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    setFilteredUsers(filteredItems);
+  };
+
+  const handleOnlineUsers = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const searchTerm = e.target.value;
+    setSearchTerm(searchTerm);
+
+    const filteredItems = onlineFriends.filter((friend) =>
+      friend.username.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    setOnlineFilteredUsers(filteredItems);
+  };
+
   if (variant !== "Online") {
     return (
-      <>
-        <ScrollArea className="flex-col w-full h-full px-4">
+      <main className="px-4 w-full space-y-4">
+        <div className="flex items-center w-full bg-zinc-800 px-3 rounded-md">
+          <input
+            className="outline-0 w-full text-sm bg-zinc-800 py-2 text-gray-300"
+            placeholder="Search"
+            onChange={handleUsers}
+          ></input>
+          <MagnifyingGlassIcon className="w-6 text-gray-400 " />
+        </div>
+
+        <ScrollArea className="flex-col w-full h-full">
           <div className="flex flex-col justify-start">
             <h2 className="text-gray-400 text-sm font-medium mb-2 ml-2">
               {variant} - {friends.length}
@@ -189,7 +228,7 @@ export default function FriendsWrapper({
           </div>
 
           <div className="flex-col w-full h-full">
-            {friends.map((friend) => {
+            {filteredUsers.map((friend) => {
               const onlineStatus = onlineUsers.includes(friend.id);
 
               return (
@@ -203,13 +242,22 @@ export default function FriendsWrapper({
             })}
           </div>
         </ScrollArea>
-      </>
+      </main>
     );
   }
 
   return (
-    <>
-      <ScrollArea className="flex-col w-full h-full px-4">
+    <main className="px-4 w-full space-y-4">
+      <div className="flex items-center w-full bg-zinc-800 px-3 rounded-md">
+        <input
+          className="outline-0 w-full text-sm bg-zinc-800 py-2 text-gray-300"
+          placeholder="Search"
+          onChange={handleOnlineUsers}
+        ></input>
+        <MagnifyingGlassIcon className="w-6 text-gray-400 " />
+      </div>
+
+      <ScrollArea className="flex-col w-full h-full">
         <div className="flex flex-col justify-start">
           <h2 className="text-gray-400 text-sm font-medium mb-2 ml-2">
             {variant} - {onlineFriends.length}
@@ -218,7 +266,7 @@ export default function FriendsWrapper({
         </div>
 
         <div className="flex-col w-full h-full">
-          {onlineFriends.map((friend) => {
+          {onlineFilteredUsers.map((friend) => {
             const onlineStatus = onlineUsers.includes(friend.id);
 
             return (
@@ -232,6 +280,6 @@ export default function FriendsWrapper({
           })}
         </div>
       </ScrollArea>
-    </>
+    </main>
   );
 }

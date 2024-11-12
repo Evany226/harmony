@@ -21,8 +21,6 @@ const serverUrl = "wss://harmony-zknfyk4k.livekit.cloud";
 
 export default function Page({ params }: { params: { id: string } }) {
   // TODO: get user input for room and name
-  const room = "quickstart-room";
-  const name = "quickstart-user";
   const [token, setToken] = useState("");
   const { user } = useUser();
   const userName = user?.username;
@@ -47,7 +45,7 @@ export default function Page({ params }: { params: { id: string } }) {
 
   return (
     <LiveKitRoom
-      video={true}
+      video={false}
       audio={true}
       token={token}
       serverUrl={serverUrl}
@@ -56,12 +54,13 @@ export default function Page({ params }: { params: { id: string } }) {
       style={{ height: "100dvh" }}
     >
       {/* Your custom component with basic video conferencing functionality. */}
+
       <MyVideoConference />
       {/* The RoomAudioRenderer takes care of room-wide audio for you. */}
       <RoomAudioRenderer />
       {/* Controls for the user to start/stop audio, video, and screen
         share tracks and to leave the room. */}
-      <ControlBar />
+      <ControlBar variation="minimal" />
     </LiveKitRoom>
   );
 }

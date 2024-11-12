@@ -21,6 +21,8 @@ import { ScrollArea } from "../ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "../ui/skeleton";
 
+import Loading from "../global/Loading";
+
 interface InviteDialogItemProps {
   id: string;
   friendName: string;
@@ -75,12 +77,16 @@ export default function InviteDialog({
   const { socket } = useSocket();
   const [friends, setFriends] = useState<Friend[]>([]);
   const [username, setUsername] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchFriends = async () => {
+      setIsLoading(true);
       const token = await getToken();
       const response = await getAllFriends(token as string);
+
       setFriends(response);
+      setIsLoading(false);
     };
 
     fetchFriends();
@@ -133,21 +139,24 @@ export default function InviteDialog({
           placeholder="Type the username of a friend."
         ></input>
       </div>
+
       <form onSubmit={handleSubmit}>
-        <ScrollArea className="w-full h-40 px-2 my-2">
-          {friends.map((friend) => {
-            return (
-              <InviteDialogItem
-                id={friend.id}
-                key={friend.id}
-                friendName={friend.username}
-                imageUrl={friend.imageUrl}
-                username={username}
-                setUsername={setUsername}
-              />
-            );
-          })}
-        </ScrollArea>
+        <Loading isLoading={isLoading}>
+          <ScrollArea className="w-full h-40 px-2 my-2">
+            {friends.map((friend) => {
+              return (
+                <InviteDialogItem
+                  id={friend.id}
+                  key={friend.id}
+                  friendName={friend.username}
+                  imageUrl={friend.imageUrl}
+                  username={username}
+                  setUsername={setUsername}
+                />
+              );
+            })}
+          </ScrollArea>
+        </Loading>
         <Button type="submit" variant="outline" className="w-full py-1 mt-4 ">
           <p className="text-black font-medium">Send Invite</p>
         </Button>

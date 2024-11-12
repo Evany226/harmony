@@ -57,7 +57,7 @@ export default function VoiceCallOverlay({ convId }: VoiceCallOverlayProps) {
   return (
     <div className="w-full h-1/2 bg-neutral-950">
       <LiveKitRoom
-        video={true}
+        video={false}
         audio={true}
         token={token}
         serverUrl={serverUrl}

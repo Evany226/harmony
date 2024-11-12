@@ -1,12 +1,14 @@
 "use client";
 
 import { TextChannel } from "@/types";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { Cog8ToothIcon, SpeakerWaveIcon } from "@heroicons/react/24/solid";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useUser } from "@clerk/nextjs";
+import { useVoiceChannel } from "@/context/VoiceChannelContext";
+
 import EditChannelDialog from "./EditChannelDialog";
 
 interface VoiceChannelLinkProps {
@@ -21,12 +23,20 @@ export default function VoiceChannelLink({
   guildId,
 }: VoiceChannelLinkProps) {
   const pathname = usePathname();
+  const { user } = useUser();
+  const userName = user?.username;
+  const { joinVoiceChannel } = useVoiceChannel();
+
+  const handleJoinChannel = async () => {
+    joinVoiceChannel(channel.id, userName as string);
+  };
 
   return (
     <div
       className={`group py-1 rounded-sm flex items-center justify-between px-1 cursor-pointer ${
         pathname == href ? "bg-zinc-700" : "hover:bg-neutral-800"
       }`}
+      onClick={handleJoinChannel}
     >
       <div className="flex items-center w-full ">
         <SpeakerWaveIcon className="w-4 text-gray-300" />

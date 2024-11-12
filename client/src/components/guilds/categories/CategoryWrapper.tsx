@@ -65,23 +65,21 @@ export default function CategoryWrapper({
 
       <CollapsibleContent className="flex flex-col mt-1">
         {channels.map((channel: TextChannel) => (
-          <>
+          <div key={channel.id}>
             {channel.isVoice ? (
               <VoiceChannelLink
-                key={channel.id}
                 channel={channel}
                 href={`/guilds/${guildId}/${channel.id}`}
                 guildId={guildId}
               />
             ) : (
               <ChannelLink
-                key={channel.id}
                 channel={channel}
                 href={`/guilds/${guildId}/${channel.id}`}
                 guildId={guildId}
               />
             )}
-          </>
+          </div>
         ))}
       </CollapsibleContent>
     </Collapsible>
