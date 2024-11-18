@@ -222,7 +222,7 @@ export default function FriendsWrapper({
         <ScrollArea className="flex-col w-full h-full">
           <div className="flex flex-col justify-start">
             <h2 className="text-gray-400 text-sm font-medium mb-2 ml-2">
-              {variant} - {friends.length}
+              {variant} - {filteredUsers.length}
             </h2>
             <Separator orientation="horizontal" />
           </div>

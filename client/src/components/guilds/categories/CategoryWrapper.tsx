@@ -25,6 +25,7 @@ interface CategoryWrapperProps {
   name: string;
   channels: TextChannel[];
   guildId: string;
+  guildName: string;
   categoryId: string;
 }
 
@@ -32,6 +33,7 @@ export default function CategoryWrapper({
   name,
   channels,
   guildId,
+  guildName,
   categoryId,
 }: CategoryWrapperProps) {
   const [isOpen, setIsOpen] = useState<boolean>(true);
@@ -71,6 +73,7 @@ export default function CategoryWrapper({
                 channel={channel}
                 href={`/guilds/${guildId}/${channel.id}`}
                 guildId={guildId}
+                guildName={guildName}
               />
             ) : (
               <ChannelLink

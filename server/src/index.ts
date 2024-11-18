@@ -128,6 +128,11 @@ io.on("connection", (socket) => {
     socket.to(guildId).emit("refresh");
   });
 
+  socket.on("joinVoiceChannel", (guildId: string) => {
+    io.to(guildId).emit("joinVoiceChannel", guildId);
+  });
+
+  //these below are probably not needed anymore
   // socket.on("createNewChannel", async (channelId: string, guildId: string) => {
   //   console.log(`Current user joined new channel: ${channelId}`);
   //   await socket.join(channelId);

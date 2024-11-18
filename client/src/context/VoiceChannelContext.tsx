@@ -6,6 +6,7 @@ import { useContext, useState, useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
 import { useNotification } from "./NotificationContext";
 import { getLiveKitToken } from "@/lib/conversations";
+import { socket } from "@/app/socket";
 
 const serverUrl = "wss://harmony-zknfyk4k.livekit.cloud";
 
@@ -14,7 +15,14 @@ interface VoiceChannelContextProps {
   setToken: (value: string) => void;
   isVoiceChannelOpen: boolean;
   setIsVoiceChannelOpen: (value: boolean) => void;
-  joinVoiceChannel: (channelId: string, username: string) => void;
+  joinVoiceChannel: (
+    channelId: string,
+    channelName: string,
+    guildName: string
+  ) => void;
+  leaveVoiceChannel: () => void;
+  currentChannel: string;
+  currentGuild: string;
   currentRoom: string;
 }
 
@@ -30,20 +38,24 @@ export const VoiceChannelProvider = ({
   const [token, setToken] = useState("");
   const [currentRoom, setCurrentRoom] = useState<string>("");
   const [isVoiceChannelOpen, setIsVoiceChannelOpen] = useState<boolean>(false);
+  const [currentChannel, setCurrentChannel] = useState<string>("");
+  const [currentGuild, setCurrentGuild] = useState<string>("");
 
   const { user } = useUser();
   const { isVoiceCallOpen, setIsVoiceCallOpen } = useNotification();
   const userName = user?.username;
 
-  const joinVoiceChannel = async (channelId: string, username: string) => {
+  const joinVoiceChannel = async (
+    channelId: string,
+    channelName: string,
+    guildName: string
+  ) => {
     if (isVoiceCallOpen) {
       setIsVoiceCallOpen(false);
     }
 
-    if (isVoiceChannelOpen) {
-      setCurrentRoom(channelId);
-      return;
-    }
+    setCurrentChannel(channelName);
+    setCurrentGuild(guildName);
 
     setCurrentRoom(channelId);
     setIsVoiceChannelOpen(true);
@@ -51,7 +63,6 @@ export const VoiceChannelProvider = ({
     try {
       const roomName = channelId;
       const token = await getLiveKitToken(roomName, userName as string);
-      console.log(token);
       setToken(token);
     } catch (e) {
       console.error(e);
@@ -71,6 +82,9 @@ export const VoiceChannelProvider = ({
         isVoiceChannelOpen,
         setIsVoiceChannelOpen,
         joinVoiceChannel,
+        leaveVoiceChannel,
+        currentChannel,
+        currentGuild,
         currentRoom,
       }}
     >

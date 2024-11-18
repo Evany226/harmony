@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { AccessToken } from "livekit-server-sdk";
 import { roomService } from "../lib/livekit";
+import prisma from "../lib/prisma";
 
 const createToken = async ({
   roomName,
@@ -58,9 +59,9 @@ const checkRoomEmpty = async (req: Request, res: Response) => {
     const result = await roomService.listParticipants(roomName);
 
     if (result.length === 0) {
-      res.json({ empty: true });
+      return res.json({ empty: true });
     } else {
-      res.json({ empty: false });
+      return res.json({ empty: false });
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
@@ -69,4 +70,69 @@ const checkRoomEmpty = async (req: Request, res: Response) => {
   }
 };
 
-export { getLivekitToken, checkRoomEmpty };
+const getParticipants = async (req: Request, res: Response) => {
+  const { guildId } = req.params;
+
+  try {
+    const roomNames = await prisma.guild.findUnique({
+      where: { id: guildId },
+      select: {
+        categories: {
+          select: {
+            channels: {
+              where: {
+                isVoice: true,
+              },
+              select: {
+                id: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!roomNames) {
+      res.status(404).json({ error: "Guild not found" });
+      return;
+    }
+
+    const result = roomNames.categories.map((category) => {
+      return category.channels.map((channel) => channel.id);
+    });
+
+    const channelIds = result.flat();
+
+    const results = await Promise.all(
+      channelIds.map(async (channelId) => {
+        const roomList = await roomService.listRooms();
+        const room = roomList.find((room) => room.name === channelId);
+
+        if (!room) {
+          return { channelId, participants: [] };
+        }
+
+        const participants = await roomService.listParticipants(channelId);
+
+        const newParticipants = participants.map((p) => p.identity);
+
+        return { channelId, participants: newParticipants };
+      })
+    );
+
+    // Return an empty array if no participants found
+    if (results.length === 0) {
+      return res.json([]);
+    }
+
+    return res.json(results);
+
+    // const result = await roomService.listParticipants(roomName);
+    // res.json(result.map((p) => p.identity));
+  } catch (error) {
+    console.error("Error getting participants:", error);
+    res.status(500).json({ error: "Error getting participants" });
+  }
+};
+
+export { getLivekitToken, checkRoomEmpty, getParticipants };

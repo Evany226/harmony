@@ -87,8 +87,8 @@ export interface TextChannel {
   name: string;
   topic: string;
   isVoice: boolean;
-  guildId: string;
-  guild: Guild;
+  categoryId: string;
+  category: Category;
   messages: ChannelMessages[];
   createdAt: string;
 }
@@ -111,4 +111,9 @@ export interface GuildRequest {
   toUserId: string;
   fromGuildId: string;
   fromGuild: Guild;
+}
+
+export interface RoomParticipant {
+  channelId: string;
+  participants: string[];
 }
