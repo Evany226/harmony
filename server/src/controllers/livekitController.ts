@@ -70,69 +70,83 @@ const checkRoomEmpty = async (req: Request, res: Response) => {
   }
 };
 
-const getParticipants = async (req: Request, res: Response) => {
+const getActiveVoiceChannels = async (req: Request, res: Response) => {
   const { guildId } = req.params;
 
-  try {
-    const roomNames = await prisma.guild.findUnique({
-      where: { id: guildId },
-      select: {
-        categories: {
-          select: {
-            channels: {
-              where: {
-                isVoice: true,
-              },
-              select: {
-                id: true,
-              },
+  const roomNames = await prisma.guild.findUnique({
+    where: { id: guildId },
+    select: {
+      categories: {
+        select: {
+          channels: {
+            where: {
+              isVoice: true,
+            },
+            select: {
+              id: true,
             },
           },
         },
       },
-    });
+    },
+  });
 
-    if (!roomNames) {
-      res.status(404).json({ error: "Guild not found" });
-      return;
-    }
+  console.log(roomNames);
 
-    const result = roomNames.categories.map((category) => {
-      return category.channels.map((channel) => channel.id);
-    });
-
-    const channelIds = result.flat();
-
-    const results = await Promise.all(
-      channelIds.map(async (channelId) => {
-        const roomList = await roomService.listRooms();
-        const room = roomList.find((room) => room.name === channelId);
-
-        if (!room) {
-          return { channelId, participants: [] };
-        }
-
-        const participants = await roomService.listParticipants(channelId);
-
-        const newParticipants = participants.map((p) => p.identity);
-
-        return { channelId, participants: newParticipants };
-      })
-    );
-
-    // Return an empty array if no participants found
-    if (results.length === 0) {
-      return res.json([]);
-    }
-
-    return res.json(results);
-
-    // const result = await roomService.listParticipants(roomName);
-    // res.json(result.map((p) => p.identity));
-  } catch (error) {
-    console.error("Error getting participants:", error);
-    res.status(500).json({ error: "Error getting participants" });
+  if (!roomNames) {
+    res.status(404).json({ error: "Guild not found" });
+    return;
   }
+
+  console.log("Room names found", roomNames);
+
+  const result = roomNames.categories.map((category) => {
+    return category.channels.map((channel) => channel.id);
+  });
+
+  console.log("Result", result);
+
+  const channelIds = result.flat();
+
+  const results = await Promise.all(
+    channelIds.map(async (channelId) => {
+      const roomList = await roomService.listRooms();
+      if (!roomList) {
+        return { channelId, participants: [] };
+      }
+
+      const room = roomList.find((room) => room.name === channelId);
+
+      if (!room) {
+        return { channelId, participants: [] };
+      }
+
+      const participants = await roomService.listParticipants(channelId);
+
+      if (!participants) {
+        return { channelId, participants: [] };
+      }
+
+      const newParticipants = participants.map((p) => {
+        return { username: p.identity };
+      });
+
+      return { channelId, participants: newParticipants };
+    })
+  );
+
+  console.log(results);
+
+  // Return an empty array if no participants found
+  if (results.length === 0) {
+    return res.json([]);
+  }
+
+  return res.json(results);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
+  // const result = await roomService.listParticipants(roomName);
+  // res.json(result.map((p) => p.identity));
 };
 
-export { getLivekitToken, checkRoomEmpty, getParticipants };
+export { getLivekitToken, checkRoomEmpty, getActiveVoiceChannels };

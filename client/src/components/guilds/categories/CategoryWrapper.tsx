@@ -6,6 +6,8 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 
+import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
+
 import CategoryContextMenu from "./CategoryContextMenu";
 
 import {
@@ -17,9 +19,13 @@ import {
 import CreateChannelDialog from "../channels/CreateChannelDialog";
 import { useState } from "react";
 
-import { TextChannel } from "@/types";
+import { ActiveVoiceChannel, TextChannel } from "@/types";
 import ChannelLink from "../channels/ChannelLink";
 import VoiceChannelLink from "../channels/VoiceChanneLink";
+import { getLiveKitToken } from "@/lib/conversations";
+import { useGuild } from "@/context/GuildContext";
+import { useUser } from "@clerk/nextjs";
+import { useVoiceRoom } from "@/context/VoiceRoomContext";
 
 interface CategoryWrapperProps {
   name: string;
@@ -37,6 +43,17 @@ export default function CategoryWrapper({
   categoryId,
 }: CategoryWrapperProps) {
   const [isOpen, setIsOpen] = useState<boolean>(true);
+
+  const { user } = useUser();
+  const { connect } = useVoiceRoom();
+
+  const { activeVoiceChannels } = useGuild();
+
+  const handleJoinChannel = async (channel: TextChannel) => {
+    const token = await getLiveKitToken(channel.id, user?.username as string);
+
+    connect(token, channel, guildName);
+  };
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
@@ -66,24 +83,53 @@ export default function CategoryWrapper({
       </div>
 
       <CollapsibleContent className="flex flex-col mt-1">
-        {channels.map((channel: TextChannel) => (
-          <div key={channel.id}>
-            {channel.isVoice ? (
-              <VoiceChannelLink
-                channel={channel}
-                href={`/guilds/${guildId}/${channel.id}`}
-                guildId={guildId}
-                guildName={guildName}
-              />
-            ) : (
-              <ChannelLink
-                channel={channel}
-                href={`/guilds/${guildId}/${channel.id}`}
-                guildId={guildId}
-              />
-            )}
-          </div>
-        ))}
+        {channels.map((channel: TextChannel) => {
+          const channelParticipants = activeVoiceChannels.find(
+            (voiceChannel: ActiveVoiceChannel) => {
+              return voiceChannel.channelId === channel.id;
+            }
+          );
+
+          return (
+            <div key={channel.id}>
+              {channel.isVoice ? (
+                <>
+                  <VoiceChannelLink
+                    channel={channel}
+                    href={`/guilds/${guildId}/${channel.id}`}
+                    guildId={guildId}
+                    handleJoinChannel={() => handleJoinChannel(channel)}
+                  />
+                  {channelParticipants &&
+                    channelParticipants.participants.map(
+                      (participant, index) => (
+                        <section
+                          key={index}
+                          className="ml-6 mr-2 my-1 flex items-center p-1 rounded-sm cursor-pointer hover:bg-neutral-800"
+                        >
+                          <Avatar className="w-7 h-7">
+                            <AvatarImage
+                              src={"https://github.com/shadcn.png"}
+                            />
+                            <AvatarFallback>EY</AvatarFallback>
+                          </Avatar>
+                          <p className="text-gray-300 ml-2 font-medium">
+                            {participant.username}
+                          </p>
+                        </section>
+                      )
+                    )}
+                </>
+              ) : (
+                <ChannelLink
+                  channel={channel}
+                  href={`/guilds/${guildId}/${channel.id}`}
+                  guildId={guildId}
+                />
+              )}
+            </div>
+          );
+        })}
       </CollapsibleContent>
     </Collapsible>
   );

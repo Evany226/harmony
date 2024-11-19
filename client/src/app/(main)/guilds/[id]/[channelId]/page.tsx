@@ -17,8 +17,8 @@ import { useToast } from "@/components/ui/use-toast";
 import { useSocket } from "@/context/SocketContext";
 import { useRouter } from "next/navigation";
 import { GuildPageSkeleton } from "@/components/skeletons/GuildPageSkeleton";
-import { useGuildMember } from "@/context/GuildMemberContext";
-import { getParticipants } from "@/lib/guilds";
+import { useGuild } from "@/context/GuildContext";
+import { getActiveVoiceChannels } from "@/lib/guilds";
 
 export default function ChannelPage({
   params,
@@ -40,8 +40,8 @@ export default function ChannelPage({
   const {
     guildMembers: members,
     updateGuildMembers,
-    setParticipants,
-  } = useGuildMember();
+    updateActiveVoiceChannels,
+  } = useGuild();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -59,8 +59,11 @@ export default function ChannelPage({
       const members = await getAllMembers(token as string, params.id);
       updateGuildMembers(members);
 
-      const participants = await getParticipants(token as string, params.id);
-      setParticipants(participants);
+      const participants = await getActiveVoiceChannels(
+        token as string,
+        params.id
+      );
+      updateActiveVoiceChannels(participants);
 
       setLoading(false);
     };
@@ -71,7 +74,7 @@ export default function ChannelPage({
     params.channelId,
     params.id,
     updateGuildMembers,
-    setParticipants,
+    updateActiveVoiceChannels,
   ]);
 
   useEffect(() => {

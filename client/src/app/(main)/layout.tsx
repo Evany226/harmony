@@ -2,8 +2,10 @@ import React from "react";
 import SideNav from "@/components/nav/SideNav";
 import { SocketProvider } from "@/context/SocketContext";
 import { NotificationProvider } from "@/context/NotificationContext";
-import { VoiceChannelProvider } from "@/context/VoiceChannelContext";
+
+import { GuildProvider } from "@/context/GuildContext";
 import { SignedIn } from "@clerk/nextjs";
+import { VoiceRoomProvider } from "@/context/VoiceRoomContext";
 
 export default function MainLayout({
   children,
@@ -13,14 +15,16 @@ export default function MainLayout({
   return (
     <SignedIn>
       <NotificationProvider>
-        <VoiceChannelProvider>
-          <SocketProvider>
-            <main className="flex w-full h-[100vh] bg-gray-100">
-              <SideNav />
-              {children}
-            </main>
-          </SocketProvider>
-        </VoiceChannelProvider>
+        <GuildProvider>
+          <VoiceRoomProvider>
+            <SocketProvider>
+              <main className="flex w-full h-[100vh] bg-gray-100">
+                <SideNav />
+                {children}
+              </main>
+            </SocketProvider>
+          </VoiceRoomProvider>
+        </GuildProvider>
       </NotificationProvider>
     </SignedIn>
   );

@@ -113,7 +113,12 @@ export interface GuildRequest {
   fromGuild: Guild;
 }
 
-export interface RoomParticipant {
+export interface VoiceChannelUser {
+  username: string;
+  imageUrl?: string;
+}
+
+export interface ActiveVoiceChannel {
   channelId: string;
-  participants: string[];
+  participants: VoiceChannelUser[];
 }

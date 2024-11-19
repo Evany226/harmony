@@ -2,12 +2,12 @@ import express from "express";
 import {
   getLivekitToken,
   checkRoomEmpty,
-  getParticipants,
+  getActiveVoiceChannels,
 } from "../controllers/livekitController";
 
 const router = express.Router();
 
-router.get("/participants/:guildId", getParticipants);
+router.get("/participants/:guildId", getActiveVoiceChannels);
 router.post("/get-token", getLivekitToken);
 router.post("/room-empty", checkRoomEmpty);
 

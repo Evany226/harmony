@@ -22,6 +22,7 @@ import { useRouter } from "next/navigation";
 import { useNotification } from "@/context/NotificationContext";
 import { useParticipants } from "@livekit/components-react";
 import { checkRoomEmpty } from "@/lib/conversations";
+import { useGuild } from "@/context/GuildContext";
 
 import { usePathname } from "next/navigation";
 

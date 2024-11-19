@@ -189,7 +189,10 @@ export const getUserGuildIds = async (token: string) => {
   return data;
 };
 
-export const getParticipants = async (token: string, roomName: string) => {
+export const getActiveVoiceChannels = async (
+  token: string,
+  roomName: string
+) => {
   const response = await fetch(
     `http://localhost:3001/api/livekit/participants/${roomName}`,
     {
