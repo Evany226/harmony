@@ -107,10 +107,13 @@ export default function CategoryWrapper({
                           key={index}
                           className="ml-6 mr-2 my-1 flex items-center p-1 rounded-sm cursor-pointer hover:bg-neutral-800"
                         >
-                          <Avatar className="w-7 h-7">
-                            <AvatarImage
-                              src={"https://github.com/shadcn.png"}
-                            />
+                          <Avatar
+                            className={`w-7 h-7 ${
+                              participant.isSpeaking &&
+                              "outline outline-2 outline-green-500"
+                            }`}
+                          >
+                            <AvatarImage src={participant.imageUrl} />
                             <AvatarFallback>EY</AvatarFallback>
                           </Avatar>
                           <p className="text-gray-300 ml-2 font-medium">

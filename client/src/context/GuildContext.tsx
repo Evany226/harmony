@@ -8,10 +8,19 @@ import { Member, ActiveVoiceChannel } from "@/types";
 interface GuildContextProps {
   guildMembers: Member[];
   updateGuildMembers: (members: Member[]) => void;
-  updateActiveVoiceChannels: (participants: any) => void;
+  updateActiveVoiceChannels: (
+    voiceChannels: ActiveVoiceChannel[],
+    members: Member[]
+  ) => void;
   activeVoiceChannels: ActiveVoiceChannel[];
   addParticipant: (channelId: string, username: string) => void;
   removeParticipant: (channelId: string, username: string) => void;
+  updateActiveSpeakers: (
+    currentChannelId: string,
+    speakerName: string,
+    isSpeaking: boolean
+  ) => void;
+  updateNoSpeakers: (currentChannelId: string) => void;
 }
 
 const GuildContext = createContext<GuildContextProps | undefined>(undefined);
@@ -22,12 +31,99 @@ export const GuildProvider = ({ children }: { children: React.ReactNode }) => {
     ActiveVoiceChannel[]
   >([]);
 
+  const getImageUrl = useCallback((username: string, members: Member[]) => {
+    const member = members.find((member) => member.user.username === username);
+    console.log(member);
+
+    if (member) {
+      return member.user.imageUrl;
+    }
+
+    return "";
+  }, []);
+
+  const updateNoSpeakers = (currentChannelId: string) => {
+    setActiveVoiceChannels((prevVoiceChannels: ActiveVoiceChannel[]) => {
+      const room = prevVoiceChannels.find(
+        (channel) => channel.channelId === currentChannelId
+      );
+
+      if (!room) {
+        return prevVoiceChannels;
+      }
+
+      const updatedParticipants = room.participants.map((participant) => ({
+        ...participant,
+        isSpeaking: false,
+      }));
+
+      const updatedChannels = prevVoiceChannels.map((voiceChannel) =>
+        voiceChannel.channelId === currentChannelId
+          ? { ...voiceChannel, participants: updatedParticipants }
+          : voiceChannel
+      );
+
+      return updatedChannels;
+    });
+  };
+
+  const updateActiveSpeakers = (
+    currentChannelId: string,
+    speakerName: string,
+    isSpeaking: boolean
+  ) => {
+    setActiveVoiceChannels((prevVoiceChannels: ActiveVoiceChannel[]) => {
+      const room = prevVoiceChannels.find(
+        (channel) => channel.channelId === currentChannelId
+      );
+
+      if (!room) {
+        return prevVoiceChannels;
+      }
+      const updatedParticipants = room.participants.map(
+        (participant) =>
+          participant.username === speakerName
+            ? { ...participant, isSpeaking } // Update the matching speaker
+            : { ...participant, isSpeaking: false } // Set others to false
+      );
+
+      const updatedChannels = prevVoiceChannels.map((voiceChannel) =>
+        voiceChannel.channelId === currentChannelId
+          ? { ...voiceChannel, participants: updatedParticipants }
+          : voiceChannel
+      );
+
+      console.log(updatedChannels);
+
+      return updatedChannels;
+    });
+  };
+
   const updateActiveVoiceChannels = useCallback(
-    (voiceChannels: ActiveVoiceChannel[]) => {
-      setActiveVoiceChannels(voiceChannels);
+    (voiceChannels: ActiveVoiceChannel[], members: Member[]) => {
       console.log(voiceChannels);
+      const updatedChannels = voiceChannels.map((voiceChannel) => {
+        const participants = voiceChannel.participants;
+
+        const newParticipants = participants.map((participant) => {
+          const imageUrl = getImageUrl(participant.username, members);
+          if (imageUrl) {
+            return {
+              ...participant,
+              imageUrl: imageUrl,
+              isSpeaking: false,
+            };
+          } else {
+            return participant;
+          }
+        });
+
+        return { ...voiceChannel, participants: newParticipants };
+      });
+
+      setActiveVoiceChannels(updatedChannels);
     },
-    []
+    [getImageUrl]
   );
 
   const addParticipant = (channelId: string, username: string) => {
@@ -52,7 +148,13 @@ export const GuildProvider = ({ children }: { children: React.ReactNode }) => {
         if (!existingParticipant) {
           updatedParticipants[existingChannelIndex] = {
             ...updatedParticipants[existingChannelIndex],
-            participants: [...currentParticipants, { username: username }],
+            participants: [
+              ...currentParticipants,
+              {
+                username: username,
+                imageUrl: getImageUrl(username, guildMembers),
+              },
+            ],
           };
         }
 
@@ -63,7 +165,15 @@ export const GuildProvider = ({ children }: { children: React.ReactNode }) => {
         // Add new channel entry
         return [
           ...prevVoiceChannels,
-          { channelId, participants: [{ username: username }] },
+          {
+            channelId,
+            participants: [
+              {
+                username: username,
+                imageUrl: getImageUrl(username, guildMembers),
+              },
+            ],
+          },
         ];
       }
     });
@@ -103,6 +213,8 @@ export const GuildProvider = ({ children }: { children: React.ReactNode }) => {
         activeVoiceChannels,
         addParticipant,
         removeParticipant,
+        updateActiveSpeakers,
+        updateNoSpeakers,
       }}
     >
       {children}

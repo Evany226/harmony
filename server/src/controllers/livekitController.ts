@@ -111,25 +111,26 @@ const getActiveVoiceChannels = async (req: Request, res: Response) => {
   const results = await Promise.all(
     channelIds.map(async (channelId) => {
       const roomList = await roomService.listRooms();
+
+      console.log("Roomlist", roomList);
       if (!roomList) {
         return { channelId, participants: [] };
       }
 
       const room = roomList.find((room) => room.name === channelId);
 
+      let newParticipants = [];
+
       if (!room) {
         return { channelId, participants: [] };
+      } else {
+        const participants = await roomService.listParticipants(channelId);
+
+        newParticipants = participants.map((p) => {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          return { username: p.identity };
+        });
       }
-
-      const participants = await roomService.listParticipants(channelId);
-
-      if (!participants) {
-        return { channelId, participants: [] };
-      }
-
-      const newParticipants = participants.map((p) => {
-        return { username: p.identity };
-      });
 
       return { channelId, participants: newParticipants };
     })
@@ -143,6 +144,7 @@ const getActiveVoiceChannels = async (req: Request, res: Response) => {
   }
 
   return res.json(results);
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 
   // const result = await roomService.listParticipants(roomName);

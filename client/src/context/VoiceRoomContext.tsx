@@ -5,6 +5,8 @@ import { TextChannel } from "@/types";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useGuild } from "./GuildContext";
 import { useUser } from "@clerk/nextjs";
+import { useIsSpeaking } from "@livekit/components-react";
+import { useParticipants } from "@livekit/components-react";
 
 interface VoiceRoomContextProps {
   room: Room | null;
@@ -32,8 +34,37 @@ export const VoiceRoomProvider = ({
   );
   const [token, setToken] = useState<string>("");
   const [currentGuild, setCurrentGuild] = useState<string>("");
-  const { addParticipant, removeParticipant } = useGuild();
+  const {
+    addParticipant,
+    removeParticipant,
+    activeVoiceChannels,
+    updateActiveSpeakers,
+    updateNoSpeakers,
+  } = useGuild();
   const { user } = useUser();
+
+  useEffect(() => {
+    console.log("Test");
+    room?.on(RoomEvent.ActiveSpeakersChanged, (speakers) => {
+      if (speakers.length === 0) {
+        updateNoSpeakers(currentChannel?.id as string);
+      }
+
+      speakers.forEach((speaker) => {
+        updateActiveSpeakers(
+          currentChannel?.id as string,
+          speaker.identity,
+          speaker.isSpeaking
+        );
+      });
+    });
+  }, [
+    room,
+    activeVoiceChannels,
+    currentChannel,
+    updateActiveSpeakers,
+    updateNoSpeakers,
+  ]);
 
   const connect = async (
     token: string,

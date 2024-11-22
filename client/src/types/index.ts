@@ -116,6 +116,7 @@ export interface GuildRequest {
 export interface VoiceChannelUser {
   username: string;
   imageUrl?: string;
+  isSpeaking?: boolean;
 }
 
 export interface ActiveVoiceChannel {

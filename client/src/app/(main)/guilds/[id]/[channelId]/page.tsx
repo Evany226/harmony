@@ -63,7 +63,7 @@ export default function ChannelPage({
         token as string,
         params.id
       );
-      updateActiveVoiceChannels(participants);
+      updateActiveVoiceChannels(participants, members);
 
       setLoading(false);
     };

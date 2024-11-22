@@ -41,7 +41,6 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       const channelIds = await getUserChannelIds(token as string);
 
       const guildIds = await getUserGuildIds(token as string);
-      console.log(guildIds);
 
       socket.emit("joinRoom", ids);
       socket.emit("joinRoom", channelIds);

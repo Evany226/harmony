@@ -6,7 +6,6 @@ import { NotificationProvider } from "@/context/NotificationContext";
 import { GuildProvider } from "@/context/GuildContext";
 import { SignedIn } from "@clerk/nextjs";
 import { VoiceRoomProvider } from "@/context/VoiceRoomContext";
-
 export default function MainLayout({
   children,
 }: {
