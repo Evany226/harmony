@@ -52,7 +52,7 @@ export default function CategoryWrapper({
   const handleJoinChannel = async (channel: TextChannel) => {
     const token = await getLiveKitToken(channel.id, user?.username as string);
 
-    connect(token, channel, guildName);
+    connect(token, channel, guildName, guildId);
   };
 
   return (

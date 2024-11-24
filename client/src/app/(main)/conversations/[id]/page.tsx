@@ -5,6 +5,7 @@ import { getConversation, getAllMessages } from "@/lib/conversations";
 import { useAuth } from "@clerk/nextjs";
 import { User, Message, Participant } from "@/types/index.js";
 import { useUser } from "@clerk/nextjs";
+import useSound from "use-sound";
 
 import ChatInput from "@/components/global/ChatInput";
 import ChatHeader from "@/components/global/ChatHeader";
@@ -20,9 +21,8 @@ import { useToast } from "@/components/ui/use-toast";
 import { useSocket } from "@/context/SocketContext";
 import { useRouter } from "next/navigation";
 import { useNotification } from "@/context/NotificationContext";
-import { useParticipants } from "@livekit/components-react";
 import { checkRoomEmpty } from "@/lib/conversations";
-import { useGuild } from "@/context/GuildContext";
+import { useVoiceRoom } from "@/context/VoiceRoomContext";
 
 import { usePathname } from "next/navigation";
 
@@ -41,6 +41,7 @@ export default function ConversationPage({
   const [socketLoading, setSocketLoading] = useState<boolean>(false);
   const { socket, isConnected } = useSocket();
   const { isVoiceCallOpen, setIsVoiceCallOpen } = useNotification();
+  const { isConnected: isVoiceChannelOpen, disconnect } = useVoiceRoom();
   const [isRoomEmpty, setIsRoomEmpty] = useState<boolean>(true);
 
   const { user: currUser } = useUser();
@@ -48,6 +49,8 @@ export default function ConversationPage({
   const { toast } = useToast();
   const router = useRouter();
   const pathname = usePathname();
+
+  const [playJoinSound] = useSound("/audio/join-call.mp3");
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -165,16 +168,21 @@ export default function ConversationPage({
   };
 
   const startVoiceCall = () => {
-    if (!isVoiceCallOpen) {
+    if (isVoiceChannelOpen) {
+      disconnect();
+    }
+
+    if (!isVoiceCallOpen && isRoomEmpty) {
+      playJoinSound();
       setIsVoiceCallOpen(true);
       socket.emit("newVoiceCall", params.id, currUser?.imageUrl);
     } else {
       toast({
         variant: "destructive",
-        title: "Already in a voice call.",
+        title: "Failed to start voice call.",
         description: `${
           pathname === `/conversations/${params.id}`
-            ? "You are already in this voice call."
+            ? "There is already an ongoing voice call in this conversation."
             : "You cannot start a new voice call while already in one. Please leave first."
         }`,
       });
@@ -182,8 +190,14 @@ export default function ConversationPage({
   };
 
   const lateJoinVoiceCall = () => {
-    if (!isVoiceCallOpen) {
+    if (isVoiceChannelOpen) {
+      disconnect();
+    }
+
+    if (!isVoiceCallOpen && !isRoomEmpty) {
+      playJoinSound();
       setIsVoiceCallOpen(true);
+      socket.emit("joinVoiceCall", params.id);
     } else {
       toast({
         variant: "destructive",

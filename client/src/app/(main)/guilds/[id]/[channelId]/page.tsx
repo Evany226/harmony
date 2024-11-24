@@ -206,11 +206,14 @@ export default function ChannelPage({
               {messages.length === 0 ? (
                 <GuildEmptyState
                   name={channel.name}
-                  imageUrl={"/logo-past.png"}
+                  imageUrl={"/images/logo-past.png"}
                 />
               ) : (
                 <>
-                  <ChatHeader name={channel.name} imageUrl={"/logo-past.png"} />
+                  <ChatHeader
+                    name={channel.name}
+                    imageUrl={"/images/logo-past.png"}
+                  />
                   {messages.map((message: ChannelMessages) => {
                     return (
                       <MessageCard

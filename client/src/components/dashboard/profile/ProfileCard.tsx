@@ -18,8 +18,6 @@ export default function ProfileCard() {
     <>
       {isSignedIn ? (
         <main className="bottom-0 absolute w-full">
-          <VoiceChannelOverlay />
-
           <section className="flex items-center w-full h-14 px-2 bg-stone-900 border-t border-zinc-800">
             {/* <Avatar>
             <AvatarImage

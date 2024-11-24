@@ -127,14 +127,14 @@ export default function MessageCard({ message, variant }: MessageCardProps) {
       </div>
       <div className="absolute -top-2 right-5 hidden group-hover:block">
         <div className="flex items-center bg-zinc-900 space-x-2 py-1 px-2 rounded-md border border-zinc-700">
-          <FaceSmileIcon className="h-5 w-5 text-gray-300 cursor-pointer" />
+          <FaceSmileIcon className="h-5 w-5 text-gray-300 cursor-pointer hover:text-gray-500" />
           {message.sender.userId === userId && (
             <PencilIcon
               onClick={() => setIsEditing(!isEditing)}
-              className="h-5 w-5 text-gray-300 cursor-pointer"
+              className="h-5 w-5 text-gray-300 cursor-pointer hover:text-gray-500"
             />
           )}
-          <EllipsisHorizontalIcon className="h-5 w-5 text-gray-300 cursor-pointer" />
+          <EllipsisHorizontalIcon className="h-5 w-5 text-gray-300 cursor-pointer hover:text-gray-500" />
         </div>
       </div>
     </div>

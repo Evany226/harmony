@@ -108,15 +108,12 @@ const getActiveVoiceChannels = async (req: Request, res: Response) => {
 
   const channelIds = result.flat();
 
+  const roomList = await roomService.listRooms();
+
+  console.log("Room list", roomList);
+
   const results = await Promise.all(
     channelIds.map(async (channelId) => {
-      const roomList = await roomService.listRooms();
-
-      console.log("Roomlist", roomList);
-      if (!roomList) {
-        return { channelId, participants: [] };
-      }
-
       const room = roomList.find((room) => room.name === channelId);
 
       let newParticipants = [];
@@ -137,11 +134,6 @@ const getActiveVoiceChannels = async (req: Request, res: Response) => {
   );
 
   console.log(results);
-
-  // Return an empty array if no participants found
-  if (results.length === 0) {
-    return res.json([]);
-  }
 
   return res.json(results);
 

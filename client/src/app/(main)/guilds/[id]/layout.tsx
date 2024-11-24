@@ -1,4 +1,6 @@
 import GuildLeftPanel from "@/components/guilds/GuildLeftPanel";
+import { HashtagIcon } from "@heroicons/react/24/solid";
+import { getChannel } from "@/lib/guilds";
 
 export default async function GuildLayout({
   params,

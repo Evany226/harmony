@@ -11,6 +11,8 @@ import { useRouter } from "next/navigation";
 import { getUserChannelIds, getUserGuildIds } from "@/lib/guilds";
 import { useUser } from "@clerk/nextjs";
 import { useNotification } from "./NotificationContext";
+import { useGuild } from "./GuildContext";
+import useSound from "use-sound";
 
 interface SocketContextProps {
   socket: typeof socket;
@@ -24,8 +26,11 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const { getToken, userId } = useAuth();
   const { user } = useUser();
   const { toast } = useToast();
-  const { createAlert } = useNotification();
+  const { createAlert, isVoiceCallOpen } = useNotification();
+  const { addParticipant, removeParticipant } = useGuild();
   const router = useRouter();
+  const [playLeaveSound] = useSound("/audio/leave-call.mp3");
+  const [playJoinSound] = useSound("/audio/join-call.mp3");
 
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
@@ -92,9 +97,38 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     socket.on(
       "incomingVoiceCall",
       (conversationId: string, imageUrl: string) => {
-        createAlert("John Doe", conversationId, imageUrl);
+        console.log("incoming call");
+        createAlert("Incoming call", conversationId, imageUrl);
       }
     );
+
+    socket.on("leaveVoiceCall", () => {
+      if (isVoiceCallOpen) {
+        console.log("other user left");
+        playLeaveSound();
+      }
+    });
+
+    socket.on("joinVoiceCall", () => {
+      console.log("other user joined");
+      playJoinSound();
+    });
+
+    const socketAddParticipant = (channelId: string, username: string) => {
+      console.log("Adding participant to channel:", channelId, username);
+      playJoinSound();
+      addParticipant(channelId, username);
+    };
+
+    socket.on("joinVoiceChannel", socketAddParticipant);
+
+    const socketRemoveParticipant = (channelId: string, username: string) => {
+      console.log("Removing participant from channel:", channelId, username);
+      playLeaveSound();
+      removeParticipant(channelId, username);
+    };
+
+    socket.on("leaveVoiceChannel", socketRemoveParticipant);
 
     return () => {
       socket.off("connect");
@@ -103,8 +137,23 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       socket.off("onlineUsers");
       socket.off("refresh");
       socket.off("incomingVoiceCall");
+      socket.off("leaveVoiceCall");
+      socket.off("joinVoiceCall");
+      socket.off("joinVoiceChannel");
     };
-  }, [createAlert, getToken, toast, userId, router, user]);
+  }, [
+    createAlert,
+    getToken,
+    toast,
+    userId,
+    router,
+    user,
+    playLeaveSound,
+    playJoinSound,
+    isVoiceCallOpen,
+    addParticipant,
+    removeParticipant,
+  ]);
 
   return (
     <SocketContext.Provider value={{ socket, isConnected, onlineUsers }}>

@@ -26,7 +26,7 @@ export default async function SideNav() {
         <SideNavTooltip text="Direct Messages">
           <Link href="/friends">
             <Image
-              src="/logo-past.png"
+              src="/images/logo-past.png"
               className="border-b border-zinc-600"
               width={60}
               height={60}
@@ -66,7 +66,7 @@ export default async function SideNav() {
                   </Avatar>
                 ) : (
                   <Image
-                    src="/logo-past.png"
+                    src="/images/logo-past.png"
                     width={60}
                     height={60}
                     alt="Logo"

@@ -5,14 +5,20 @@ import { TextChannel } from "@/types";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useGuild } from "./GuildContext";
 import { useUser } from "@clerk/nextjs";
-import { useIsSpeaking } from "@livekit/components-react";
-import { useParticipants } from "@livekit/components-react";
+import { useNotification } from "./NotificationContext";
+import { socket } from "@/app/socket";
+import useSound from "use-sound";
 
 interface VoiceRoomContextProps {
   room: Room | null;
   currentChannel: TextChannel | null;
   currentGuild: string;
-  connect: (token: string, channel: TextChannel, guildName: string) => void;
+  connect: (
+    token: string,
+    channel: TextChannel,
+    guildName: string,
+    guildId: string
+  ) => void;
   disconnect: () => void;
   isConnected: boolean;
   token: string;
@@ -21,6 +27,8 @@ interface VoiceRoomContextProps {
 const VoiceRoomContext = createContext<VoiceRoomContextProps | undefined>(
   undefined
 );
+
+const serverUrl = "wss://harmony-zknfyk4k.livekit.cloud";
 
 export const VoiceRoomProvider = ({
   children,
@@ -34,6 +42,7 @@ export const VoiceRoomProvider = ({
   );
   const [token, setToken] = useState<string>("");
   const [currentGuild, setCurrentGuild] = useState<string>("");
+  const [currentGuildId, setCurrentGuildId] = useState<string>("");
   const {
     addParticipant,
     removeParticipant,
@@ -42,6 +51,11 @@ export const VoiceRoomProvider = ({
     updateNoSpeakers,
   } = useGuild();
   const { user } = useUser();
+
+  const [playJoinSound] = useSound("/audio/join-call.mp3");
+  const [playLeaveSound] = useSound("/audio/leave-call.mp3");
+
+  const { isVoiceCallOpen, setIsVoiceCallOpen } = useNotification();
 
   useEffect(() => {
     console.log("Test");
@@ -69,8 +83,13 @@ export const VoiceRoomProvider = ({
   const connect = async (
     token: string,
     channel: TextChannel,
-    guildName: string
+    guildName: string,
+    guildId: string
   ) => {
+    if (isVoiceCallOpen) {
+      setIsVoiceCallOpen(false);
+    }
+
     if (room && isConnected) {
       if (room.name === channel.id) {
         return;
@@ -83,6 +102,7 @@ export const VoiceRoomProvider = ({
     setToken(token);
     setCurrentChannel(channel);
     setCurrentGuild(guildName);
+    setCurrentGuildId(guildId);
 
     const newRoom = new Room();
 
@@ -93,7 +113,14 @@ export const VoiceRoomProvider = ({
     });
 
     setRoom(newRoom);
+    playJoinSound();
     addParticipant(channel.id, user?.username as string);
+
+    socket.emit("joinVoiceChannel", {
+      guildId: guildId,
+      channelId: channel.id,
+      username: user?.username,
+    });
 
     // try {
     //   // Connect to new room
@@ -108,7 +135,14 @@ export const VoiceRoomProvider = ({
   const disconnect = () => {
     room?.disconnect();
     setIsConnected(false);
+    playLeaveSound();
     removeParticipant(currentChannel?.id as string, user?.username as string);
+
+    socket.emit("leaveVoiceChannel", {
+      guildId: currentGuildId,
+      channelId: currentChannel?.id,
+      username: user?.username,
+    });
   };
 
   const value = {
