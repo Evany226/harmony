@@ -21,6 +21,11 @@ interface GuildContextProps {
     isSpeaking: boolean
   ) => void;
   updateNoSpeakers: (currentChannelId: string) => void;
+  updateMuteStatus: (
+    channelId: string,
+    username: string,
+    isMuted: boolean
+  ) => void;
 }
 
 const GuildContext = createContext<GuildContextProps | undefined>(undefined);
@@ -41,6 +46,39 @@ export const GuildProvider = ({ children }: { children: React.ReactNode }) => {
 
     return "";
   }, []);
+
+  const updateMuteStatus = (
+    channelId: string,
+    username: string,
+    isMuted: boolean
+  ) => {
+    setActiveVoiceChannels((prevVoiceChannels: ActiveVoiceChannel[]) => {
+      const room = prevVoiceChannels.find(
+        (channel) => channel.channelId === channelId
+      );
+
+      if (!room) {
+        return prevVoiceChannels;
+      }
+
+      const updatedParticipants = room.participants.map((participant) =>
+        participant.username === username
+          ? { ...participant, isMuted: isMuted }
+          : participant
+      );
+
+      console.log(updatedParticipants);
+
+      const updatedChannels = prevVoiceChannels.map((voiceChannel) =>
+        voiceChannel.channelId === channelId
+          ? { ...voiceChannel, participants: updatedParticipants }
+          : voiceChannel
+      );
+
+      console.log(updatedChannels);
+      return updatedChannels;
+    });
+  };
 
   const updateNoSpeakers = (currentChannelId: string) => {
     setActiveVoiceChannels((prevVoiceChannels: ActiveVoiceChannel[]) => {
@@ -127,7 +165,7 @@ export const GuildProvider = ({ children }: { children: React.ReactNode }) => {
   );
 
   const addParticipant = (channelId: string, username: string) => {
-    setActiveVoiceChannels((prevVoiceChannels) => {
+    setActiveVoiceChannels((prevVoiceChannels: ActiveVoiceChannel[]) => {
       // Check if channel already exists
       const existingChannelIndex = prevVoiceChannels.findIndex(
         (p) => p.channelId === channelId
@@ -153,12 +191,12 @@ export const GuildProvider = ({ children }: { children: React.ReactNode }) => {
               {
                 username: username,
                 imageUrl: getImageUrl(username, guildMembers),
+                isSpeaking: false,
+                isMuted: true,
               },
             ],
           };
         }
-
-        console.log(updatedParticipants);
 
         return updatedParticipants;
       } else {
@@ -215,6 +253,7 @@ export const GuildProvider = ({ children }: { children: React.ReactNode }) => {
         removeParticipant,
         updateActiveSpeakers,
         updateNoSpeakers,
+        updateMuteStatus,
       }}
     >
       {children}

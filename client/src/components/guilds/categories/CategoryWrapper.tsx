@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/collapsible";
 
 import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
+import MicIcon from "@/assets/MicIcon";
 
 import CategoryContextMenu from "./CategoryContextMenu";
 
@@ -105,7 +106,7 @@ export default function CategoryWrapper({
                       (participant, index) => (
                         <section
                           key={index}
-                          className="ml-6 mr-2 my-1 flex items-center p-1 rounded-sm cursor-pointer hover:bg-neutral-800"
+                          className="ml-4 mr-2 my-1 flex items-center p-1 rounded-sm cursor-pointer relative hover:bg-neutral-800 "
                         >
                           <Avatar
                             className={`w-7 h-7 ${
@@ -116,9 +117,12 @@ export default function CategoryWrapper({
                             <AvatarImage src={participant.imageUrl} />
                             <AvatarFallback>EY</AvatarFallback>
                           </Avatar>
-                          <p className="text-gray-300 ml-2 font-medium">
+                          <p className="text-neutral-300 ml-2 font-medium text-sm">
                             {participant.username}
                           </p>
+                          {participant.isMuted && (
+                            <MicIcon className="absolute right-0 text-gray-400" />
+                          )}
                         </section>
                       )
                     )}

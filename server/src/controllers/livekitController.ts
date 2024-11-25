@@ -116,20 +116,49 @@ const getActiveVoiceChannels = async (req: Request, res: Response) => {
     channelIds.map(async (channelId) => {
       const room = roomList.find((room) => room.name === channelId);
 
-      let newParticipants = [];
-
       if (!room) {
         return { channelId, participants: [] };
-      } else {
-        const participants = await roomService.listParticipants(channelId);
-
-        newParticipants = participants.map((p) => {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-          return { username: p.identity };
-        });
       }
 
-      return { channelId, participants: newParticipants };
+      try {
+        const participants = await roomService.listParticipants(channelId);
+
+        console.log("Participants", participants);
+
+        const newParticipants = participants.map((p) => {
+          const tracks = p.tracks;
+          let isMuted = true;
+
+          if (!tracks) {
+            return {
+              username: p.identity,
+              isMuted: true,
+            };
+          }
+
+          tracks.some((track) => {
+            if (JSON.stringify(track.source) === "2") {
+              if (track.muted === false) {
+                isMuted = false;
+                return true;
+              }
+            }
+            return false;
+          });
+
+          return {
+            username: p.identity,
+            isMuted: isMuted,
+          };
+        });
+        return { channelId, participants: newParticipants };
+      } catch (error) {
+        console.error(
+          `Error fetching participants for channel ${channelId}:`,
+          error
+        );
+        return { channelId, participants: [] }; // Return empty participants on error
+      }
     })
   );
 

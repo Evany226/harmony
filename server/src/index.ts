@@ -160,6 +160,24 @@ io.on("connection", (socket) => {
     }
   );
 
+  socket.on(
+    "muteVoiceChannel",
+    ({
+      guildId,
+      channelId,
+      username,
+      isMuted,
+    }: {
+      guildId: string;
+      channelId: string;
+      username: string;
+      isMuted: boolean;
+    }) => {
+      console.log(`Current user muted voice channel: ${channelId}`);
+      socket.to(guildId).emit("muteVoiceChannel", channelId, username, isMuted);
+    }
+  );
+
   //these below are probably not needed anymore
   // socket.on("createNewChannel", async (channelId: string, guildId: string) => {
   //   console.log(`Current user joined new channel: ${channelId}`);

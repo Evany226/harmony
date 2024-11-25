@@ -87,3 +87,15 @@ export interface ChannelMessage {
   channel: TextChannel;
   createdAt: string;
 }
+
+export interface VoiceChannelUser {
+  username: string;
+  imageUrl?: string;
+  isSpeaking?: boolean;
+  isMuted?: boolean;
+}
+
+export interface ActiveVoiceChannel {
+  channelId: string;
+  participants: VoiceChannelUser[];
+}

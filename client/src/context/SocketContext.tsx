@@ -12,6 +12,7 @@ import { getUserChannelIds, getUserGuildIds } from "@/lib/guilds";
 import { useUser } from "@clerk/nextjs";
 import { useNotification } from "./NotificationContext";
 import { useGuild } from "./GuildContext";
+import { useVoiceRoom } from "./VoiceRoomContext";
 import useSound from "use-sound";
 
 interface SocketContextProps {
@@ -27,7 +28,8 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const { user } = useUser();
   const { toast } = useToast();
   const { createAlert, isVoiceCallOpen } = useNotification();
-  const { addParticipant, removeParticipant } = useGuild();
+  const { addParticipant, removeParticipant, updateMuteStatus } = useGuild();
+  const { isConnected: isVoiceChannelOpen, room } = useVoiceRoom();
   const router = useRouter();
   const [playLeaveSound] = useSound("/audio/leave-call.mp3");
   const [playJoinSound] = useSound("/audio/join-call.mp3");
@@ -110,25 +112,41 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     });
 
     socket.on("joinVoiceCall", () => {
-      console.log("other user joined");
-      playJoinSound();
+      if (isVoiceCallOpen) {
+        console.log("other user joined");
+        playJoinSound();
+      }
     });
 
     const socketAddParticipant = (channelId: string, username: string) => {
-      console.log("Adding participant to channel:", channelId, username);
-      playJoinSound();
       addParticipant(channelId, username);
+
+      if (isVoiceChannelOpen && room && room.name === channelId) {
+        playJoinSound();
+      }
     };
 
     socket.on("joinVoiceChannel", socketAddParticipant);
 
     const socketRemoveParticipant = (channelId: string, username: string) => {
-      console.log("Removing participant from channel:", channelId, username);
-      playLeaveSound();
       removeParticipant(channelId, username);
+
+      if (isVoiceChannelOpen && room && room.name === channelId) {
+        playLeaveSound();
+      }
     };
 
     socket.on("leaveVoiceChannel", socketRemoveParticipant);
+
+    const socketMuteVoiceChannel = (
+      channelId: string,
+      username: string,
+      isMuted: boolean
+    ) => {
+      updateMuteStatus(channelId, username, isMuted);
+    };
+
+    socket.on("muteVoiceChannel", socketMuteVoiceChannel);
 
     return () => {
       socket.off("connect");
@@ -140,6 +158,8 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       socket.off("leaveVoiceCall");
       socket.off("joinVoiceCall");
       socket.off("joinVoiceChannel");
+      socket.off("leaveVoiceChannel");
+      socket.off("muteVoiceChannel");
     };
   }, [
     createAlert,
@@ -153,6 +173,9 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     isVoiceCallOpen,
     addParticipant,
     removeParticipant,
+    isVoiceChannelOpen,
+    room,
+    updateMuteStatus,
   ]);
 
   return (

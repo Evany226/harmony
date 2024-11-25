@@ -117,6 +117,7 @@ export interface VoiceChannelUser {
   username: string;
   imageUrl?: string;
   isSpeaking?: boolean;
+  isMuted?: boolean;
 }
 
 export interface ActiveVoiceChannel {

@@ -2,34 +2,68 @@
 
 import { useVoiceRoom } from "@/context/VoiceRoomContext";
 import { WifiIcon, PhoneXMarkIcon } from "@heroicons/react/24/solid";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useGuild } from "@/context/GuildContext";
+import useSound from "use-sound";
+import { useUser } from "@clerk/nextjs";
+import { socket } from "@/app/socket";
+
 import {
   LiveKitRoom,
   RoomAudioRenderer,
   TrackToggle,
   DisconnectButton,
+  useParticipants,
 } from "@livekit/components-react";
-import { Track } from "livekit-client";
+import { Room, Track } from "livekit-client";
 
 export default function VoiceChannelOverlay() {
   const serverUrl = "wss://harmony-zknfyk4k.livekit.cloud";
 
-  const [isMuted, setIsMuted] = useState<boolean>(false);
+  const [isMuted, setIsMuted] = useState<boolean>(true);
+  const [playMuteSound] = useSound("/audio/mute-sound.mp3");
+  const [playUnmuteSound] = useSound("/audio/unmute-sound.mp3");
+
+  const { updateMuteStatus } = useGuild();
+  const { user } = useUser();
+  const {
+    isConnected,
+    room,
+    disconnect,
+    currentChannel,
+    currentGuild,
+    token,
+    currentGuildId,
+  } = useVoiceRoom();
 
   const onMicrophoneChange = (enabled: boolean, isUserInitiated: boolean) => {
     if (!isUserInitiated) {
       return;
     }
 
+    if (!currentChannel) {
+      return;
+    }
+    console.log(user?.username);
     setIsMuted(!enabled);
+    updateMuteStatus(currentChannel.id, user?.username as string, !enabled);
+    socket.emit("muteVoiceChannel", {
+      guildId: currentGuildId,
+      channelId: currentChannel.id,
+      username: user?.username,
+      isMuted: !enabled,
+    });
+
+    if (enabled) {
+      playUnmuteSound();
+    } else {
+      playMuteSound();
+    }
   };
 
   const handleLeaveChannel = () => {
     disconnect();
   };
-
-  const { isConnected, room, disconnect, currentChannel, currentGuild, token } =
-    useVoiceRoom();
 
   return (
     <>
@@ -56,17 +90,16 @@ export default function VoiceChannelOverlay() {
                     showIcon={true}
                     source={Track.Source.Microphone}
                     onChange={onMicrophoneChange}
-                    className={` hover:bg-zinc-700 p-1.5 rounded-sm ${
-                      isMuted ? "text-red-500" : "text-gray-300"
+                    className={` hover:bg-zinc-700 p-1.5 rounded-sm text-red-500"
                     }`}
                     style={{ color: isMuted ? "#ef4444" : "#d1d5db" }}
                   />
-                  <button
+                  <DisconnectButton
                     className="hover:bg-zinc-700 p-1.5 rounded-sm"
                     onClick={handleLeaveChannel}
                   >
                     <PhoneXMarkIcon className="w-4 h-4 text-gray-300 cursor-pointer" />
-                  </button>
+                  </DisconnectButton>
                 </div>
               </div>
               <div className="flex items-center justify-center w-full h-full"></div>

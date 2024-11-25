@@ -13,6 +13,7 @@ interface VoiceRoomContextProps {
   room: Room | null;
   currentChannel: TextChannel | null;
   currentGuild: string;
+  currentGuildId: string;
   connect: (
     token: string,
     channel: TextChannel,
@@ -58,7 +59,6 @@ export const VoiceRoomProvider = ({
   const { isVoiceCallOpen, setIsVoiceCallOpen } = useNotification();
 
   useEffect(() => {
-    console.log("Test");
     room?.on(RoomEvent.ActiveSpeakersChanged, (speakers) => {
       if (speakers.length === 0) {
         updateNoSpeakers(currentChannel?.id as string);
@@ -95,10 +95,23 @@ export const VoiceRoomProvider = ({
         return;
       }
 
-      removeParticipant(currentChannel?.id as string, user?.username as string);
-      await room.disconnect();
-    }
+      try {
+        setIsConnected(false);
+        removeParticipant(
+          currentChannel?.id as string,
+          user?.username as string
+        );
+        await room.disconnect();
 
+        socket.emit("leaveVoiceChannel", {
+          guildId: currentGuildId,
+          channelId: currentChannel?.id,
+          username: user?.username,
+        });
+      } catch (error) {
+        console.error("Error disconnecting from room", error);
+      }
+    }
     setToken(token);
     setCurrentChannel(channel);
     setCurrentGuild(guildName);
@@ -106,13 +119,9 @@ export const VoiceRoomProvider = ({
 
     const newRoom = new Room();
 
-    setIsConnected(true);
-
-    newRoom.on(RoomEvent.Disconnected, () => {
-      setIsConnected(false);
-    });
-
     setRoom(newRoom);
+
+    setIsConnected(true);
     playJoinSound();
     addParticipant(channel.id, user?.username as string);
 
@@ -121,34 +130,28 @@ export const VoiceRoomProvider = ({
       channelId: channel.id,
       username: user?.username,
     });
-
-    // try {
-    //   // Connect to new room
-    //   await newRoom.connect(serverUrl, token, {
-    //     // Add any room options you need
-    //   });
-    // } catch (error) {
-    //   console.error("Failed to connect to room:", error);
-    // }
   };
 
   const disconnect = () => {
-    room?.disconnect();
-    setIsConnected(false);
-    playLeaveSound();
-    removeParticipant(currentChannel?.id as string, user?.username as string);
+    if (room) {
+      room?.disconnect();
+      setIsConnected(false);
+      playLeaveSound();
+      removeParticipant(currentChannel?.id as string, user?.username as string);
 
-    socket.emit("leaveVoiceChannel", {
-      guildId: currentGuildId,
-      channelId: currentChannel?.id,
-      username: user?.username,
-    });
+      socket.emit("leaveVoiceChannel", {
+        guildId: currentGuildId,
+        channelId: currentChannel?.id,
+        username: user?.username,
+      });
+    }
   };
 
   const value = {
     room,
     currentChannel,
     currentGuild,
+    currentGuildId,
     connect,
     disconnect,
     isConnected,
