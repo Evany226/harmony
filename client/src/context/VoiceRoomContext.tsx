@@ -5,7 +5,7 @@ import { TextChannel } from "@/types";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useGuild } from "./GuildContext";
 import { useUser } from "@clerk/nextjs";
-import { useVoiceCall } from "./VoiceCallContext";
+import { useNotification } from "./NotificationContext";
 import { socket } from "@/app/socket";
 import useSound from "use-sound";
 
@@ -56,7 +56,7 @@ export const VoiceRoomProvider = ({
   const [playJoinSound] = useSound("/audio/join-call.mp3");
   const [playLeaveSound] = useSound("/audio/leave-call.mp3");
 
-  const { isVoiceCallOpen, setIsVoiceCallOpen } = useVoiceCall();
+  const { isVoiceCallOpen, setIsVoiceCallOpen } = useNotification();
 
   useEffect(() => {
     room?.on(RoomEvent.ActiveSpeakersChanged, (speakers) => {

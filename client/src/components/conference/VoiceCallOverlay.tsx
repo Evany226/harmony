@@ -3,7 +3,7 @@
 import { getLiveKitToken } from "@/lib/conversations";
 import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
-import { useVoiceCall } from "@/context/VoiceCallContext";
+import { useNotification } from "@/context/NotificationContext";
 import { socket } from "@/app/socket";
 import useSound from "use-sound";
 
@@ -29,7 +29,7 @@ interface VoiceCallOverlayProps {
 export default function VoiceCallOverlay({ convId }: VoiceCallOverlayProps) {
   const [token, setToken] = useState("");
   const { user } = useUser();
-  const { isVoiceCallOpen, setIsVoiceCallOpen } = useVoiceCall();
+  const { isVoiceCallOpen, setIsVoiceCallOpen } = useNotification();
   const [playLeaveCall] = useSound("/audio/leave-call.mp3");
 
   const userName = user?.username;
