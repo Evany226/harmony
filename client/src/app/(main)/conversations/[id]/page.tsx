@@ -15,14 +15,15 @@ import ConvPageHeader from "@/components/conversations/ConvPageHeader";
 import ConvProfilePanel from "@/components/conversations/ConvProfilePanel";
 import VoiceCallOverlay from "@/components/conference/VoiceCallOverlay";
 import PendingVoiceCall from "@/components/conference/PendingVoiceCall";
+import { socket } from "@/app/socket";
 
 import { createMessage } from "@/actions/conv";
 import { useToast } from "@/components/ui/use-toast";
-import { useSocket } from "@/context/SocketContext";
 import { useRouter } from "next/navigation";
-import { useNotification } from "@/context/NotificationContext";
+
 import { checkRoomEmpty } from "@/lib/conversations";
 import { useVoiceRoom } from "@/context/VoiceRoomContext";
+import { useVoiceCall } from "@/context/VoiceCallContext";
 
 import { usePathname } from "next/navigation";
 
@@ -34,13 +35,11 @@ export default function ConversationPage({
   const [headerText, setHeaderText] = useState<string>("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [users, setUsers] = useState<User[]>([]);
-  const [image, setImage] = useState<string[]>([]);
   const [allImages, setAllImages] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [inputValue, setInputValue] = useState<string>("");
   const [socketLoading, setSocketLoading] = useState<boolean>(false);
-  const { socket, isConnected } = useSocket();
-  const { isVoiceCallOpen, setIsVoiceCallOpen } = useNotification();
+  const { isVoiceCallOpen, setIsVoiceCallOpen } = useVoiceCall();
   const { isConnected: isVoiceChannelOpen, disconnect } = useVoiceRoom();
   const [isRoomEmpty, setIsRoomEmpty] = useState<boolean>(true);
 
@@ -130,7 +129,7 @@ export default function ConversationPage({
       socket.off(`editMessage ${params.id}`, handleEdit);
       socket.off(`checkRoomEmpty ${params.id}`, updateRoom);
     };
-  }, [params.id, socket]);
+  }, [params.id]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });

@@ -26,3 +26,44 @@
 svg path {
   stroke-width: 4;
 }
+
+.homebg {
+  background-color: #99a2ff;
+  background-image: radial-gradient(
+      at 90% 64%,
+      hsla(28, 69%, 64%, 1) 0px,
+      transparent 50%
+    ),
+    radial-gradient(at 37% 14%, hsla(109, 81%, 79%, 1) 0px, transparent 50%),
+    radial-gradient(at 85% 10%, hsla(164, 74%, 73%, 1) 0px, transparent 50%),
+    radial-gradient(at 63% 95%, hsla(157, 99%, 64%, 1) 0px, transparent 50%),
+    radial-gradient(at 12% 13%, hsla(170, 99%, 76%, 1) 0px, transparent 50%),
+    radial-gradient(at 71% 47%, hsla(315, 73%, 74%, 1) 0px, transparent 50%);
+}
+
+.bgup {
+  background-color: #99a2ff;
+  background-image: radial-gradient(
+      at 90% 64%,
+      hsla(28, 69%, 64%, 1) 0px,
+      transparent 50%
+    ),
+    radial-gradient(at 52% 23%, hsla(104, 0%, 100%, 1) 0px, transparent 50%),
+    radial-gradient(at 88% 8%, hsla(164, 74%, 73%, 1) 0px, transparent 50%),
+    radial-gradient(at 66% 85%, hsla(157, 99%, 64%, 1) 0px, transparent 50%),
+    radial-gradient(at 10% 11%, hsla(170, 99%, 76%, 1) 0px, transparent 50%),
+    radial-gradient(at 85% 55%, hsla(315, 73%, 74%, 1) 0px, transparent 50%);
+}
+
+.final {
+  background-color: hsla(164, 100%, 64%, 1);
+  background-image: radial-gradient(
+      at 99% 52%,
+      hsla(19, 100%, 67%, 0.85) 0px,
+      transparent 50%
+    ),
+    radial-gradient(at 56% 18%, hsla(104, 0%, 100%, 1) 0px, transparent 50%),
+    radial-gradient(at 91% 11%, hsla(164, 74%, 73%, 1) 0px, transparent 50%),
+    radial-gradient(at 99% 84%, hsla(240, 100%, 74%, 1) 0px, transparent 50%),
+    radial-gradient(at 22% 16%, hsla(240, 100%, 78%, 1) 0px, transparent 50%);
+}

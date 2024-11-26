@@ -10,7 +10,7 @@ import { formatTimestamp } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { getUserChannelIds, getUserGuildIds } from "@/lib/guilds";
 import { useUser } from "@clerk/nextjs";
-import { useNotification } from "./NotificationContext";
+import { useVoiceCall } from "./VoiceCallContext";
 import { useGuild } from "./GuildContext";
 import { useVoiceRoom } from "./VoiceRoomContext";
 import useSound from "use-sound";
@@ -27,7 +27,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const { getToken, userId } = useAuth();
   const { user } = useUser();
   const { toast } = useToast();
-  const { createAlert, isVoiceCallOpen } = useNotification();
+  const { createAlert, isVoiceCallOpen } = useVoiceCall();
   const { addParticipant, removeParticipant, updateMuteStatus } = useGuild();
   const { isConnected: isVoiceChannelOpen, room } = useVoiceRoom();
   const router = useRouter();

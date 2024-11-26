@@ -1,7 +1,7 @@
 import React from "react";
 import SideNav from "@/components/nav/SideNav";
 import { SocketProvider } from "@/context/SocketContext";
-import { NotificationProvider } from "@/context/NotificationContext";
+import { VoiceCallProvider } from "@/context/VoiceCallContext";
 
 import { GuildProvider } from "@/context/GuildContext";
 import { SignedIn } from "@clerk/nextjs";
@@ -15,7 +15,7 @@ export default function MainLayout({
 }) {
   return (
     <SignedIn>
-      <NotificationProvider>
+      <VoiceCallProvider>
         <GuildProvider>
           <VoiceRoomProvider>
             <SocketProvider>
@@ -27,7 +27,7 @@ export default function MainLayout({
             </SocketProvider>
           </VoiceRoomProvider>
         </GuildProvider>
-      </NotificationProvider>
+      </VoiceCallProvider>
     </SignedIn>
   );
 }

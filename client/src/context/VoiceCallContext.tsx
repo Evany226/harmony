@@ -8,7 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import useSound from "use-sound";
 import { socket } from "@/app/socket";
 
-interface NotificationContextProps {
+interface VoiceCallContextProps {
   createAlert(username: string, conversationId: string, imageUrl: string): void;
   isVoiceCallOpen: boolean;
   setIsVoiceCallOpen: (value: boolean) => void;
@@ -16,11 +16,11 @@ interface NotificationContextProps {
   // setIsPendingOpen: (value: boolean) => void;
 }
 
-const NotificationContext = createContext<NotificationContextProps | undefined>(
+const VoiceCallContext = createContext<VoiceCallContextProps | undefined>(
   undefined
 );
 
-export const NotificationProvider = ({
+export const VoiceCallProvider = ({
   children,
 }: {
   children: React.ReactNode;
@@ -32,7 +32,6 @@ export const NotificationProvider = ({
   const [username, setUsername] = useState<string>("");
   const [image, setImage] = useState<string>("");
   const [isVoiceCallOpen, setIsVoiceCallOpen] = useState<boolean>(false);
-  const [isPendingOpen, setIsPendingOpen] = useState<boolean>(false);
   const [conversationId, setConversationId] = useState<string>("");
   const [playCallSound, { stop: stopCallSound }] = useSound(
     "/audio/call-sound.mp3"
@@ -69,7 +68,6 @@ export const NotificationProvider = ({
 
   const handleRejectCall = () => {
     setIsVoiceCallOpen(false);
-    setIsPendingOpen(true);
     clearTimeout(timeoutId as NodeJS.Timeout);
     setAlert(false);
     stopCallSound();
@@ -82,7 +80,7 @@ export const NotificationProvider = ({
   };
 
   return (
-    <NotificationContext.Provider value={value}>
+    <VoiceCallContext.Provider value={value}>
       {children}
 
       {alert && (
@@ -116,17 +114,15 @@ export const NotificationProvider = ({
           </div>
         </main>
       )}
-    </NotificationContext.Provider>
+    </VoiceCallContext.Provider>
   );
 };
 
-export const useNotification = () => {
-  const context = useContext(NotificationContext);
+export const useVoiceCall = () => {
+  const context = useContext(VoiceCallContext);
 
   if (context === undefined) {
-    throw new Error(
-      "useNotification must be used within a NotificationProvider"
-    );
+    throw new Error("useVoiceCall must be used within a VoiceCallProvider");
   }
 
   return context;
