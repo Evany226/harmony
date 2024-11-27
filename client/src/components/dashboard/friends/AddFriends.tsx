@@ -70,7 +70,7 @@ export default function AddFriendsForm() {
           variant="outline"
           size="sm"
           type="submit"
-          className="w-40 bg-purple-700 text-gray-300 border-0 hover:bg-purple-800 hover:text-gray-200"
+          className="w-40 bg-indigo-600 text-gray-300 border-0 hover:bg-indigo-700 hover:text-gray-200"
         >
           <Loading isLoading={isLoading}>
             <p>Send Friend Request</p>

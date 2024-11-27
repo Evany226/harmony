@@ -128,6 +128,57 @@ io.on("connection", (socket) => {
     socket.to(guildId).emit("refresh");
   });
 
+  socket.on(
+    "joinVoiceChannel",
+    ({
+      guildId,
+      channelId,
+      username,
+    }: {
+      guildId: string;
+      channelId: string;
+      username: string;
+    }) => {
+      console.log(`Current user joined voice channel: ${channelId}`);
+      socket.to(guildId).emit("joinVoiceChannel", channelId, username);
+    }
+  );
+
+  socket.on(
+    "leaveVoiceChannel",
+    ({
+      guildId,
+      channelId,
+      username,
+    }: {
+      guildId: string;
+      channelId: string;
+      username: string;
+    }) => {
+      console.log(`Current user left voice channel: ${channelId}`);
+      socket.to(guildId).emit("leaveVoiceChannel", channelId, username);
+    }
+  );
+
+  socket.on(
+    "muteVoiceChannel",
+    ({
+      guildId,
+      channelId,
+      username,
+      isMuted,
+    }: {
+      guildId: string;
+      channelId: string;
+      username: string;
+      isMuted: boolean;
+    }) => {
+      console.log(`Current user muted voice channel: ${channelId}`);
+      socket.to(guildId).emit("muteVoiceChannel", channelId, username, isMuted);
+    }
+  );
+
+  //these below are probably not needed anymore
   // socket.on("createNewChannel", async (channelId: string, guildId: string) => {
   //   console.log(`Current user joined new channel: ${channelId}`);
   //   await socket.join(channelId);
@@ -198,6 +249,14 @@ io.on("connection", (socket) => {
       .emit(`incomingVoiceCall`, conversationId, imageUrl);
 
     io.to(conversationId).emit(`checkRoomEmpty ${conversationId}`, false);
+  });
+
+  socket.on("joinVoiceCall", (conversationId: string) => {
+    socket.to(conversationId).emit(`joinVoiceCall`, conversationId);
+  });
+
+  socket.on("leaveVoiceCall", (conversationId: string) => {
+    socket.to(conversationId).emit(`leaveVoiceCall`, conversationId);
   });
 
   socket.on("checkRoomEmpty", async (conversationId: string) => {

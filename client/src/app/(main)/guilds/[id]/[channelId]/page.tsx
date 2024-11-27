@@ -17,6 +17,8 @@ import { useToast } from "@/components/ui/use-toast";
 import { useSocket } from "@/context/SocketContext";
 import { useRouter } from "next/navigation";
 import { GuildPageSkeleton } from "@/components/skeletons/GuildPageSkeleton";
+import { useGuild } from "@/context/GuildContext";
+import { getActiveVoiceChannels } from "@/lib/guilds";
 
 export default function ChannelPage({
   params,
@@ -31,9 +33,15 @@ export default function ChannelPage({
 
   const [messages, setMessages] = useState<ChannelMessages[]>([]);
   const [channel, setChannel] = useState<TextChannel | null>(null);
-  const [members, setMembers] = useState<Member[]>([]);
+  // const [members, setMembers] = useState<Member[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const { socket, isConnected } = useSocket();
+
+  const {
+    guildMembers: members,
+    updateGuildMembers,
+    updateActiveVoiceChannels,
+  } = useGuild();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -49,15 +57,25 @@ export default function ChannelPage({
       setChannel(channel);
 
       const members = await getAllMembers(token as string, params.id);
-      setMembers(members);
+      updateGuildMembers(members);
+
+      const participants = await getActiveVoiceChannels(
+        token as string,
+        params.id
+      );
+      updateActiveVoiceChannels(participants, members);
 
       setLoading(false);
-
-      console.log("loading false");
     };
 
     fetchData();
-  }, [getToken, params.channelId, params.id]);
+  }, [
+    getToken,
+    params.channelId,
+    params.id,
+    updateGuildMembers,
+    updateActiveVoiceChannels,
+  ]);
 
   useEffect(() => {
     const handleMessage = (msg: ChannelMessages) => {
@@ -75,9 +93,9 @@ export default function ChannelPage({
       );
     };
 
-    socket.on("newChannel", (channelId: string) => {
-      socket.emit("joinChannel", channelId);
-    });
+    // socket.on("newChannel", (channelId: string) => {
+    //   socket.emit("joinChannel", channelId);
+    // });
 
     socket.on(`channelMessage ${params.channelId}`, handleMessage);
 
@@ -88,7 +106,7 @@ export default function ChannelPage({
       console.log("revalidating");
       const token = await getToken();
       const members = await getAllMembers(token as string, params.id);
-      setMembers(members);
+      updateGuildMembers(members);
 
       const messages = await getAllChannelMessages(
         token as string,
@@ -108,7 +126,15 @@ export default function ChannelPage({
       socket.off(`editChannelMessage ${params.channelId}`, handleEditMessage);
       socket.off(`deleteChannel ${params.channelId}`);
     };
-  }, [params.channelId, socket, toast, router, params.id, getToken]);
+  }, [
+    params.channelId,
+    socket,
+    toast,
+    router,
+    params.id,
+    getToken,
+    updateGuildMembers,
+  ]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -180,11 +206,14 @@ export default function ChannelPage({
               {messages.length === 0 ? (
                 <GuildEmptyState
                   name={channel.name}
-                  imageUrl={"/logo-past.png"}
+                  imageUrl={"/images/logo-past.png"}
                 />
               ) : (
                 <>
-                  <ChatHeader name={channel.name} imageUrl={"/logo-past.png"} />
+                  <ChatHeader
+                    name={channel.name}
+                    imageUrl={"/images/logo-past.png"}
+                  />
                   {messages.map((message: ChannelMessages) => {
                     return (
                       <MessageCard

@@ -18,6 +18,7 @@ import { useState } from "react";
 
 import { useToast } from "@/components/ui/use-toast";
 import { useSocket } from "@/context/SocketContext";
+import { useRouter } from "next/navigation";
 
 import GuildDialogFooter from "../GuildDialogFooter";
 
@@ -36,6 +37,7 @@ export default function EditChannelDialog({
 }: EditChannelDialogProps) {
   const { toast } = useToast();
   const { socket } = useSocket();
+  const router = useRouter();
 
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -63,20 +65,27 @@ export default function EditChannelDialog({
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
 
-    if (formData.get("name") === "") {
+    const name = formData.get("name");
+
+    if (!name) {
       toast({
         variant: "destructive",
         title: "Failed to edit channel",
         description:
           "The channel name field cannot be empty. Please enter a valid channel name.",
       });
+      return;
     }
+
+    formData.set("name", name.toString().toLowerCase());
 
     try {
       setDialogOpen(false);
       // Call the updateChannel function here
       const result = await updateChannel(formData, id);
+      router.refresh();
       socket.emit("refresh", guildId);
+
       toast({
         variant: "default",
         title: "Channel updated",
@@ -110,7 +119,7 @@ export default function EditChannelDialog({
                 CHANNEL NAME
               </label>
               <input
-                className="outline-0 rounded-sm w-full text-sm bg-neutral-900 py-2 px-3 text-gray-300"
+                className="outline-0 rounded-sm w-full text-sm bg-neutral-900 py-2 px-3 text-gray-300 lowercase"
                 placeholder="New Category"
                 name="name"
                 defaultValue={name}

@@ -156,7 +156,7 @@ export default function CreateGuildDialog({
                       UPLOAD
                     </p>
 
-                    <div className="absolute top-0 right-0 rounded-full bg-purple-700">
+                    <div className="absolute top-0 right-0 rounded-full bg-indigo-600">
                       <PlusIcon className="h-5 w-5 text-gray-300" />
                     </div>
                   </label>

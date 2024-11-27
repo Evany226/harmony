@@ -77,15 +77,15 @@ export function ConvLink({ users, href, status, id }: ConvLinkProps) {
   }
 
   return (
-    <>
-      {users.length > 1 ? (
-        <Link href={href}>
-          <div
-            className={`group flex items-center w-full bg-neutral-900 px-2 py-2 mt-1 rounded-sm hover:bg-neutral-800 cursor-pointer ${
-              pathname == href ? "bg-zinc-700" : ""
-            }`}
-          >
-            <div className="relative min-w-10 h-10">
+    <Link href={href}>
+      <div
+        className={`group flex items-center w-full bg-neutral-900 px-2 py-2 mt-1 rounded-sm hover:bg-neutral-800 cursor-pointer ${
+          pathname == href ? "bg-zinc-700" : ""
+        }`}
+      >
+        <div className="relative min-w-10 h-10">
+          {users.length > 1 ? (
+            <>
               <Avatar
                 className={`group-hover:border-neutral-800 w-7 h-7 absolute top-0 left-0 border-2 ${
                   pathname == href ? "border-zinc-700" : "border-neutral-900"
@@ -108,28 +108,9 @@ export function ConvLink({ users, href, status, id }: ConvLinkProps) {
                 </AvatarFallback>
               </Avatar>
               <ConnectionStatus isConnected={status} />
-            </div>
-            <div className="flex items-center ml-3 w-64 overflow-hidden relative">
-              <p className="text-base text-gray-300 font-medium overflow-hidden whitespace-nowrap text-ellipsis">
-                {header}
-              </p>
-
-              {unreadMessages > 0 && (
-                <div className="absolute right-0 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
-                  <p className="text-white text-sm">{unreadMessages}</p>
-                </div>
-              )}
-            </div>
-          </div>
-        </Link>
-      ) : (
-        <Link href={href}>
-          <div
-            className={`flex items-center w-full bg-neutral-900 px-2 py-2 mt-1 rounded-sm hover:bg-neutral-800 cursor-pointer ${
-              pathname == href ? "bg-zinc-700" : ""
-            }`}
-          >
-            <div className="relative w-10 h-10">
+            </>
+          ) : (
+            <>
               <Avatar>
                 <AvatarImage src={users[0].imageUrl} />
                 <AvatarFallback>
@@ -137,21 +118,22 @@ export function ConvLink({ users, href, status, id }: ConvLinkProps) {
                 </AvatarFallback>
               </Avatar>
               <ConnectionStatus isConnected={status} />
+            </>
+          )}
+        </div>
+        <div className="flex items-center ml-3 w-64 overflow-hidden relative">
+          <p className="text-base text-gray-300 font-medium overflow-hidden whitespace-nowrap text-ellipsis">
+            {header}
+          </p>
+
+          {unreadMessages > 0 && (
+            <div className="absolute right-0 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
+              <p className="text-white text-sm">{unreadMessages}</p>
             </div>
-            <div className="w-full flex items-center ml-3 max-w-full no-wrap overflow-hidden justify-between">
-              <p className="text-base text-gray-300 font-medium overflow-hidden whitespace-nowrap text-ellipsis">
-                {header}
-              </p>
-              {unreadMessages > 0 && (
-                <div className="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
-                  <p className="text-white text-sm">{unreadMessages}</p>
-                </div>
-              )}
-            </div>
-          </div>
-        </Link>
-      )}
-    </>
+          )}
+        </div>
+      </div>
+    </Link>
   );
 }
 

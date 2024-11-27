@@ -125,7 +125,7 @@ const createConversation = async (req: Request, res: Response) => {
         },
         messages: {
           create: {
-            content: `Conversation started by user:${currentUser.username}`,
+            content: `Conversation started by ${currentUser.username}`,
             isAlert: true,
           },
         },

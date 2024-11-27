@@ -153,11 +153,9 @@ const leaveGuild = async (req: Request, res: Response) => {
     });
 
     if (isOwner) {
-      return res
-        .status(403)
-        .json({
-          error: "You cannot leave a guild you own. You'd have to delete it.",
-        });
+      return res.status(403).json({
+        error: "You cannot leave a guild you own. You'd have to delete it.",
+      });
     }
 
     await prisma.member.deleteMany({

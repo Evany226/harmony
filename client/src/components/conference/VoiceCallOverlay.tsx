@@ -3,8 +3,9 @@
 import { getLiveKitToken } from "@/lib/conversations";
 import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
-import { useNotification } from "@/context/NotificationContext";
+import { useVoiceCall } from "@/context/VoiceCallContext";
 import { socket } from "@/app/socket";
+import useSound from "use-sound";
 
 import {
   ControlBar,
@@ -28,7 +29,9 @@ interface VoiceCallOverlayProps {
 export default function VoiceCallOverlay({ convId }: VoiceCallOverlayProps) {
   const [token, setToken] = useState("");
   const { user } = useUser();
-  const { setIsVoiceCallOpen } = useNotification();
+  const { isVoiceCallOpen, setIsVoiceCallOpen } = useVoiceCall();
+  const [playLeaveCall] = useSound("/audio/leave-call.mp3");
+
   const userName = user?.username;
 
   useEffect(() => {
@@ -50,14 +53,18 @@ export default function VoiceCallOverlay({ convId }: VoiceCallOverlayProps) {
   }
 
   const handleLeaveRoom = () => {
-    setIsVoiceCallOpen(false);
-    socket.emit("checkRoomEmpty", convId);
+    if (isVoiceCallOpen) {
+      playLeaveCall();
+      setIsVoiceCallOpen(false);
+      socket.emit("checkRoomEmpty", convId);
+      socket.emit("leaveVoiceCall", convId);
+    }
   };
 
   return (
     <div className="w-full h-1/2 bg-neutral-950">
       <LiveKitRoom
-        video={true}
+        video={false}
         audio={true}
         token={token}
         serverUrl={serverUrl}

@@ -41,6 +41,7 @@ export default async function GuildLeftPanel({ guildId }: { guildId: string }) {
             name={category.name}
             channels={category.channels}
             guildId={guildId}
+            guildName={guild.name}
             categoryId={category.id}
           />
         ))}

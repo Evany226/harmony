@@ -23,12 +23,12 @@ export default function EditMessageDropdown({
         escape to{" "}
         <span
           onClick={() => setIsEditing(false)}
-          className="text-purple-500 cursor-pointer"
+          className="text-indigo-500 cursor-pointer"
         >
           cancel
         </span>{" "}
         - enter to{" "}
-        <button type="submit" className="text-purple-500 cursor-pointer">
+        <button type="submit" className="text-indigo-500 cursor-pointer">
           save
         </button>
       </p>

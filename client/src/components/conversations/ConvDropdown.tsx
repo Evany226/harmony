@@ -16,6 +16,7 @@ import { createConversation } from "@/actions/actions";
 import { useToast } from "../ui/use-toast";
 import { socket } from "@/app/socket";
 import { ScrollArea } from "../ui/scroll-area";
+import Loading from "../global/Loading";
 
 export default function ConvDropdown({
   children,
@@ -24,14 +25,17 @@ export default function ConvDropdown({
 }) {
   const [friends, setFriends] = useState<Friend[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const { getToken } = useAuth();
   const { toast } = useToast();
 
   useEffect(() => {
     const fetchFriends = async () => {
+      setIsLoading(true);
       const token = await getToken();
       const response = await getAllFriends(token as string);
       setFriends(response);
+      setIsLoading(false);
     };
 
     fetchFriends();
@@ -88,18 +92,20 @@ export default function ConvDropdown({
           ></input>
         </div>
         <form onSubmit={handleSubmit}>
-          <ScrollArea className="w-full h-40 top-0 left-0 px-2">
-            {friends.map((friend) => {
-              return (
-                <ConvDropdownItem
-                  id={friend.id}
-                  key={friend.id}
-                  username={friend.username}
-                  imageUrl={friend.imageUrl}
-                />
-              );
-            })}
-          </ScrollArea>
+          <Loading isLoading={isLoading}>
+            <ScrollArea className="w-full h-40 top-0 left-0 px-2">
+              {friends.map((friend) => {
+                return (
+                  <ConvDropdownItem
+                    id={friend.id}
+                    key={friend.id}
+                    username={friend.username}
+                    imageUrl={friend.imageUrl}
+                  />
+                );
+              })}
+            </ScrollArea>
+          </Loading>
           <Button type="submit" variant="outline" className="w-full py-1 mt-4 ">
             <p className="text-black font-medium">Create DM</p>
           </Button>

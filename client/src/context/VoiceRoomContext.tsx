@@ -1,0 +1,176 @@
+"use client";
+
+import { Room, RoomEvent } from "livekit-client";
+import { TextChannel } from "@/types";
+import { createContext, useContext, useEffect, useState } from "react";
+import { useGuild } from "./GuildContext";
+import { useUser } from "@clerk/nextjs";
+import { useVoiceCall } from "./VoiceCallContext";
+import { socket } from "@/app/socket";
+import useSound from "use-sound";
+
+interface VoiceRoomContextProps {
+  room: Room | null;
+  currentChannel: TextChannel | null;
+  currentGuild: string;
+  currentGuildId: string;
+  connect: (
+    token: string,
+    channel: TextChannel,
+    guildName: string,
+    guildId: string
+  ) => void;
+  disconnect: () => void;
+  isConnected: boolean;
+  token: string;
+}
+
+const VoiceRoomContext = createContext<VoiceRoomContextProps | undefined>(
+  undefined
+);
+
+const serverUrl = "wss://harmony-zknfyk4k.livekit.cloud";
+
+export const VoiceRoomProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  const [room, setRoom] = useState<Room | null>(null);
+  const [isConnected, setIsConnected] = useState(false);
+  const [currentChannel, setCurrentChannel] = useState<TextChannel | null>(
+    null
+  );
+  const [token, setToken] = useState<string>("");
+  const [currentGuild, setCurrentGuild] = useState<string>("");
+  const [currentGuildId, setCurrentGuildId] = useState<string>("");
+  const {
+    addParticipant,
+    removeParticipant,
+    activeVoiceChannels,
+    updateActiveSpeakers,
+    updateNoSpeakers,
+  } = useGuild();
+  const { user } = useUser();
+
+  const [playJoinSound] = useSound("/audio/join-call.mp3");
+  const [playLeaveSound] = useSound("/audio/leave-call.mp3");
+
+  const { isVoiceCallOpen, setIsVoiceCallOpen } = useVoiceCall();
+
+  useEffect(() => {
+    room?.on(RoomEvent.ActiveSpeakersChanged, (speakers) => {
+      if (speakers.length === 0) {
+        updateNoSpeakers(currentChannel?.id as string);
+      }
+
+      speakers.forEach((speaker) => {
+        updateActiveSpeakers(
+          currentChannel?.id as string,
+          speaker.identity,
+          speaker.isSpeaking
+        );
+      });
+    });
+  }, [
+    room,
+    activeVoiceChannels,
+    currentChannel,
+    updateActiveSpeakers,
+    updateNoSpeakers,
+  ]);
+
+  const connect = async (
+    token: string,
+    channel: TextChannel,
+    guildName: string,
+    guildId: string
+  ) => {
+    if (isVoiceCallOpen) {
+      setIsVoiceCallOpen(false);
+    }
+
+    if (room && isConnected) {
+      if (room.name === channel.id) {
+        return;
+      }
+
+      try {
+        setIsConnected(false);
+        removeParticipant(
+          currentChannel?.id as string,
+          user?.username as string
+        );
+        await room.disconnect();
+
+        socket.emit("leaveVoiceChannel", {
+          guildId: currentGuildId,
+          channelId: currentChannel?.id,
+          username: user?.username,
+        });
+      } catch (error) {
+        console.error("Error disconnecting from room", error);
+      }
+    }
+    setToken(token);
+    setCurrentChannel(channel);
+    setCurrentGuild(guildName);
+    setCurrentGuildId(guildId);
+
+    const newRoom = new Room();
+
+    setRoom(newRoom);
+
+    setIsConnected(true);
+    playJoinSound();
+    addParticipant(channel.id, user?.username as string);
+
+    socket.emit("joinVoiceChannel", {
+      guildId: guildId,
+      channelId: channel.id,
+      username: user?.username,
+    });
+  };
+
+  const disconnect = () => {
+    if (room) {
+      room?.disconnect();
+      setIsConnected(false);
+      playLeaveSound();
+      removeParticipant(currentChannel?.id as string, user?.username as string);
+
+      socket.emit("leaveVoiceChannel", {
+        guildId: currentGuildId,
+        channelId: currentChannel?.id,
+        username: user?.username,
+      });
+    }
+  };
+
+  const value = {
+    room,
+    currentChannel,
+    currentGuild,
+    currentGuildId,
+    connect,
+    disconnect,
+    isConnected,
+    token,
+  };
+
+  return (
+    <VoiceRoomContext.Provider value={value}>
+      {children}
+    </VoiceRoomContext.Provider>
+  );
+};
+
+export const useVoiceRoom = () => {
+  const context = useContext(VoiceRoomContext);
+
+  if (!context) {
+    throw new Error("useVoiceRoom must be used within a VoiceRoomProvider");
+  }
+
+  return context;
+};

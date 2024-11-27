@@ -87,8 +87,8 @@ export interface TextChannel {
   name: string;
   topic: string;
   isVoice: boolean;
-  guildId: string;
-  guild: Guild;
+  categoryId: string;
+  category: Category;
   messages: ChannelMessages[];
   createdAt: string;
 }
@@ -111,4 +111,16 @@ export interface GuildRequest {
   toUserId: string;
   fromGuildId: string;
   fromGuild: Guild;
+}
+
+export interface VoiceChannelUser {
+  username: string;
+  imageUrl?: string;
+  isSpeaking?: boolean;
+  isMuted?: boolean;
+}
+
+export interface ActiveVoiceChannel {
+  channelId: string;
+  participants: VoiceChannelUser[];
 }
