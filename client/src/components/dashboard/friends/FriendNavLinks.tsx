@@ -57,7 +57,7 @@ export default function FriendNavLinks() {
           }}
           variant="outline"
           size="default"
-          className="bg-purple-700 text-gray-300 border-0 hover:bg-purple-800 hover:text-gray-200"
+          className="bg-indigo-600 text-gray-300 border-0 hover:bg-indigo-700 hover:text-gray-200"
         >
           Add Friend
         </Button>

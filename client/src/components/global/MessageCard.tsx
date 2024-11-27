@@ -83,7 +83,7 @@ export default function MessageCard({ message, variant }: MessageCardProps) {
   if (message.isAlert) {
     return (
       <div className="flex items-center w-full py-2 px-5 space-x-2">
-        <ArrowLongRightIcon className="h-5 w-5 text-purple-500" />
+        <ArrowLongRightIcon className="h-5 w-5 text-indigo-500" />
         <p className="font-medium text-gray-300">{message.content}</p>
       </div>
     );

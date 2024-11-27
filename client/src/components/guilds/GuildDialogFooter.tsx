@@ -40,7 +40,7 @@ export default function GuildDialogFooter({
         )}
         <Button
           variant="outline"
-          className="px-3 py-1 ml-2 rounded-sm bg-purple-700 border-0 text-gray-300 hover:bg-purple-800 hover:text-white"
+          className="px-3 py-1 ml-2 rounded-sm bg-indigo-600 border-0 text-gray-300 hover:bg-indigo-600 hover:text-white"
           type="submit"
         >
           {text}

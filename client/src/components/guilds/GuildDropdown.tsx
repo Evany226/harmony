@@ -65,8 +65,8 @@ export default function GuildDropdown({
             className="flex items-center justify-between cursor-pointer"
             onClick={() => setInviteDialogOpen(true)}
           >
-            <p className="text-purple-500">Invite People</p>
-            <UserPlusIcon className="w-5 h-5 text-purple-500" />
+            <p className="text-indigo-500">Invite People</p>
+            <UserPlusIcon className="w-5 h-5 text-indigo-500" />
           </DropdownMenuItem>
           <DropdownMenuItem className="flex items-center justify-between cursor-pointer">
             <p className="text-gray-300">Add Category</p>
