@@ -4,7 +4,6 @@ import { useAuth } from "@clerk/nextjs";
 import { HashtagIcon } from "@heroicons/react/24/solid";
 import ChatInput from "@/components/global/ChatInput";
 import UserPanel from "@/components/guilds/users/UserPanel";
-import { Separator } from "@/components/ui/separator";
 
 import { getAllChannelMessages, getChannel, getAllMembers } from "@/lib/guilds";
 import { useEffect, useState, useRef } from "react";
@@ -19,6 +18,7 @@ import { useRouter } from "next/navigation";
 import { GuildPageSkeleton } from "@/components/skeletons/GuildPageSkeleton";
 import { useGuild } from "@/context/GuildContext";
 import { getActiveVoiceChannels } from "@/lib/guilds";
+import GuildPageHeader from "@/components/guilds/GuildPageHeader";
 
 export default function ChannelPage({
   params,
@@ -33,6 +33,7 @@ export default function ChannelPage({
 
   const [messages, setMessages] = useState<ChannelMessages[]>([]);
   const [channel, setChannel] = useState<TextChannel | null>(null);
+  const [isPanelOpen, setIsPanelOpen] = useState<boolean>(true);
   // const [members, setMembers] = useState<Member[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const { socket, isConnected } = useSocket();
@@ -177,6 +178,10 @@ export default function ChannelPage({
     }
   };
 
+  const toggleUserPanel = () => {
+    setIsPanelOpen(!isPanelOpen);
+  };
+
   if (loading) {
     return <GuildPageSkeleton />; // You can show a loading state here
   }
@@ -186,22 +191,17 @@ export default function ChannelPage({
   } else {
     return (
       <>
-        <header className="flex w-full h-12 bg-zinc-900 border-b border-zinc-800 px-2 py-3 items-center">
-          <HashtagIcon className="w-5 text-gray-300 cursor-pointer ml-2" />
-          <h1 className="text-gray-300 font-semibold ml-1 text-sm">
-            {channel.name}
-          </h1>
-          {channel.topic && (
-            <>
-              <Separator className="mx-3" orientation="vertical" />
-              <p className="text-gray-400 font-medium text-xs">
-                {channel.topic}
-              </p>
-            </>
-          )}
-        </header>
+        <GuildPageHeader
+          channel={channel}
+          toggleUserPanel={toggleUserPanel}
+          isPanelOpen={isPanelOpen}
+        />
         <div className="flex w-full h-[calc(100%-3rem)] ">
-          <main className="w-[calc(100%-16rem)] h-full border-r border-zinc-800 flex flex-col relative">
+          <main
+            className={`h-full border-r border-zinc-800 flex flex-col relative ${
+              isPanelOpen ? "w-[calc(100%-16rem)]" : "w-full"
+            }`}
+          >
             <div className="h-full w-full flex flex-col overflow-y-auto mb-4">
               {messages.length === 0 ? (
                 <GuildEmptyState
@@ -232,7 +232,7 @@ export default function ChannelPage({
             </div>
           </main>
 
-          <UserPanel members={members} />
+          <UserPanel members={members} isPanelOpen={isPanelOpen} />
         </div>
       </>
     );

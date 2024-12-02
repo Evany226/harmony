@@ -6,11 +6,16 @@ const roles = ["Owner", "Admin", "Member"];
 
 interface UserPanelProps {
   members: Member[];
+  isPanelOpen: boolean;
 }
 
-export default function UserPanel({ members }: UserPanelProps) {
+export default function UserPanel({ members, isPanelOpen }: UserPanelProps) {
   return (
-    <ScrollArea className="w-64 h-full border-r border-zinc-800 flex flex-col relative px-4 space-y-4">
+    <ScrollArea
+      className={`h-full flex flex-col relative px-4 space-y-4 ${
+        isPanelOpen ? "w-64" : "w-0 hidden"
+      }`}
+    >
       {roles.map((role: string) => {
         const membersByRole = members.filter(
           (member: Member) => member.role === role.toUpperCase()
