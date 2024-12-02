@@ -2,7 +2,7 @@ import express from "express";
 
 import {
   getAllUnreadMessages,
-  getUnreadMessages,
+  // getUnreadMessages,
   updateLastViewed,
 } from "../controllers/unreadMsgController";
 
@@ -12,8 +12,8 @@ const unreadMsgRouter = express.Router();
 
 unreadMsgRouter.get(
   "/:conversationId",
-  ClerkExpressRequireAuth({}),
-  getUnreadMessages
+  ClerkExpressRequireAuth({})
+  // getUnreadMessages
 );
 unreadMsgRouter.get("/", getAllUnreadMessages);
 unreadMsgRouter.put(

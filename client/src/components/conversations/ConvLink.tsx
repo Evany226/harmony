@@ -11,7 +11,7 @@ import ConnectionStatus from "../global/ConnectionStatus";
 import { useSocket } from "@/context/SocketContext";
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { getUnreadMessages } from "@/lib/conversations";
+
 import { useAuth } from "@clerk/nextjs";
 import { updateLastViewed } from "@/actions/actions";
 
@@ -29,24 +29,10 @@ interface ConvLinkWrapperProps {
 export function ConvLink({ users, href, status, id }: ConvLinkProps) {
   const { socket } = useSocket();
   const pathname = usePathname();
-  const { getToken } = useAuth();
 
   const header = users.map((user: User) => user.username).join(", ");
 
   const [unreadMessages, setUnreadMessages] = useState<number>(0);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const token = await getToken();
-      const response = await getUnreadMessages(token as string, id);
-
-      console.log(response);
-
-      setUnreadMessages(response);
-    };
-
-    fetchData();
-  }, [getToken, id]);
 
   useEffect(() => {
     const handleUnreadMessage = () => {

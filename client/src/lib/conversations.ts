@@ -55,27 +55,6 @@ export async function getAllMessages(token: string, id: string) {
   return data;
 }
 
-export async function getUnreadMessages(token: string, conversationId: string) {
-  const response = await fetch(
-    `http://localhost:3001/api/unread/${conversationId}`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.error);
-  }
-
-  return data;
-}
-
 export async function getAllUnreadMessages(token: string) {
   const response = await fetch("http://localhost:3001/api/unread", {
     method: "GET",
