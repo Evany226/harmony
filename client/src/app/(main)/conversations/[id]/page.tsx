@@ -15,6 +15,7 @@ import ConvPageHeader from "@/components/conversations/ConvPageHeader";
 import ConvProfilePanel from "@/components/conversations/ConvProfilePanel";
 import VoiceCallOverlay from "@/components/conference/VoiceCallOverlay";
 import PendingVoiceCall from "@/components/conference/PendingVoiceCall";
+
 import { socket } from "@/app/socket";
 
 import { createMessage } from "@/actions/conv";
@@ -42,6 +43,7 @@ export default function ConversationPage({
   const { isVoiceCallOpen, setIsVoiceCallOpen } = useVoiceCall();
   const { isConnected: isVoiceChannelOpen, disconnect } = useVoiceRoom();
   const [isRoomEmpty, setIsRoomEmpty] = useState<boolean>(true);
+  const [isPanelOpen, setIsPanelOpen] = useState<boolean>(true);
 
   const { user: currUser } = useUser();
   const { getToken } = useAuth();
@@ -210,6 +212,10 @@ export default function ConversationPage({
     }
   };
 
+  const toggleProfilePanel = () => {
+    setIsPanelOpen(!isPanelOpen);
+  };
+
   return (
     <>
       {users.length > 0 ? (
@@ -220,10 +226,16 @@ export default function ConversationPage({
             image2={allImages[1]}
             hasMultipleUsers={users.length > 1}
             startVoiceCall={startVoiceCall}
+            isPanelOpen={isPanelOpen}
+            toggleProfilePanel={toggleProfilePanel}
           />
 
           <main className="w-full h-[calc(100%-3rem)] flex">
-            <article className="w-4/5 h-full border-r border-zinc-800 flex flex-col relative px-0">
+            <article
+              className={` h-full border-r border-zinc-800 flex flex-col relative px-0 ${
+                isPanelOpen ? "w-4/5" : "w-full"
+              }`}
+            >
               {isVoiceCallOpen && <VoiceCallOverlay convId={params.id} />}
 
               {!isRoomEmpty && !isVoiceCallOpen && (
@@ -260,7 +272,11 @@ export default function ConversationPage({
               </div>
             </article>
 
-            <ConvProfilePanel imageUrl={allImages[0]} name={headerText} />
+            <ConvProfilePanel
+              imageUrl={allImages[0]}
+              name={headerText}
+              isPanelOpen={isPanelOpen}
+            />
           </main>
         </>
       ) : (
