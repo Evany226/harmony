@@ -27,11 +27,6 @@ const getAllConversations = async (req: Request, res: Response) => {
       },
       include: {
         participants: {
-          where: {
-            userId: {
-              not: userId,
-            },
-          },
           include: {
             user: true,
           },
@@ -139,6 +134,7 @@ const createConversation = async (req: Request, res: Response) => {
       },
     });
 
+    console.log(newConversation);
     res.json(newConversation);
   } catch (error) {
     console.error("Error creating conversation:", error);

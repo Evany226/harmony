@@ -11,11 +11,10 @@ import { ClerkExpressRequireAuth } from "@clerk/clerk-sdk-node";
 const unreadMsgRouter = express.Router();
 
 unreadMsgRouter.get(
-  "/:conversationId",
-  ClerkExpressRequireAuth({})
+  "/:conversationId"
   // getUnreadMessages
 );
-unreadMsgRouter.get("/", getAllUnreadMessages);
+unreadMsgRouter.get("/", ClerkExpressRequireAuth({}), getAllUnreadMessages);
 unreadMsgRouter.put(
   "/updateLastViewed",
   ClerkExpressRequireAuth({}),

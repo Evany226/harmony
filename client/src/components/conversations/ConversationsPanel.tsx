@@ -5,12 +5,16 @@ import ProfileCard from "../dashboard/profile/ProfileCard";
 import { getAllConversations } from "@/lib/conversations";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { Suspense } from "react";
+import { getAllUnreadMessages } from "@/lib/conversations";
 
 export default async function ConversationsPanel() {
   const { getToken } = auth();
   const user = await currentUser();
   const token = await getToken();
+
   const data = await getAllConversations(token as string);
+
+  const unreadMessages = await getAllUnreadMessages(token as string);
 
   return (
     <div className="flex flex-col min-w-64 max-w-64 h-full bg-neutral-900 border-x border-zinc-800 relative">
@@ -24,7 +28,7 @@ export default async function ConversationsPanel() {
       <div className="flex flex-col p-3 max-w-64">
         <FriendsNavButton />
         <GuildNavButton />
-        <ConvLinkWrapper conversations={data} />
+        <ConvLinkWrapper conversations={data} unreadMessages={unreadMessages} />
       </div>
 
       <ProfileCard />
