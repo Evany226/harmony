@@ -19,15 +19,27 @@ export interface Conversation {
   users: User[];
 }
 
+export interface Participant {
+  id: string;
+
+  userId: string;
+  user: User;
+
+  conversationId: string;
+  conversation: Conversation;
+  sentMessages: Message[];
+  lastViewed: string;
+}
+
 export interface Message {
   id: string;
   content: string;
   edited: boolean;
   isAlert: boolean;
-  senderId: string;
+  senderId?: string;
+  sender?: Participant;
   conversationId: string;
   createdAt: string;
-  sender: User;
 }
 
 export interface Guild {

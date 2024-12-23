@@ -36,6 +36,12 @@ export interface Participant {
   lastViewed: string;
 }
 
+export interface UnreadMessage {
+  participantId: string;
+  messages: Message[];
+  conversation: Conversation;
+}
+
 export interface Message {
   id: string;
   content: string;

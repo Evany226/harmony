@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/collapsible";
 
 import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
-import MicIcon from "@/assets/MicIcon";
+import { MutedMicIcon } from "@/assets/MicIcon";
 
 import CategoryContextMenu from "./CategoryContextMenu";
 
@@ -23,10 +23,11 @@ import { useState } from "react";
 import { ActiveVoiceChannel, TextChannel } from "@/types";
 import ChannelLink from "../channels/ChannelLink";
 import VoiceChannelLink from "../channels/VoiceChanneLink";
-import { getLiveKitToken } from "@/lib/conversations";
+import { getLiveKitToken, checkUserInRoom } from "@/lib/conversations";
 import { useGuild } from "@/context/GuildContext";
 import { useUser } from "@clerk/nextjs";
 import { useVoiceRoom } from "@/context/VoiceRoomContext";
+import { useToast } from "@/components/ui/use-toast";
 
 interface CategoryWrapperProps {
   name: string;
@@ -47,6 +48,7 @@ export default function CategoryWrapper({
 
   const { user } = useUser();
   const { connect } = useVoiceRoom();
+  const { toast } = useToast();
 
   const { activeVoiceChannels } = useGuild();
 
@@ -121,7 +123,10 @@ export default function CategoryWrapper({
                             {participant.username}
                           </p>
                           {participant.isMuted && (
-                            <MicIcon className="absolute right-0 text-gray-400" />
+                            <MutedMicIcon
+                              className="absolute right-0 text-gray-400"
+                              color="#9ca3af"
+                            />
                           )}
                         </section>
                       )

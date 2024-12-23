@@ -8,11 +8,19 @@ import { SignedIn } from "@clerk/nextjs";
 import { VoiceRoomProvider } from "@/context/VoiceRoomContext";
 import VoiceChannelOverlay from "@/components/conference/VoiceChannelOverlay";
 
-export default function MainLayout({
+import { getAllUnreadMessages } from "@/lib/conversations";
+import { auth } from "@clerk/nextjs/server";
+
+export default async function MainLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { getToken } = auth();
+
+  const token = await getToken();
+  const data = await getAllUnreadMessages(token as string);
+
   return (
     <SignedIn>
       <VoiceCallProvider>
@@ -20,7 +28,7 @@ export default function MainLayout({
           <VoiceRoomProvider>
             <SocketProvider>
               <main className="flex w-full h-[100vh] bg-gray-100 relative">
-                <SideNav />
+                <SideNav unreadMessages={data} />
                 <VoiceChannelOverlay />
                 {children}
               </main>

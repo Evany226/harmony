@@ -11,8 +11,8 @@ declare global {
 }
 
 const getAllUnreadMessages = async (req: Request, res: Response) => {
-  // const userId = req.auth.userId;
-  const userId = "user_2kvgB9d6HPZNSZGsGDf02nYSx12";
+  const userId = req.auth.userId;
+  // const userId = "user_2kvgB9d6HPZNSZGsGDf02nYSx12";
 
   try {
     const participants = await prisma.participant.findMany({
@@ -33,7 +33,7 @@ const getAllUnreadMessages = async (req: Request, res: Response) => {
             },
           },
           createdAt: {
-            gt: participant.lastViewed, // Only get messages after lastViewed
+            gte: participant.lastViewed, // Only get messages after lastViewed
           },
         },
         include: {
@@ -45,10 +45,24 @@ const getAllUnreadMessages = async (req: Request, res: Response) => {
         },
       });
 
+      const conversation = await prisma.conversation.findUnique({
+        where: {
+          id: participant.conversationId,
+        },
+        include: {
+          participants: {
+            include: {
+              user: true,
+            },
+          },
+        },
+      });
+
       if (messages.length > 0) {
         unreadMessages.push({
           participantId: participant.id,
           messages: messages,
+          conversation: conversation,
         });
       }
     }
@@ -60,50 +74,51 @@ const getAllUnreadMessages = async (req: Request, res: Response) => {
   }
 };
 
-const getUnreadMessages = async (req: Request, res: Response) => {
-  const userId = req.auth.userId;
-  const { conversationId } = req.params as { conversationId: string };
-  // const userId = "user_2kvgB9d6HPZNSZGsGDf02nYSx12";
+//this one fetches individual unread messages. returns the number of unread messages.
+// const getUnreadMessages = async (req: Request, res: Response) => {
+//   const userId = req.auth.userId;
+//   const { conversationId } = req.params as { conversationId: string };
+//   // const userId = "user_2kvgB9d6HPZNSZGsGDf02nYSx12";
 
-  try {
-    const participant = await prisma.participant.findFirst({
-      where: {
-        userId: userId,
-        conversationId: conversationId,
-      },
-    });
+//   try {
+//     const participant = await prisma.participant.findFirst({
+//       where: {
+//         userId: userId,
+//         conversationId: conversationId,
+//       },
+//     });
 
-    if (!participant) {
-      return res.status(404).json({ error: "Participant not found" });
-    }
+//     if (!participant) {
+//       return res.status(404).json({ error: "Participant not found" });
+//     }
 
-    const unreadMessages = await prisma.message.findMany({
-      where: {
-        conversationId: conversationId,
-        sender: {
-          userId: {
-            not: userId,
-          },
-        },
-        createdAt: {
-          gt: participant.lastViewed,
-        },
-      },
-      include: {
-        sender: true,
-      },
-    });
+//     const unreadMessages = await prisma.message.findMany({
+//       where: {
+//         conversationId: conversationId,
+//         sender: {
+//           userId: {
+//             not: userId,
+//           },
+//         },
+//         createdAt: {
+//           gt: participant.lastViewed,
+//         },
+//       },
+//       include: {
+//         sender: true,
+//       },
+//     });
 
-    res.json(unreadMessages.length);
-  } catch (error) {
-    console.error("Error fetching unread messages:", error);
-    res.status(500).json({ error: "Failed to fetch unread messages" });
-  }
-};
+//     res.json(unreadMessages.length);
+//   } catch (error) {
+//     console.error("Error fetching unread messages:", error);
+//     res.status(500).json({ error: "Failed to fetch unread messages" });
+//   }
+// };
 
 const updateLastViewed = async (req: Request, res: Response) => {
   const userId = req.auth.userId;
-  const { conversationId } = req.params as { conversationId: string };
+  const { conversationId } = req.body as { conversationId: string };
   // const userId = "user_2kvgB9d6HPZNSZGsGDf02nYSx12";
 
   try {
@@ -121,7 +136,7 @@ const updateLastViewed = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "Participant not found" });
     }
 
-    console.log(participant.user.username);
+    console.log(participant);
 
     const updatedParticipant = await prisma.participant.update({
       where: {
@@ -129,7 +144,10 @@ const updateLastViewed = async (req: Request, res: Response) => {
         conversationId: conversationId,
       },
       data: {
-        lastViewed: new Date(),
+        lastViewed: new Date(Date.now()),
+      },
+      include: {
+        user: true,
       },
     });
 
@@ -140,4 +158,4 @@ const updateLastViewed = async (req: Request, res: Response) => {
   }
 };
 
-export { getAllUnreadMessages, getUnreadMessages, updateLastViewed };
+export { getAllUnreadMessages, updateLastViewed };

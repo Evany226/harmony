@@ -46,7 +46,7 @@ export default function ConversationPage({
   const [isPanelOpen, setIsPanelOpen] = useState<boolean>(true);
 
   const { user: currUser } = useUser();
-  const { getToken } = useAuth();
+  const { getToken, userId } = useAuth();
   const { toast } = useToast();
   const router = useRouter();
   const pathname = usePathname();
@@ -71,21 +71,28 @@ export default function ConversationPage({
 
       setMessages(messages);
 
-      const participants = conversationObject.participants.filter(
-        (participant: Participant) =>
-          currUser && participant.userId !== currUser.id
-      );
+      // const participants = conversationObject.participants.filter(
+      //   (participant: Participant) =>
+      //     currUser && participant.userId !== currUser.id
+      // );
+
+      const participants = conversationObject.participants;
 
       const users = participants.map((participant: Participant) => {
         return participant.user;
       });
 
       setUsers(users);
+      console.log(users);
 
       const allImages = users.map((user: User) => user.imageUrl);
       setAllImages(allImages);
 
-      const header = await users.map((user: User) => user.username).join(" | ");
+      const header =
+        users.length === 2
+          ? users.find((user: User) => user.id !== userId)?.username || ""
+          : users.map((user: User) => user.username).join(", ");
+
       setHeaderText(header);
 
       const isEmpty = await checkRoomEmpty(params.id);
@@ -97,7 +104,7 @@ export default function ConversationPage({
     if (currUser) {
       fetchData();
     }
-  }, [getToken, params.id, currUser, router]);
+  }, [getToken, params.id, currUser, router, userId]);
 
   //handle incoming sockets
   useEffect(() => {
@@ -216,72 +223,74 @@ export default function ConversationPage({
     setIsPanelOpen(!isPanelOpen);
   };
 
+  const isMultiUser = users.length - 1 > 1;
+
+  if (loading) {
+    return <ConvPageSkeleton />;
+  }
+
   return (
     <>
-      {users.length > 0 ? (
-        <>
-          <ConvPageHeader
-            headerText={headerText}
-            image1={allImages[0]}
-            image2={allImages[1]}
-            hasMultipleUsers={users.length > 1}
-            startVoiceCall={startVoiceCall}
-            isPanelOpen={isPanelOpen}
-            toggleProfilePanel={toggleProfilePanel}
-          />
+      <ConvPageHeader
+        headerText={headerText}
+        image1={allImages[0]}
+        image2={allImages[1]}
+        hasMultipleUsers={isMultiUser}
+        startVoiceCall={startVoiceCall}
+        isPanelOpen={isPanelOpen}
+        toggleProfilePanel={toggleProfilePanel}
+      />
 
-          <main className="w-full h-[calc(100%-3rem)] flex">
-            <article
-              className={` h-full border-r border-zinc-800 flex flex-col relative px-0 ${
-                isPanelOpen ? "w-4/5" : "w-full"
-              }`}
-            >
-              {isVoiceCallOpen && <VoiceCallOverlay convId={params.id} />}
+      <main className="w-full h-[calc(100%-3rem)] flex">
+        <article
+          className={` h-full border-r border-zinc-800 flex flex-col relative px-0 ${
+            isPanelOpen ? "w-4/5" : "w-full"
+          }`}
+        >
+          {isVoiceCallOpen && <VoiceCallOverlay convId={params.id} />}
 
-              {!isRoomEmpty && !isVoiceCallOpen && (
-                <PendingVoiceCall
-                  allImages={allImages}
-                  lateJoin={lateJoinVoiceCall}
-                />
-              )}
-              <div
-                className={`w-full flex flex-col overflow-y-auto mb-4 ${
-                  isVoiceCallOpen ? "h-1/2" : "h-full"
-                }`}
-              >
-                <ChatHeader name={headerText} imageUrl={users[0].imageUrl} />
-
-                {messages.map((message: Message) => {
-                  return (
-                    <MessageCard
-                      key={message.id}
-                      message={message}
-                      variant="conversation"
-                    />
-                  );
-                })}
-                <div ref={messagesEndRef} />
-              </div>
-              <div className="px-5">
-                <ChatInput
-                  inputValue={inputValue}
-                  setInputValue={setInputValue}
-                  handleSubmit={handleSubmit}
-                  socketLoading={socketLoading}
-                />
-              </div>
-            </article>
-
-            <ConvProfilePanel
-              imageUrl={allImages[0]}
-              name={headerText}
-              isPanelOpen={isPanelOpen}
+          {!isRoomEmpty && !isVoiceCallOpen && (
+            <PendingVoiceCall
+              allImages={allImages}
+              lateJoin={lateJoinVoiceCall}
             />
-          </main>
-        </>
-      ) : (
-        <ConvPageSkeleton />
-      )}
+          )}
+          <div
+            className={`w-full flex flex-col overflow-y-auto mb-4 ${
+              isVoiceCallOpen ? "h-1/2" : "h-full"
+            }`}
+          >
+            <ChatHeader name={headerText} imageUrl={users[0].imageUrl} />
+
+            {messages.map((message: Message) => {
+              return (
+                <MessageCard
+                  key={message.id}
+                  message={message}
+                  variant="conversation"
+                />
+              );
+            })}
+            <div ref={messagesEndRef} />
+          </div>
+          <div className="px-5">
+            <ChatInput
+              inputValue={inputValue}
+              setInputValue={setInputValue}
+              handleSubmit={handleSubmit}
+              socketLoading={socketLoading}
+            />
+          </div>
+        </article>
+
+        <ConvProfilePanel
+          imageUrl={allImages[0]}
+          name={headerText}
+          isPanelOpen={isPanelOpen}
+          isMultiUser={isMultiUser}
+          users={users}
+        />
+      </main>
     </>
   );
 }

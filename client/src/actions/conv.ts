@@ -64,6 +64,8 @@ export async function updateLastViewed(conversationId: string) {
     throw new Error(data.error);
   }
 
+  revalidatePath("/");
+
   return data;
 }
 

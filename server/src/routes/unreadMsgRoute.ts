@@ -2,7 +2,7 @@ import express from "express";
 
 import {
   getAllUnreadMessages,
-  getUnreadMessages,
+  // getUnreadMessages,
   updateLastViewed,
 } from "../controllers/unreadMsgController";
 
@@ -11,11 +11,10 @@ import { ClerkExpressRequireAuth } from "@clerk/clerk-sdk-node";
 const unreadMsgRouter = express.Router();
 
 unreadMsgRouter.get(
-  "/:conversationId",
-  ClerkExpressRequireAuth({}),
-  getUnreadMessages
+  "/:conversationId"
+  // getUnreadMessages
 );
-unreadMsgRouter.get("/", getAllUnreadMessages);
+unreadMsgRouter.get("/", ClerkExpressRequireAuth({}), getAllUnreadMessages);
 unreadMsgRouter.put(
   "/updateLastViewed",
   ClerkExpressRequireAuth({}),
