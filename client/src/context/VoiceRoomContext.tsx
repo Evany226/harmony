@@ -8,6 +8,8 @@ import { useUser } from "@clerk/nextjs";
 import { useVoiceCall } from "./VoiceCallContext";
 import { socket } from "@/app/socket";
 import useSound from "use-sound";
+import { checkUserInRoom } from "@/lib/conversations";
+import { useToast } from "@/components/ui/use-toast";
 
 interface VoiceRoomContextProps {
   room: Room | null;
@@ -57,6 +59,7 @@ export const VoiceRoomProvider = ({
   const [playLeaveSound] = useSound("/audio/leave-call.mp3");
 
   const { isVoiceCallOpen, setIsVoiceCallOpen } = useVoiceCall();
+  const { toast } = useToast();
 
   useEffect(() => {
     room?.on(RoomEvent.ActiveSpeakersChanged, (speakers) => {
@@ -86,12 +89,15 @@ export const VoiceRoomProvider = ({
     guildName: string,
     guildId: string
   ) => {
+    console.log("Connecting to room", channel.id);
+
     if (isVoiceCallOpen) {
       setIsVoiceCallOpen(false);
     }
 
     if (room && isConnected) {
       if (room.name === channel.id) {
+        console.log("Room name:", room.name);
         return;
       }
 
@@ -112,6 +118,21 @@ export const VoiceRoomProvider = ({
         console.error("Error disconnecting from room", error);
       }
     }
+
+    const isUserInRoom = await checkUserInRoom(
+      channel.id,
+      user?.username as string
+    );
+
+    if (isUserInRoom) {
+      toast({
+        variant: "destructive",
+        title: "Already in room",
+        description: "Current user already in a room",
+      });
+      return;
+    }
+
     setToken(token);
     setCurrentChannel(channel);
     setCurrentGuild(guildName);

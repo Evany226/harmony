@@ -7,13 +7,13 @@ import { useGuild } from "@/context/GuildContext";
 import useSound from "use-sound";
 import { useUser } from "@clerk/nextjs";
 import { socket } from "@/app/socket";
+import { MicIcon, MutedMicIcon } from "@/assets/MicIcon";
 
 import {
   LiveKitRoom,
   RoomAudioRenderer,
   TrackToggle,
-  DisconnectButton,
-  useParticipants,
+  useTrackToggle,
 } from "@livekit/components-react";
 import { Room, Track } from "livekit-client";
 
@@ -70,9 +70,9 @@ export default function VoiceChannelOverlay() {
       {isConnected && room && (
         <div className="absolute bottom-14 max-w-64 left-[5.25rem] z-50">
           <LiveKitRoom room={room} token={token} serverUrl={serverUrl}>
-            <section className="bg-stone-900 w-64 flex flex-col items-center px-3 py-2 border border-zinc-800 ">
+            <section className="bg-stone-900 w-64 flex flex-col items-center border border-zinc-800 ">
               <RoomAudioRenderer />
-              <div className="flex justify-between w-full">
+              <div className="flex justify-between w-64  px-3 py-2 ">
                 <section className="flex-col">
                   <div className="flex items-center">
                     <WifiIcon className="w-4 h-4 text-green-500 mr-1" />
@@ -85,21 +85,25 @@ export default function VoiceChannelOverlay() {
                   </p>
                 </section>
 
-                <div className="flex items-center">
+                <div className="flex items-center space-x-3">
                   <TrackToggle
-                    showIcon={true}
+                    showIcon={false}
                     source={Track.Source.Microphone}
                     onChange={onMicrophoneChange}
-                    className={` hover:bg-zinc-700 p-1.5 rounded-sm text-red-500"
-                    }`}
-                    style={{ color: isMuted ? "#ef4444" : "#d1d5db" }}
-                  />
-                  <DisconnectButton
-                    className="hover:bg-zinc-700 p-1.5 rounded-sm"
-                    onClick={handleLeaveChannel}
+                    className={"rounded-sm text-red-500"}
+                    style={{ padding: "0" }}
                   >
-                    <PhoneXMarkIcon className="w-4 h-4 text-gray-300 cursor-pointer" />
-                  </DisconnectButton>
+                    {isMuted ? (
+                      <MutedMicIcon color="#ef4444" />
+                    ) : (
+                      <MicIcon color={"#d1d5db"} />
+                    )}
+                  </TrackToggle>
+
+                  <PhoneXMarkIcon
+                    className="w-4 h-4 text-gray-300 cursor-pointer"
+                    onClick={handleLeaveChannel}
+                  />
                 </div>
               </div>
               <div className="flex items-center justify-center w-full h-full"></div>

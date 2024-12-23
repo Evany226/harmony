@@ -3,13 +3,7 @@ import { AccessToken } from "livekit-server-sdk";
 import { roomService } from "../lib/livekit";
 import prisma from "../lib/prisma";
 
-const createToken = async ({
-  roomName,
-  participantName,
-}: {
-  roomName: string;
-  participantName: string;
-}) => {
+const createToken = async (roomName: string, participantName: string) => {
   // If this room doesn't exist, it'll be automatically created when the first
   // client joins
   // Identifier to be used for participant.
@@ -36,11 +30,78 @@ const getLivekitToken = async (req: Request, res: Response) => {
       roomName: string;
       participantName: string;
     };
-    const test = await createToken({ roomName, participantName });
+    const test = await createToken(roomName, participantName);
 
     res.json(test);
   } catch (error) {
     console.log(error);
+  }
+};
+
+const checkUserInRoom = async (req: Request, res: Response) => {
+  try {
+    const userId = "user_2kvgB9d6HPZNSZGsGDf02nYSx12";
+
+    const { participantName } = req.body as { participantName: string };
+
+    const guilds = await prisma.guild.findMany({
+      where: {
+        members: {
+          some: {
+            userId: userId,
+          },
+        },
+      },
+      select: {
+        categories: {
+          select: {
+            channels: {
+              where: {
+                isVoice: true,
+              },
+              select: {
+                id: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const channelIds = guilds.map((guild) => {
+      const result = guild.categories.map((category) => {
+        return category.channels.map((channel) => channel.id);
+      });
+
+      const ids = result.flat();
+
+      return ids;
+    });
+
+    const channelIdArr = channelIds.flat();
+
+    const roomList = await roomService.listRooms();
+
+    const results = channelIdArr.map(async (channelId) => {
+      const room = roomList.find((room) => room.name === channelId);
+
+      if (!room) {
+        return false;
+      }
+
+      const result = await roomService.listParticipants(channelId);
+
+      const isUserInRoom = result.some((p) => p.identity === participantName);
+
+      return isUserInRoom;
+    });
+
+    const finalResults = await Promise.all(results);
+
+    res.json(finalResults.some((result) => result));
+  } catch (error) {
+    console.log("Error checking user in room:", error);
+    res.json(false);
   }
 };
 
@@ -172,4 +233,9 @@ const getActiveVoiceChannels = async (req: Request, res: Response) => {
   // res.json(result.map((p) => p.identity));
 };
 
-export { getLivekitToken, checkRoomEmpty, getActiveVoiceChannels };
+export {
+  getLivekitToken,
+  checkRoomEmpty,
+  getActiveVoiceChannels,
+  checkUserInRoom,
+};
