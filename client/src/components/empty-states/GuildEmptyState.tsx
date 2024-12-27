@@ -22,10 +22,10 @@ export default function GuildEmptyState({
                 <Skeleton className="w-full h-full" />
               </AvatarFallback>
             </Avatar>
-            <h1 className="text-gray-300 text-3xl font-semibold mt-4">
+            <h1 className="text-gray-300 text-3xl font-semibold mt-4 md:text-2xl md:text-center">
               Welcome to #{name}
             </h1>
-            <p className="text-gray-300 text-base font-normal mt-4 text-center">
+            <p className="text-gray-300 text-base font-normal mt-4 text-center md:text-sm">
               This is your brand new text channel. You can start by sending a
               message to your fellow guild members!
             </p>

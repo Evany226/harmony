@@ -1,31 +1,35 @@
+"use client";
+
 import Image from "next/image";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { PlusIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
-import { getAllGuilds } from "@/lib/guilds";
-import { auth } from "@clerk/nextjs/server";
-import { Guild, Category } from "@/types";
+import { Guild, Category, UnreadMessage } from "@/types";
 import CreateGuildDialog from "../guilds/CreateGuildDialog";
 import SideNavTooltip from "./SideNavTooltip";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Skeleton } from "../ui/skeleton";
-import { currentUser } from "@clerk/nextjs/server";
-import { SignedIn } from "@clerk/nextjs";
-import { UnreadMessage } from "@/types";
+import { usePathname } from "next/navigation";
 
-export default async function SideNav({
+export default function SideNav({
   unreadMessages,
+  guilds,
 }: {
   unreadMessages: UnreadMessage[];
+  guilds: Guild[];
 }) {
-  const { getToken } = auth();
-  const user = await currentUser();
+  const pathname = usePathname();
 
-  const token = await getToken();
+  const mobileRoutes = ["/friends", "/guilds"];
 
-  const guilds = await getAllGuilds(token as string);
+  const showOnMobile = mobileRoutes.some((route) => pathname.includes(route));
+
   return (
-    <ScrollArea className="flex-col h-full w-[5.5rem] fixed top-0 left-0 bg-zinc-900 border-r border-zinc-800">
+    <ScrollArea
+      className={`flex-col h-full w-[5.5rem] fixed top-0 left-0 bg-zinc-900 border-r border-zinc-800 ${
+        showOnMobile ? "" : "sm:w-0 sm:hidden"
+      }`}
+    >
       <section className="flex flex-col items-center w-full justify-center mt-2 -b">
         <h1 className="text-gray-300 text-sm font-semibold">Harmony</h1>
         <SideNavTooltip text="Direct Messages">
@@ -65,7 +69,7 @@ export default async function SideNav({
                   <div className="relative min-w-12 h-12 ">
                     <Avatar
                       className={`group-hover:border-neutral-800 w-8 h-8 absolute top-0 left-0 border-2 border-neutral-900
-                        `}
+                      `}
                     >
                       <AvatarImage src={convUsers[0].imageUrl} />
                       <AvatarFallback>
@@ -74,7 +78,7 @@ export default async function SideNav({
                     </Avatar>
                     <Avatar
                       className={`group-hover:border-neutral-800 w-8 h-8 absolute bottom-0 right-0 border-2 border-neutral-900
-                        }`}
+                      }`}
                     >
                       <AvatarImage src={convUsers[1].imageUrl} />
                       <AvatarFallback>

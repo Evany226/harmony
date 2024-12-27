@@ -31,13 +31,13 @@ export default async function GuildPage({
         </h1>
       </header>
       <div className="flex w-full h-[calc(100%-3rem)] ">
-        <main className="w-[calc(100%-16rem)] h-full border-r border-zinc-800 flex flex-col relative">
-          <div className="h-full w-full flex flex-col items-center justify-center">
-            <section className="flex flex-col items-center justify-center space-y-2 p-2 ">
-              <h2 className="text-gray-300 font-bold text-3xl">
+        <main className="w-[calc(100%-13rem)] h-full border-r border-zinc-800 flex flex-col relative">
+          <div className="h-full w-full flex flex-col items-center justify-center overflow-y-scroll">
+            <section className="flex flex-col items-center justify-center space-y-2 p-2">
+              <h2 className="text-gray-300 font-bold text-3xl md:text-2xl">
                 Welcome to {guild.name}
               </h2>
-              <p className="text-gray-400 text-normal font-semibold text-center">
+              <p className="text-gray-400 text-normal font-semibold text-center md:text-sm">
                 This is your brand new shiny guild. You can chat, hangout{" "}
                 <br></br>
                 whatever you want. Here are some steps to help you get started.
@@ -46,25 +46,25 @@ export default async function GuildPage({
             <section className="space-y-2 mt-4">
               <div className="bg-neutral-950 p-4 rounded-md flex items-center space-x-2">
                 <UserPlusIcon className="h-6 w-6 text-gray-300" />
-                <p className="text-gray-300 text-sm font-medium">
+                <p className="text-gray-300 text-sm font-medium md:xs">
                   Invite your friends
                 </p>
               </div>
               <div className="bg-neutral-950 p-4 rounded-md flex items-center space-x-2">
                 <PhotoIcon className="h-6 w-6 text-gray-300" />
-                <p className="text-gray-300 text-sm font-medium ">
+                <p className="text-gray-300 text-sm font-medium md:xs">
                   Personalize your server with an icon.
                 </p>
               </div>
               <div className="bg-neutral-950 p-4 rounded-md flex items-center space-x-2">
                 <ChatBubbleBottomCenterTextIcon className="h-6 w-6 text-gray-300" />
-                <p className="text-gray-300 text-sm font-medium">
+                <p className="text-gray-300 text-sm font-medium md:xs">
                   Send your first message
                 </p>
               </div>
               <div className="bg-neutral-950 p-4 rounded-md flex items-center space-x-2">
                 <SpeakerWaveIcon className="h-6 w-6 text-gray-300" />
-                <p className="text-gray-300 text-sm font-medium ">
+                <p className="text-gray-300 text-sm font-medium md:xs">
                   Join your first voice channel.
                 </p>
               </div>
@@ -72,7 +72,7 @@ export default async function GuildPage({
           </div>
         </main>
 
-        <UserPanel members={members} />
+        <UserPanel members={members} isPanelOpen={true} />
       </div>
     </>
   );

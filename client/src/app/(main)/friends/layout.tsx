@@ -9,7 +9,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <section className="flex w-full h-full bg-zinc-900">
+    <section className="flex w-[calc(100%-5.5rem)] h-full bg-zinc-900">
       <Suspense fallback={<PanelSkeleton showOnMobile={true} />}>
         <ConversationsPanel showOnMobile={true} />
       </Suspense>

@@ -13,7 +13,7 @@ export default function UserPanel({ members, isPanelOpen }: UserPanelProps) {
   return (
     <ScrollArea
       className={`h-full flex flex-col relative px-4 space-y-4 ${
-        isPanelOpen ? "w-64" : "w-0 hidden"
+        isPanelOpen ? "w-64 md:w-52" : "w-0 hidden"
       }`}
     >
       {roles.map((role: string) => {

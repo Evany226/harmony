@@ -33,14 +33,19 @@ export default function ChatInput({
       <div className="flex items-center">
         <PlusCircleIcon className="w-7 text-gray-300" />
         <input
-          className="outline-0 ml-3 w-full bg-neutral-800 text-gray-300 py-1 box-border"
+          className="outline-0 ml-3 w-full bg-neutral-800 text-gray-300 py-1 box-border md:text-sm"
           placeholder="Find or start a conversation"
           style={{ boxSizing: "border-box" }}
           value={inputValue}
           onChange={handleInputChange}
           name="content"
         />
-        <Button variant="outline" type="submit" disabled={socketLoading}>
+        <Button
+          variant="outline"
+          type="submit"
+          disabled={socketLoading}
+          className="md:text-xs"
+        >
           Submit
         </Button>
       </div>

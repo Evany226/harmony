@@ -24,8 +24,8 @@ export function GuildPageSkeleton() {
       </header>
 
       <main className="w-full h-[calc(100%-3rem)] flex ">
-        <article className="w-[calc(100%-16rem)] h-full border-r border-zinc-800 flex flex-col relative px-5">
-          <div className="h-full w-full flex flex-col my-6 space-y-6">
+        <article className="w-[calc(100%-13rem)] h-full border-r border-zinc-800 flex flex-col relative px-5 md:w-full">
+          <div className="h-full w-full flex flex-col my-6 space-y-6 overflow-hidden">
             <MessageSkeleton variant="short" />
             <MessageSkeleton variant="long" />
             <MessageSkeleton variant="medium" />
@@ -44,7 +44,7 @@ export function GuildPageSkeleton() {
           <ChatInput />
         </article>
 
-        <article className="w-64 h-full border-r border-zinc-800 flex flex-col relative px-4 space-y-6 py-4">
+        <article className="w-56 h-full border-r border-zinc-800 flex flex-col relative px-4 space-y-6 py-4 md:w-0 md:hidden">
           <UserSkeleton />
           <UserSkeleton />
           <UserSkeleton />

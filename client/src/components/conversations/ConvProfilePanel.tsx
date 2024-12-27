@@ -64,10 +64,6 @@ export default function ConvProfilePanel({
               </p>
             </section>
           </div>
-
-          <section className="pb-2 pt-1 flex w-full items-center justify-center border-t border-zinc-700">
-            <p className="text-gray-400 text-sm mt-2">View Full Profile</p>
-          </section>
         </>
       )}
     </aside>

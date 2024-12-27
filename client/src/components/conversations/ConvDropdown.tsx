@@ -77,12 +77,12 @@ export default function ConvDropdown({
       <DropdownMenuContent
         align="start"
         alignOffset={12}
-        className="bg-zinc-800 px-4 py-2 "
+        className="bg-zinc-800 px-4 py-2 min-w-64 sm:w-[90vw]"
       >
         <DropdownMenuLabel className="text-lg px-0 ">
           Select Friends
         </DropdownMenuLabel>
-        <p className="text-gray-300 text-sm ">
+        <p className="text-gray-300 text-sm sm:hidden">
           You can select a maximum of 10 friends to start a conversation.
         </p>
         <div className="w-full my-2">
