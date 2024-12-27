@@ -10,12 +10,12 @@ export default function DashboardLayout({
 }) {
   return (
     <section className="flex w-full h-full bg-zinc-900">
-      <Suspense fallback={<PanelSkeleton />}>
-        <ConversationsPanel />
+      <Suspense fallback={<PanelSkeleton showOnMobile={true} />}>
+        <ConversationsPanel showOnMobile={true} />
       </Suspense>
 
-      <div className="flex flex-col w-full h-full bg-zinc-900 ">
-        <header className="flex w-full h-12 bg-zinc-900 border-b border-zinc-800 px-2 py-3 space-x-3 items-center">
+      <div className="flex flex-col w-full h-full bg-zinc-900 sm:w-0 sm:hidden">
+        <header className="flex w-full h-12 bg-zinc-900 border-b border-zinc-800 px-2 py-3 space-x-3 items-center ">
           <FriendNavLinks />
         </header>
         {children}

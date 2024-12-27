@@ -25,7 +25,7 @@ export default async function SideNav({
 
   const guilds = await getAllGuilds(token as string);
   return (
-    <ScrollArea className="flex-col h-full w-[5.5rem] fixed top-0 left-0 bg-zinc-900">
+    <ScrollArea className="flex-col h-full w-[5.5rem] fixed top-0 left-0 bg-zinc-900 border-r border-zinc-800">
       <section className="flex flex-col items-center w-full justify-center mt-2 -b">
         <h1 className="text-gray-300 text-sm font-semibold">Harmony</h1>
         <SideNavTooltip text="Direct Messages">

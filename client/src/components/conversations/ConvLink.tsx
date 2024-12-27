@@ -138,7 +138,7 @@ export function ConvLink({
             </>
           )}
         </div>
-        <div className="flex items-center ml-3 w-64 overflow-hidden relative">
+        <div className="flex items-center ml-3 w-full overflow-hidden relative">
           <p className="text-base text-gray-300 font-medium overflow-hidden whitespace-nowrap text-ellipsis">
             {header}
           </p>

@@ -21,9 +21,9 @@ export default function ConvProfilePanel({
 }: ConvProfilePanelProps) {
   return (
     <aside
-      className={`bg-neutral-900 h-full flex flex-col px-2 py-2 ${
-        isPanelOpen ? "w-1/5" : "w-0 hidden"
-      } transition-all duration-300 ease-in-out`}
+      className={`bg-neutral-900 h-full flex flex-col px-2 py-2  ${
+        isPanelOpen ? "w-1/5 sm:hidden sm:w-0" : "w-0 hidden"
+      } transition-all duration-300 ease-in-out sm:w-0 sm:hidden `}
     >
       {isMultiUser ? (
         <ScrollArea
