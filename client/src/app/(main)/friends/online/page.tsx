@@ -10,7 +10,11 @@ export default async function OnlineFriends() {
 
   return (
     <div className="flex flex-col items-center w-3/4 h-full py-3 overflow-y-hidden">
-      <FriendsWrapper friends={data} variant="Online" />
+      <FriendsWrapper
+        friends={data}
+        variant="Online"
+        emptyStateText="None of your friends are currently online"
+      />
     </div>
   );
 }

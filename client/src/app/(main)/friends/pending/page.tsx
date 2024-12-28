@@ -9,7 +9,11 @@ export default async function Pending() {
 
   return (
     <div className="flex flex-col items-center w-3/4 h-full py-3 overflow-y-hidden">
-      <FriendsWrapper friends={data} variant="Pending" />
+      <FriendsWrapper
+        friends={data}
+        variant="Pending"
+        emptyStateText="No one has sent you a friend request yet"
+      />
     </div>
   );
 }

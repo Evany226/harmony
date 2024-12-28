@@ -7,6 +7,7 @@ import {
   CheckIcon,
   XMarkIcon,
   MagnifyingGlassIcon,
+  UsersIcon,
 } from "@heroicons/react/16/solid";
 import { Separator } from "../../ui/separator";
 import { Friend } from "@/types";
@@ -37,6 +38,7 @@ interface FriendsProps {
 interface FriendsWrapperProps {
   friends: Friend[];
   variant: "Online" | "All" | "Pending" | "Blocked";
+  emptyStateText: string;
 }
 
 export function Friends({ friend, pending, status }: FriendsProps) {
@@ -173,6 +175,7 @@ export function Friends({ friend, pending, status }: FriendsProps) {
 export default function FriendsWrapper({
   friends,
   variant,
+  emptyStateText,
 }: FriendsWrapperProps) {
   const { onlineUsers } = useSocket();
 
@@ -203,18 +206,27 @@ export default function FriendsWrapper({
         </div>
 
         <div className="flex-col w-full h-full">
-          {displayedFriends.map((friend) => {
-            const onlineStatus = onlineUsers.includes(friend.id);
+          {displayedFriends.length > 0 ? (
+            displayedFriends.map((friend) => {
+              const onlineStatus = onlineUsers.includes(friend.id);
 
-            return (
-              <Friends
-                key={friend.id}
-                friend={friend}
-                pending={variant === "Pending"}
-                status={onlineStatus}
-              />
-            );
-          })}
+              return (
+                <Friends
+                  key={friend.id}
+                  friend={friend}
+                  pending={variant === "Pending"}
+                  status={onlineStatus}
+                />
+              );
+            })
+          ) : (
+            <div className="flex flex-col items-center justify-center mt-6">
+              <UsersIcon className="w-10 text-gray-400" />
+              <h2 className="text-gray-400 text-normal font-medium">
+                {emptyStateText}
+              </h2>
+            </div>
+          )}
         </div>
       </ScrollArea>
     </main>

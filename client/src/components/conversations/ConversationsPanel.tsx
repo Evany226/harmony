@@ -22,7 +22,7 @@ export default async function ConversationsPanel({
 
   return (
     <div
-      className={`flex flex-col w-64 h-full bg-neutral-900 border-r border-zinc-800 relative ${
+      className={`flex flex-col min-w-64 h-full bg-neutral-900 border-r border-zinc-800 relative ${
         showOnMobile ? "sm:w-full" : "sm:w-0 sm:hidden"
       }`}
     >

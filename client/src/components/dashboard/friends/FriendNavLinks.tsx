@@ -42,7 +42,7 @@ export default function FriendNavLinks() {
             <Link
               key={link.name}
               href={link.href}
-              className={`px-2.5 py-1 rounded-md hover:bg-zinc-800${
+              className={`px-2.5 py-1 rounded-md hover:bg-zinc-800 ${
                 pathname === link.href ? "bg-zinc-700" : ""
               }`}
             >

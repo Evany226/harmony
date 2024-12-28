@@ -1,6 +1,6 @@
 "use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { PlusIcon } from "@heroicons/react/16/solid";
+import { PlusIcon, EnvelopeIcon } from "@heroicons/react/16/solid";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -172,34 +172,43 @@ export default function ConvLinkWrapper({
         </div>
 
         <div className="flex-col mt-3">
-          {conversations.map((conversation) => {
-            const allUsers = conversation.participants.map((participant) => {
-              return participant.user;
-            });
+          {conversations.length > 0 ? (
+            conversations.map((conversation) => {
+              const allUsers = conversation.participants.map((participant) => {
+                return participant.user;
+              });
 
-            const currentParticipant = conversation.participants.find(
-              (participant) => participant.user.id === userId
-            );
+              const currentParticipant = conversation.participants.find(
+                (participant) => participant.user.id === userId
+              );
 
-            const onlineStatus = allUsers.some(
-              (user) => onlineUsers.includes(user.id) && user.id !== userId
-            );
+              const onlineStatus = allUsers.some(
+                (user) => onlineUsers.includes(user.id) && user.id !== userId
+              );
 
-            const unread = unreadMessages.find((unreadMessage) => {
-              return unreadMessage.participantId === currentParticipant?.id;
-            });
+              const unread = unreadMessages.find((unreadMessage) => {
+                return unreadMessage.participantId === currentParticipant?.id;
+              });
 
-            return (
-              <ConvLink
-                key={conversation.id}
-                users={allUsers}
-                href={`/conversations/${conversation.id}`}
-                status={onlineStatus}
-                id={conversation.id}
-                unreadMessages={unread ? unread.messages : []}
-              />
-            );
-          })}
+              return (
+                <ConvLink
+                  key={conversation.id}
+                  users={allUsers}
+                  href={`/conversations/${conversation.id}`}
+                  status={onlineStatus}
+                  id={conversation.id}
+                  unreadMessages={unread ? unread.messages : []}
+                />
+              );
+            })
+          ) : (
+            <div className="w-full flex flex-col items-center justify-center mt-2 rounded-md">
+              <p className="text-gray-300 text-sm font-medium">
+                No conversations yet
+              </p>
+              <EnvelopeIcon className="w-6 text-gray-400" />
+            </div>
+          )}
         </div>
       </section>
     </>

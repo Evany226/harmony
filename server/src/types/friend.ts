@@ -111,3 +111,14 @@ export interface ActiveVoiceChannel {
   channelId: string;
   participants: VoiceChannelUser[];
 }
+
+export interface WebhookEvent {
+  data: {
+    id: string;
+    type: string;
+    // You can add more properties as necessary, depending on the payload structure
+  };
+  object: string;
+  timestamp: number;
+  type: string;
+}
