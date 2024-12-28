@@ -26,12 +26,12 @@ export default function HomeNav() {
   ];
 
   return (
-    <div className="w-3/4 h-full flex items-center justify-between ml-auto mr-auto ">
+    <div className="w-3/4 h-full flex items-center justify-between ml-auto mr-auto md:w-full md:px-4 ">
       <section className="flex items-center">
         <Image src="/images/logo-past.png" width={45} height={45} alt="Logo" />
         <h1 className="text-xl text-gray-300 font-semibold ml-2">Harmony</h1>
       </section>
-      <nav className="">
+      <nav className="sm:hidden">
         <ul className="flex space-x-4">
           {links.map((link) => {
             return (
@@ -51,13 +51,15 @@ export default function HomeNav() {
           onClick={() => router.push("/sign-in")}
           className="px-3 py-1 rounded-md hover:bg-zinc-800"
         >
-          <p className="text-gray-300 font-medium text-sm">Log in</p>
+          <p className="text-gray-300 font-medium text-sm sm:text-xs">Log in</p>
         </button>
         <button
           onClick={() => router.push("/sign-up")}
           className="bg-indigo-600 px-3 py-1 rounded-md"
         >
-          <p className="text-gray-300 font-medium text-sm">Sign up</p>
+          <p className="text-gray-300 font-medium text-sm sm:text-xs">
+            Sign up
+          </p>
         </button>
       </section>
     </div>

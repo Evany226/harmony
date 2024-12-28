@@ -8,9 +8,9 @@ export default function ConversationsLayout({
   children: React.ReactNode;
 }) {
   return (
-    <section className="flex w-full h-full bg-zinc-900">
-      <Suspense fallback={<PanelSkeleton />}>
-        <ConversationsPanel />
+    <section className="flex w-[calc(100%-5.5rem)] h-full bg-zinc-900 sm:w-full">
+      <Suspense fallback={<PanelSkeleton showOnMobile={false} />}>
+        <ConversationsPanel showOnMobile={false} />
       </Suspense>
 
       <div className="flex flex-col w-[100%] h-full bg-zinc-900 ">

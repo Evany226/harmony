@@ -36,7 +36,7 @@ export default function FriendNavLinks() {
         <h1 className="text-gray-300 text-sm font-medium">Friends</h1>
       </div>
       <Separator orientation="vertical" />
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center space-x-4 md:space-x-2">
         {links.map((link) => {
           return (
             <Link

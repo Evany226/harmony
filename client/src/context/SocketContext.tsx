@@ -24,7 +24,7 @@ interface SocketContextProps {
 const SocketContext = createContext<SocketContextProps | undefined>(undefined);
 
 export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
-  const { getToken, userId } = useAuth();
+  const { getToken } = useAuth();
   const { user } = useUser();
   const { toast } = useToast();
   const { createAlert, isVoiceCallOpen } = useVoiceCall();
@@ -38,6 +38,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
 
   useEffect(() => {
+    if (!user) return;
     socket.connect();
 
     const fetchConversations = async () => {
@@ -60,7 +61,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
 
     socket.on("connect", () => {
       setIsConnected(true);
-      socket.emit("joinOnline", userId);
+      socket.emit("joinOnline", user?.id);
     });
 
     socket.on("disconnect", () => {
@@ -165,7 +166,6 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     createAlert,
     getToken,
     toast,
-    userId,
     router,
     user,
     playLeaveSound,

@@ -11,7 +11,7 @@ export default function ConvPageSkeleton() {
       </header>
 
       <main className="w-full h-[calc(100%-3rem)] flex flex-col">
-        <article className="w-3/4 h-full border-r border-zinc-800 flex flex-col relative px-5">
+        <article className="w-4/5 h-full flex flex-col relative px-5">
           <div className="h-full w-full flex flex-col my-6 space-y-6">
             <MessageSkeleton variant="short" />
             <MessageSkeleton variant="long" />

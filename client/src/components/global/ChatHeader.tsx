@@ -19,8 +19,10 @@ export default function ChatHeader({ name, imageUrl }: ChatHeaderProps) {
               <Skeleton className="w-full h-full" />
             </AvatarFallback>
           </Avatar>
-          <h1 className="text-gray-200 text-3xl font-semibold mt-4">{name}</h1>
-          <p className="text-gray-300 text-base font-normal mt-2">
+          <h1 className="text-gray-200 text-3xl font-semibold mt-4 sm:text-2xl">
+            {name}
+          </h1>
+          <p className="text-gray-300 text-base font-normal mt-2 sm:text-sm">
             This is the beginning of your conversation with{" "}
             <span className="font-semibold">{name}</span>.
           </p>

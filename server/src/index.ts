@@ -17,16 +17,13 @@ import unreadMsgRouter from "./routes/unreadMsgRoute";
 import guildImageRouter from "./routes/guildImgRoute";
 import liveKitRouter from "./routes/livekitRoute";
 import { Server } from "socket.io";
-import { Message, ChannelMessage } from "./types";
+import { Message, ChannelMessage, WebhookEvent } from "./types";
 
 import { roomService } from "./lib/livekit";
 import "dotenv/config"; // To read CLERK_SECRET_KEY and CLERK_PUBLISHABLE_KEY
-import {
-  ClerkExpressRequireAuth,
-  RequireAuthProp,
-  StrictAuthProp,
-} from "@clerk/clerk-sdk-node";
-import express, { Request } from "express";
+import { RequireAuthProp, StrictAuthProp } from "@clerk/clerk-sdk-node";
+import express, { Request, Response } from "express";
+import { Webhook } from "svix"; // Assuming you have a package for Svix
 
 //https://clerk.com/docs/backend-requests/handling/nodejs
 declare global {
@@ -38,19 +35,94 @@ declare global {
 export const app = express();
 
 app.use(cors());
-app.use(express.json());
 
-app.get(
-  "/",
-  ClerkExpressRequireAuth({
-    // Add options here
-    // See the Middleware options section for more details
-  }),
-  (req: RequireAuthProp<Request>, res) => {
-    // Your route handler logic
-    res.json(req.auth.userId);
+app.use((req, res, next) => {
+  console.log("Request path:", req.path); // Logs the route being accessed
+  next();
+});
+
+app.post(
+  "/api/webhooks",
+  // Parse raw JSON payloads
+  express.raw({ type: "application/json" }),
+  (req: Request, res: Response) => {
+    const SIGNING_SECRET = process.env.SIGNING_SECRET;
+
+    if (!SIGNING_SECRET) {
+      throw new Error(
+        "Error: Please add SIGNING_SECRET from Clerk Dashboard to .env"
+      );
+    }
+
+    // Create new Svix instance with secret
+    const wh = new Webhook(SIGNING_SECRET);
+
+    // Get headers and body
+    const headers = req.headers;
+    const payload = req.body as Buffer | string;
+
+    // Get Svix headers for verification
+    const svix_id = headers["svix-id"];
+    const svix_timestamp = headers["svix-timestamp"];
+    const svix_signature = headers["svix-signature"];
+
+    // If there are no headers, error out
+    if (!svix_id || !svix_timestamp || !svix_signature) {
+      return res.status(400).json({
+        success: false,
+        message: "Error: Missing svix headers",
+      });
+    }
+
+    let evt: WebhookEvent | null = null; // Initialize with an empty object
+
+    // Attempt to verify the incoming webhook
+    try {
+      evt = wh.verify(payload, {
+        "svix-id": svix_id as string,
+        "svix-timestamp": svix_timestamp as string,
+        "svix-signature": svix_signature as string,
+      }) as WebhookEvent;
+    } catch (err) {
+      if (err instanceof Error) {
+        console.log("Error: Could not verify webhook:", err.message);
+        return void res.status(400).json({
+          success: false,
+          message: err.message,
+        });
+      }
+    }
+
+    // Do something with payload
+    // For this guide, log payload to console
+    if (evt) {
+      const { id, type: eventType } = evt.data; // Now TypeScript knows the structure
+      console.log(
+        `Received webhook with ID ${id} and event type of ${eventType}`
+      );
+      console.log("Webhook payload:", evt.data);
+
+      return res.status(200).json({
+        success: true,
+        message: "Webhook received",
+      });
+    } else {
+      // If evt is null (in case of an error)
+      console.log("Error: Webhook verification failed");
+      return res.status(400).json({
+        success: false,
+        message: "Error: Webhook verification failed",
+      });
+    }
   }
 );
+
+app.use(express.json());
+
+app.get("/", (req, res) => {
+  // Your route handler logic
+  res.json("app is running");
+});
 
 app.use("/api/friends", friendRouter);
 app.use("/api/requests", friendReqRouter);
@@ -95,6 +167,7 @@ io.on("connection", (socket) => {
   console.log(count);
 
   socket.on("joinOnline", (userId: string) => {
+    console.log("user id" + userId);
     id = userId;
 
     onlineUsers.push({ userId, socketId: socket.id });

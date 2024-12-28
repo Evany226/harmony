@@ -5,9 +5,11 @@ import {
   PhoneArrowUpRightIcon,
   VideoCameraIcon,
   UserCircleIcon,
+  ArrowUturnLeftIcon,
 } from "@heroicons/react/24/solid";
 import { TooltipWrapper } from "../global/TooltipWrapper";
 import { Tooltip } from "@radix-ui/react-tooltip";
+import Link from "next/link";
 
 interface ConvPageHeaderProps {
   headerText: string;
@@ -31,6 +33,9 @@ export default function ConvPageHeader({
   return (
     <header className="flex justify-between w-full h-12 bg-zinc-900 border-b border-zinc-800 px-3 py-3 items-center">
       <div className="flex space-x-3 items-center">
+        <Link href="/friends" className="hidden sm:block">
+          <ArrowUturnLeftIcon className="w-6 h-6 text-gray-400 hover:text-gray-300 cursor-pointer" />
+        </Link>
         {hasMultipleUsers ? (
           <div className="w-10 h-10 relative ml-2">
             <Avatar className="w-7 h-7 absolute top-0 left-0 border-2 border-neutral-900">
@@ -68,7 +73,7 @@ export default function ConvPageHeader({
           />
         </TooltipWrapper>
 
-        <div className="flex items-center bg-zinc-800 rounded-sm py-1 px-2">
+        <div className="flex items-center bg-zinc-800 rounded-sm py-1 px-2 sm:hidden">
           <input
             className="outline-0 w-full bg-zinc-800 font-semibold text-xs"
             placeholder="Search"
@@ -77,7 +82,7 @@ export default function ConvPageHeader({
         </div>
 
         <TooltipWrapper text="Help">
-          <QuestionMarkCircleIcon className="w-6 h-6 text-gray-400 hover:text-gray-300 cursor-pointer" />
+          <QuestionMarkCircleIcon className="w-6 h-6 text-gray-400 hover:text-gray-300 cursor-pointer sm:hidden" />
         </TooltipWrapper>
       </div>
     </header>

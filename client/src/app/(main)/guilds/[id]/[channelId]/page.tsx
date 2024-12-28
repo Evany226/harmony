@@ -33,7 +33,7 @@ export default function ChannelPage({
 
   const [messages, setMessages] = useState<ChannelMessages[]>([]);
   const [channel, setChannel] = useState<TextChannel | null>(null);
-  const [isPanelOpen, setIsPanelOpen] = useState<boolean>(true);
+  const [isPanelOpen, setIsPanelOpen] = useState<boolean>(false);
   // const [members, setMembers] = useState<Member[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const { socket, isConnected } = useSocket();
@@ -199,7 +199,9 @@ export default function ChannelPage({
         <div className="flex w-full h-[calc(100%-3rem)] ">
           <main
             className={`h-full border-r border-zinc-800 flex flex-col relative ${
-              isPanelOpen ? "w-[calc(100%-16rem)]" : "w-full"
+              isPanelOpen
+                ? "w-[calc(100%-16rem)] md:w-[calc(100%-13rem)]"
+                : "w-full"
             }`}
           >
             <div className="h-full w-full flex flex-col overflow-y-auto mb-4">

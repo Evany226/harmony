@@ -1,18 +1,13 @@
 "use client";
-import { Avatar, AvatarImage, AvatarFallback } from "../../ui/avatar";
 import { useUser } from "@clerk/nextjs";
 import { SignOutButton, UserButton } from "@clerk/nextjs";
 import ProfileCardSkeleton from "@/components/skeletons/ProfileCardSkeleton";
-import { socket } from "@/app/socket";
-
-import { WifiIcon, PhoneXMarkIcon } from "@heroicons/react/24/solid";
-import { useState } from "react";
-import { useGuild } from "@/context/GuildContext";
-import { useVoiceRoom } from "@/context/VoiceRoomContext";
-import VoiceChannelOverlay from "@/components/conference/VoiceChannelOverlay";
+import { Cog8ToothIcon } from "@heroicons/react/24/solid";
+import { useClerk } from "@clerk/nextjs";
 
 export default function ProfileCard() {
   const { isSignedIn, user } = useUser();
+  const { openUserProfile } = useClerk();
 
   return (
     <>
@@ -28,7 +23,14 @@ export default function ProfileCard() {
             <AvatarFallback>EY</AvatarFallback>
           </Avatar> */}
 
-            <UserButton />
+            <UserButton
+              appearance={{
+                elements: {
+                  userButtonBox: "w-8 h-8",
+                  userButtonAvatarBox: "w-full h-full",
+                },
+              }}
+            />
 
             <div className="flex-col ml-2">
               <h2 className="text-gray-300 font-bold text-xs">
@@ -47,6 +49,10 @@ export default function ProfileCard() {
               </SignOutButton> */}
               </div>
             </div>
+            <Cog8ToothIcon
+              className="w-6 h-6 ml-auto text-gray-400 cursor-pointer mr-1"
+              onClick={() => openUserProfile()}
+            />
           </section>
         </main>
       ) : (

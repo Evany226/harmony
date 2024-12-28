@@ -63,8 +63,8 @@ export default function GuildSettingsDialog({
 
   return (
     <DialogContent className="bg-neutral-800 max-w-screen h-screen p-0">
-      <div className="w-full h-full flex">
-        <main className="h-full w-4/12 bg-neutral-900 flex items-center justify-end px-4">
+      <div className="w-full h-full flex sm:flex-col">
+        <main className="h-full w-4/12 bg-neutral-900 flex items-center justify-end px-4 md:w-full md:h-64 md:justify-center">
           <section className="h-full py-2 flex flex-col mt-24 min-w-40">
             <DialogTitle className="text-gray-400 font-semibold text-sm ml-1.5">
               {guild.name}
@@ -103,7 +103,7 @@ export default function GuildSettingsDialog({
           </section>
         </main>
 
-        <aside className="h-full w-8/12 bg-neutral-800 ">
+        <aside className="h-full w-8/12 bg-neutral-800 md:w-full">
           {selectedTab === 0 && (
             <OverviewTab setDialogOpen={setDialogOpen} guild={guild} />
           )}
@@ -193,7 +193,7 @@ function OverviewTab({ guild, setDialogOpen }: OverviewTabProps) {
   };
 
   return (
-    <div className="w-3/5 h-full pt-12 px-6 flex flex-col space-y-6">
+    <div className="w-3/5 h-full pt-12 px-6 flex flex-col space-y-6 md:w-full">
       <div className="flex flex-col space-y-1 ">
         <h2 className="text-gray-300 text-xl font-semibold">Guild Overview</h2>
         <p className="text-gray-400 text-sm font-medium">

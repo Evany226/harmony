@@ -84,7 +84,9 @@ export default function MessageCard({ message, variant }: MessageCardProps) {
     return (
       <div className="flex items-center w-full py-2 px-5 space-x-2">
         <ArrowLongRightIcon className="h-5 w-5 text-indigo-500" />
-        <p className="font-medium text-gray-300">{message.content}</p>
+        <p className="font-medium text-gray-300 sm:text-sm">
+          {message.content}
+        </p>
       </div>
     );
   }
@@ -95,7 +97,7 @@ export default function MessageCard({ message, variant }: MessageCardProps) {
         isEditing ? "bg-neutral-800" : ""
       }`}
     >
-      <Avatar className="w-10 h-10">
+      <Avatar className="w-10 h-10 sm:w-8 sm:h-8">
         <AvatarImage src={sender.imageUrl} />
         <AvatarFallback>
           <Skeleton className="w-full h-full" />
@@ -103,8 +105,10 @@ export default function MessageCard({ message, variant }: MessageCardProps) {
       </Avatar>
       <div className="flex flex-col ml-4">
         <div className="flex items-center space-x-3">
-          <p className="font-semibold text-gray-300">{sender.username}</p>
-          <p className="text-gray-400 text-sm font-medium">
+          <p className="font-semibold text-gray-300 sm:text-sm">
+            {sender.username}
+          </p>
+          <p className="text-gray-400 text-sm font-medium sm:text-xs">
             {formatDateTime(message.createdAt)}
           </p>
           {message.edited && (
@@ -122,7 +126,9 @@ export default function MessageCard({ message, variant }: MessageCardProps) {
             initialValue={message.content}
           />
         ) : (
-          <p className="font-normal text-gray-300">{message.content}</p>
+          <p className="font-normal text-gray-300 sm:text-sm">
+            {message.content}
+          </p>
         )}
       </div>
       <div className="absolute -top-2 right-5 hidden group-hover:block">

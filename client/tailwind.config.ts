@@ -14,11 +14,26 @@ const config = {
     container: {
       center: true,
       padding: "2rem",
-      screens: {
-        "2xl": "1400px",
-      },
     },
     extend: {
+      screens: {
+        xs: { max: "639px" },
+
+        sm: { max: "768px" },
+        // => @media (min-width: 640px) { ... }
+
+        md: { max: "1024px" },
+        // => @media (min-width: 768px) { ... }
+
+        lg: { max: "1280px" },
+        // => @media (min-width: 1024px) { ... }
+
+        xl: { max: "1536px" },
+        // => @media (min-width: 1280px) { ... }
+
+        "2xl": "1537px",
+        // => @media (min-width: 1536px) { ... }
+      },
       keyframes: {
         "accordion-down": {
           from: { height: "0" },
