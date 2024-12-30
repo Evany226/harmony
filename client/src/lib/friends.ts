@@ -1,8 +1,10 @@
 //client side methods that gets data from route handlers in the server
 
+const url = process.env.NEXT_PUBLIC_DEV_API_URL;
+
 // lib/utils.ts or utils/utils.ts
 export async function getAllFriends(token: string) {
-  const response = await fetch("http://localhost:3001/api/friends", {
+  const response = await fetch(`${url}/api/friends`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -20,7 +22,7 @@ export async function getAllFriends(token: string) {
 }
 
 export async function getPending(token: string) {
-  const response = await fetch("http:/localhost:3001/api/requests", {
+  const response = await fetch(`${url}/api/requests`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

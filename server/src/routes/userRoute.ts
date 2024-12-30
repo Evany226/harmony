@@ -5,11 +5,9 @@ import {
   getUserChannelIds,
 } from "../controllers/userController";
 
-import { ClerkExpressRequireAuth } from "@clerk/clerk-sdk-node";
-
 const userRouter = express.Router();
 
-userRouter.get("/guildIds", ClerkExpressRequireAuth({}), getUserGuildIds);
-userRouter.get("/channelIds", ClerkExpressRequireAuth({}), getUserChannelIds);
+userRouter.get("/guildIds", getUserGuildIds);
+userRouter.get("/channelIds", getUserChannelIds);
 
 export default userRouter;

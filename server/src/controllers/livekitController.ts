@@ -40,7 +40,7 @@ const getLivekitToken = async (req: Request, res: Response) => {
 
 const checkUserInRoom = async (req: Request, res: Response) => {
   try {
-    const userId = "user_2kvgB9d6HPZNSZGsGDf02nYSx12";
+    const userId = req.auth.userId;
 
     const { participantName } = req.body as { participantName: string };
 

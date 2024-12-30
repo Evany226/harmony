@@ -5,12 +5,11 @@ import {
   createMessage,
   editMessage,
 } from "../controllers/convMsgController";
-import { ClerkExpressRequireAuth } from "@clerk/clerk-sdk-node";
 
 const convMsgRouter = express.Router();
 
-convMsgRouter.get("/:id", ClerkExpressRequireAuth({}), getAllMessages);
-convMsgRouter.post("/", ClerkExpressRequireAuth({}), createMessage);
-convMsgRouter.put("/", ClerkExpressRequireAuth({}), editMessage);
+convMsgRouter.get("/:id", getAllMessages);
+convMsgRouter.post("/", createMessage);
+convMsgRouter.put("/", editMessage);
 
 export default convMsgRouter;

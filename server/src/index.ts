@@ -2,20 +2,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 
 import cors from "cors";
-import friendRouter from "./routes/friendRoute";
-import friendReqRouter from "./routes/friendReqRoute";
-import convRouter from "./routes/convRoute";
-import convMsgRouter from "./routes/convMsgRoute";
-import guildRouter from "./routes/guildRoute";
-import categoryRouter from "./routes/categoryRoute";
-import channelRouter from "./routes/channelRoute.ts";
-import memberRouter from "./routes/memberRoute";
-import guildReqRouter from "./routes/guildReqRoute";
-import guildMsgRouter from "./routes/guildMsgRoute";
-import userRouter from "./routes/userRoute";
-import unreadMsgRouter from "./routes/unreadMsgRoute";
-import guildImageRouter from "./routes/guildImgRoute";
-import liveKitRouter from "./routes/livekitRoute";
+import configRoutes from "./routes/index";
 import { Server } from "socket.io";
 import { Message, ChannelMessage, WebhookEvent } from "./types";
 
@@ -24,6 +11,7 @@ import "dotenv/config"; // To read CLERK_SECRET_KEY and CLERK_PUBLISHABLE_KEY
 import { RequireAuthProp, StrictAuthProp } from "@clerk/clerk-sdk-node";
 import express, { Request, Response } from "express";
 import { Webhook } from "svix"; // Assuming you have a package for Svix
+import prisma from "./lib/prisma";
 
 //https://clerk.com/docs/backend-requests/handling/nodejs
 declare global {
@@ -36,16 +24,11 @@ export const app = express();
 
 app.use(cors());
 
-app.use((req, res, next) => {
-  console.log("Request path:", req.path); // Logs the route being accessed
-  next();
-});
-
 app.post(
-  "/api/webhooks",
+  "/api/signUpUser",
   // Parse raw JSON payloads
   express.raw({ type: "application/json" }),
-  (req: Request, res: Response) => {
+  async (req: Request, res: Response) => {
     const SIGNING_SECRET = process.env.SIGNING_SECRET;
 
     if (!SIGNING_SECRET) {
@@ -96,11 +79,30 @@ app.post(
     // Do something with payload
     // For this guide, log payload to console
     if (evt) {
-      const { id, type: eventType } = evt.data; // Now TypeScript knows the structure
+      const {
+        id,
+        type: eventType,
+        email_addresses,
+        username,
+        has_image,
+        image_url,
+      } = evt.data; // Now TypeScript knows the structure
       console.log(
         `Received webhook with ID ${id} and event type of ${eventType}`
       );
       console.log("Webhook payload:", evt.data);
+
+      const newUser = await prisma.user.create({
+        data: {
+          id: id,
+          email: email_addresses[0].email_address,
+          username: username,
+          hasImage: has_image,
+          imageUrl: image_url,
+        },
+      });
+
+      console.log(newUser);
 
       return res.status(200).json({
         success: true,
@@ -119,25 +121,7 @@ app.post(
 
 app.use(express.json());
 
-app.get("/", (req, res) => {
-  // Your route handler logic
-  res.json("app is running");
-});
-
-app.use("/api/friends", friendRouter);
-app.use("/api/requests", friendReqRouter);
-app.use("/api/conversations", convRouter);
-app.use("/api/messages", convMsgRouter);
-app.use("/api/guilds", guildRouter);
-app.use("/api/categories", categoryRouter);
-app.use("/api/channels", channelRouter);
-app.use("/api/members", memberRouter);
-app.use("/api/guild-requests", guildReqRouter);
-app.use("/api/guild-messages", guildMsgRouter);
-app.use("/api/users", userRouter);
-app.use("/api/unread", unreadMsgRouter);
-app.use("/api/guild-image", guildImageRouter);
-app.use("/api/livekit", liveKitRouter);
+configRoutes(app);
 
 const PORT = 3001;
 
@@ -355,6 +339,7 @@ io.on("connection", (socket) => {
 
   socket.on("channelMessage", (data: ChannelMessage) => {
     const { channelId } = data;
+    console.log(channelId);
     io.to(channelId).emit(`channelMessage ${channelId}`, data);
   });
 

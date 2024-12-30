@@ -10,6 +10,7 @@ import { socket } from "@/app/socket";
 import useSound from "use-sound";
 import { checkUserInRoom } from "@/lib/conversations";
 import { useToast } from "@/components/ui/use-toast";
+import { useAuth } from "@clerk/nextjs";
 
 interface VoiceRoomContextProps {
   room: Room | null;
@@ -59,6 +60,7 @@ export const VoiceRoomProvider = ({
   const [playLeaveSound] = useSound("/audio/leave-call.mp3");
 
   const { isVoiceCallOpen, setIsVoiceCallOpen } = useVoiceCall();
+  const { getToken } = useAuth();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -119,7 +121,10 @@ export const VoiceRoomProvider = ({
       }
     }
 
+    const authToken = await getToken();
+
     const isUserInRoom = await checkUserInRoom(
+      authToken as string,
       channel.id,
       user?.username as string
     );

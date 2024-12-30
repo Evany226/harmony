@@ -112,10 +112,20 @@ export interface ActiveVoiceChannel {
   participants: VoiceChannelUser[];
 }
 
+interface PayloadEmail {
+  createdAt: number;
+  email_address: string;
+  id: string;
+}
+
 export interface WebhookEvent {
   data: {
     id: string;
     type: string;
+    email_addresses: PayloadEmail[];
+    username: string;
+    has_image: boolean;
+    image_url: string;
     // You can add more properties as necessary, depending on the payload structure
   };
   object: string;

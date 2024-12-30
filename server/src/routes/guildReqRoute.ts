@@ -6,10 +6,9 @@ import {
   rejectGuildRequest,
 } from "../controllers/guildReqController";
 
-import { ClerkExpressRequireAuth } from "@clerk/clerk-sdk-node";
 const guildReqRouter = express.Router();
 
-guildReqRouter.get("/", ClerkExpressRequireAuth({}), getPendingGuildReq);
+guildReqRouter.get("/", getPendingGuildReq);
 guildReqRouter.post("/", createGuildRequest);
 guildReqRouter.put("/:guildRequestId/accept", acceptGuildRequest);
 guildReqRouter.delete("/:guildRequestId/reject", rejectGuildRequest);

@@ -1,6 +1,5 @@
 import express from "express";
 
-import { ClerkExpressRequireAuth } from "@clerk/clerk-sdk-node";
 import {
   getPendingFriends,
   createFriendRequest,
@@ -10,17 +9,9 @@ import {
 
 const friendReqRouter = express.Router();
 
-friendReqRouter.get("/", ClerkExpressRequireAuth({}), getPendingFriends);
-friendReqRouter.post("/", ClerkExpressRequireAuth({}), createFriendRequest);
-friendReqRouter.put(
-  "/:id/accept",
-  ClerkExpressRequireAuth({}),
-  acceptFriendRequest
-);
-friendReqRouter.delete(
-  "/:id/reject",
-  ClerkExpressRequireAuth({}),
-  rejectFriendRequest
-);
+friendReqRouter.get("/", getPendingFriends);
+friendReqRouter.post("/", createFriendRequest);
+friendReqRouter.put("/:id/accept", acceptFriendRequest);
+friendReqRouter.delete("/:id/reject", rejectFriendRequest);
 
 export default friendReqRouter;

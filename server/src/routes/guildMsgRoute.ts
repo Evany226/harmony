@@ -5,12 +5,11 @@ import {
   getAllChannelMessages,
   editChannelMessage,
 } from "../controllers/guildMsgController";
-import { ClerkExpressRequireAuth } from "@clerk/clerk-sdk-node";
 
 const guildMsgRouter = express.Router();
 
 guildMsgRouter.get("/:channelId", getAllChannelMessages);
-guildMsgRouter.post("/", ClerkExpressRequireAuth({}), createChannelMessage);
-guildMsgRouter.put("/", ClerkExpressRequireAuth({}), editChannelMessage);
+guildMsgRouter.post("/", createChannelMessage);
+guildMsgRouter.put("/", editChannelMessage);
 
 export default guildMsgRouter;

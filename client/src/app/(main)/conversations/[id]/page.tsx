@@ -95,7 +95,7 @@ export default function ConversationPage({
 
       setHeaderText(header);
 
-      const isEmpty = await checkRoomEmpty(params.id);
+      const isEmpty = await checkRoomEmpty(token as string, params.id);
       setIsRoomEmpty(isEmpty.empty);
 
       setLoading(false);
