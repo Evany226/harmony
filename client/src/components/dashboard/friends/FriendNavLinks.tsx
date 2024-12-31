@@ -23,10 +23,6 @@ export default function FriendNavLinks() {
       name: "Pending",
       href: "/friends/pending",
     },
-    {
-      name: "Blocking",
-      href: "/friends/blocked",
-    },
   ];
 
   return (

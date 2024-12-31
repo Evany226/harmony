@@ -1,5 +1,7 @@
+import { url } from "./utils";
+
 export async function getAllConversations(token: string) {
-  const response = await fetch("http://localhost:3001/api/conversations", {
+  const response = await fetch(`${url()}/api/conversations`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -17,16 +19,13 @@ export async function getAllConversations(token: string) {
 }
 
 export async function getConversation(token: string, id: string) {
-  const response = await fetch(
-    `http://localhost:3001/api/conversations/${id}`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  const response = await fetch(`${url()}/api/conversations/${id}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
   const data = await response.json();
 
@@ -38,7 +37,7 @@ export async function getConversation(token: string, id: string) {
 }
 
 export async function getAllMessages(token: string, id: string) {
-  const response = await fetch(`http://localhost:3001/api/messages/${id}`, {
+  const response = await fetch(`${url()}/api/messages/${id}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -56,7 +55,7 @@ export async function getAllMessages(token: string, id: string) {
 }
 
 export async function getAllUnreadMessages(token: string) {
-  const response = await fetch("http://localhost:3001/api/unread", {
+  const response = await fetch(`${url()}/api/unread`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -73,10 +72,15 @@ export async function getAllUnreadMessages(token: string) {
   return data;
 }
 
-export async function getLiveKitToken(roomName: string, userId: string) {
-  const response = await fetch("http://localhost:3001/api/livekit/get-token", {
+export async function getLiveKitToken(
+  token: string,
+  roomName: string,
+  userId: string
+) {
+  const response = await fetch(`${url()}/api/livekit/get-token`, {
     method: "POST",
     headers: {
+      Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
@@ -95,22 +99,21 @@ export async function getLiveKitToken(roomName: string, userId: string) {
 }
 
 export async function checkUserInRoom(
+  token: string,
   roomName: string,
   participantName: string
 ) {
-  const response = await fetch(
-    "http://localhost:3001/api/livekit/user-in-room",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        roomName: roomName,
-        participantName: participantName,
-      }),
-    }
-  );
+  const response = await fetch(`${url()}/api/livekit/user-in-room`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      roomName: roomName,
+      participantName: participantName,
+    }),
+  });
 
   const data = await response.json();
 
@@ -121,10 +124,11 @@ export async function checkUserInRoom(
   return data;
 }
 
-export async function checkRoomEmpty(roomName: string) {
-  const response = await fetch("http://localhost:3001/api/livekit/room-empty", {
+export async function checkRoomEmpty(token: string, roomName: string) {
+  const response = await fetch(`${url()}/api/livekit/room-empty`, {
     method: "POST",
     headers: {
+      Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({

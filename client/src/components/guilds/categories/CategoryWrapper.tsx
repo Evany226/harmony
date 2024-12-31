@@ -28,6 +28,7 @@ import { useGuild } from "@/context/GuildContext";
 import { useUser } from "@clerk/nextjs";
 import { useVoiceRoom } from "@/context/VoiceRoomContext";
 import { useToast } from "@/components/ui/use-toast";
+import { useAuth } from "@clerk/nextjs";
 
 interface CategoryWrapperProps {
   name: string;
@@ -49,11 +50,17 @@ export default function CategoryWrapper({
   const { user } = useUser();
   const { connect } = useVoiceRoom();
   const { toast } = useToast();
+  const { getToken } = useAuth();
 
   const { activeVoiceChannels } = useGuild();
 
   const handleJoinChannel = async (channel: TextChannel) => {
-    const token = await getLiveKitToken(channel.id, user?.username as string);
+    const authToken = await getToken();
+    const token = await getLiveKitToken(
+      authToken as string,
+      channel.id,
+      user?.username as string
+    );
 
     connect(token, channel, guildName, guildId);
   };

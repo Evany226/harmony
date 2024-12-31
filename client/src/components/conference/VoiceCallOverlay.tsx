@@ -6,6 +6,7 @@ import { useUser } from "@clerk/nextjs";
 import { useVoiceCall } from "@/context/VoiceCallContext";
 import { socket } from "@/app/socket";
 import useSound from "use-sound";
+import { useAuth } from "@clerk/nextjs";
 
 import {
   ControlBar,
@@ -31,14 +32,20 @@ export default function VoiceCallOverlay({ convId }: VoiceCallOverlayProps) {
   const { user } = useUser();
   const { isVoiceCallOpen, setIsVoiceCallOpen } = useVoiceCall();
   const [playLeaveCall] = useSound("/audio/leave-call.mp3");
+  const { getToken } = useAuth();
 
   const userName = user?.username;
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const authToken = await getToken();
         const roomName = convId;
-        const token = await getLiveKitToken(roomName, userName as string);
+        const token = await getLiveKitToken(
+          authToken as string,
+          roomName,
+          userName as string
+        );
         console.log(token);
         setToken(token);
       } catch (e) {
@@ -46,7 +53,7 @@ export default function VoiceCallOverlay({ convId }: VoiceCallOverlayProps) {
       }
     };
     fetchData();
-  }, [convId, userName]);
+  }, [convId, userName, getToken]);
 
   if (token === "") {
     return <div>Getting token...</div>;

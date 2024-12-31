@@ -3,6 +3,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { url } from "@/lib/utils";
 
 export async function createChannel(formdata: FormData) {
   const { getToken } = auth();
@@ -11,7 +12,7 @@ export async function createChannel(formdata: FormData) {
   const isVoice = formdata.get("channel") === "voice";
 
   try {
-    const response = await fetch("http://localhost:3001/api/channels", {
+    const response = await fetch(`${url()}/api/channels`, {
       method: "POST",
       body: JSON.stringify({
         categoryId: formdata.get("categoryId"),
@@ -44,20 +45,17 @@ export async function updateChannel(formdata: FormData, channelId: string) {
   const token = await getToken();
 
   try {
-    const response = await fetch(
-      `http://localhost:3001/api/channels/${channelId}`,
-      {
-        method: "PUT",
-        body: JSON.stringify({
-          name: formdata.get("name"),
-          topic: formdata.get("topic"),
-        }),
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await fetch(`${url()}/api/channels/${channelId}`, {
+      method: "PUT",
+      body: JSON.stringify({
+        name: formdata.get("name"),
+        topic: formdata.get("topic"),
+      }),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     const data = await response.json();
 
@@ -77,7 +75,7 @@ export async function deleteChannel(id: string) {
   const token = await getToken();
 
   try {
-    const response = await fetch(`http://localhost:3001/api/channels/${id}`, {
+    const response = await fetch(`${url()}/api/channels/${id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -107,7 +105,7 @@ export async function createChannelMessage(
   const token = await getToken();
 
   try {
-    const response = await fetch(`http://localhost:3001/api/guild-messages`, {
+    const response = await fetch(`${url()}/api/guild-messages`, {
       method: "POST",
       body: JSON.stringify({
         channelId: channelId,
@@ -140,7 +138,7 @@ export async function editChannelMessage(
   const { getToken } = auth();
   const token = await getToken();
 
-  const response = await fetch(`http://localhost:3001/api/guild-messages/`, {
+  const response = await fetch(`${url()}/api/guild-messages/`, {
     method: "PUT",
     body: JSON.stringify({
       messageId: messageId,

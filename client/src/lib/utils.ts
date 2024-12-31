@@ -5,6 +5,12 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export function url() {
+  return process.env.NODE_ENV === "production"
+    ? process.env.NEXT_PUBLIC_PROD_API_URL
+    : process.env.NEXT_PUBLIC_DEV_API_URL;
+}
+
 export function formatDateTime(timestamp: string) {
   const date = new Date(timestamp);
   const currentDate = new Date();

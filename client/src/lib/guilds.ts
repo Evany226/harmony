@@ -1,5 +1,7 @@
+import { url } from "./utils";
+
 export const getAllGuilds = async (token: string) => {
-  const response = await fetch("http://localhost:3001/api/guilds", {
+  const response = await fetch(`${url()}/api/guilds`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -17,7 +19,7 @@ export const getAllGuilds = async (token: string) => {
 };
 
 export const getGuild = async (token: string, id: string) => {
-  const response = await fetch(`http://localhost:3001/api/guilds/${id}`, {
+  const response = await fetch(`${url()}/api/guilds/${id}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -35,7 +37,7 @@ export const getGuild = async (token: string, id: string) => {
 };
 
 export const getChannel = async (token: string, id: string) => {
-  const response = await fetch(`http://localhost:3001/api/channels/${id}`, {
+  const response = await fetch(`${url()}/api/channels/${id}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -53,16 +55,13 @@ export const getChannel = async (token: string, id: string) => {
 };
 
 export const getFirstChannel = async (token: string, guildId: string) => {
-  const response = await fetch(
-    `http://localhost:3001/api/channels/first/${guildId}`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  const response = await fetch(`${url()}/api/channels/first/${guildId}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
   const data = await response.json();
 
@@ -77,16 +76,13 @@ export const getAllChannelMessages = async (
   token: string,
   channelId: string
 ) => {
-  const response = await fetch(
-    `http://localhost:3001/api/guild-messages/${channelId}`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  const response = await fetch(`${url()}/api/guild-messages/${channelId}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
   const data = await response.json();
 
@@ -98,16 +94,13 @@ export const getAllChannelMessages = async (
 };
 
 export const getMember = async (token: string, guildId: string) => {
-  const response = await fetch(
-    `http://localhost:3001/api/members/${guildId}/single`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  const response = await fetch(`${url()}/api/members/${guildId}/single`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
   const data = await response.json();
 
@@ -119,7 +112,7 @@ export const getMember = async (token: string, guildId: string) => {
 };
 
 export const getAllMembers = async (token: string, guildId: string) => {
-  const response = await fetch(`http://localhost:3001/api/members/${guildId}`, {
+  const response = await fetch(`${url()}/api/members/${guildId}`, {
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
@@ -136,7 +129,7 @@ export const getAllMembers = async (token: string, guildId: string) => {
 };
 
 export const getPendingGuildReq = async (token: string) => {
-  const response = await fetch(`http://localhost:3001/api/guild-requests`, {
+  const response = await fetch(`${url()}/api/guild-requests`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -154,7 +147,7 @@ export const getPendingGuildReq = async (token: string) => {
 };
 
 export const getUserChannelIds = async (token: string) => {
-  const response = await fetch(`http://localhost:3001/api/users/channelids`, {
+  const response = await fetch(`${url()}/api/users/channelids`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -172,7 +165,7 @@ export const getUserChannelIds = async (token: string) => {
 };
 
 export const getUserGuildIds = async (token: string) => {
-  const response = await fetch(`http://localhost:3001/api/users/guildIds`, {
+  const response = await fetch(`${url()}/api/users/guildIds`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -194,7 +187,7 @@ export const getActiveVoiceChannels = async (
   roomName: string
 ) => {
   const response = await fetch(
-    `http://localhost:3001/api/livekit/participants/${roomName}`,
+    `${url()}/api/livekit/participants/${roomName}`,
     {
       method: "GET",
       headers: {

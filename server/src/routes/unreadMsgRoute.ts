@@ -6,18 +6,16 @@ import {
   updateLastViewed,
 } from "../controllers/unreadMsgController";
 
-import { ClerkExpressRequireAuth } from "@clerk/clerk-sdk-node";
-
 const unreadMsgRouter = express.Router();
 
 // unreadMsgRouter.get(
 //   "/:conversationId"
 //   // getUnreadMessages
 // );
-unreadMsgRouter.get("/", ClerkExpressRequireAuth({}), getAllUnreadMessages);
+unreadMsgRouter.get("/", getAllUnreadMessages);
 unreadMsgRouter.put(
   "/updateLastViewed",
-  ClerkExpressRequireAuth({}),
+
   updateLastViewed
 );
 

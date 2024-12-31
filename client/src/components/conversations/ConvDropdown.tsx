@@ -6,6 +6,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { UsersIcon } from "@heroicons/react/24/solid";
 import ConvDropdownItem from "./ConvDropdownItem";
 import { getAllFriends } from "@/lib/friends";
 import { useAuth } from "@clerk/nextjs";
@@ -44,6 +45,24 @@ export default function ConvDropdown({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
+
+    let isAnyCheckboxSelected = false;
+    for (let value of formData.values()) {
+      if (value) {
+        isAnyCheckboxSelected = true;
+        break;
+      }
+    }
+
+    if (!isAnyCheckboxSelected) {
+      toast({
+        variant: "destructive",
+        title: "No friends selected",
+        description:
+          "Please select at least one friend to create a conversation.",
+      });
+      return;
+    }
 
     try {
       setModalOpen(false);
@@ -94,16 +113,25 @@ export default function ConvDropdown({
         <form onSubmit={handleSubmit}>
           <Loading isLoading={isLoading}>
             <ScrollArea className="w-full h-40 top-0 left-0 px-2">
-              {friends.map((friend) => {
-                return (
-                  <ConvDropdownItem
-                    id={friend.id}
-                    key={friend.id}
-                    username={friend.username}
-                    imageUrl={friend.imageUrl}
-                  />
-                );
-              })}
+              {friends.length > 0 ? (
+                friends.map((friend) => {
+                  return (
+                    <ConvDropdownItem
+                      id={friend.id}
+                      key={friend.id}
+                      username={friend.username}
+                      imageUrl={friend.imageUrl}
+                    />
+                  );
+                })
+              ) : (
+                <div className="flex flex-col items-center justify-center mt-6">
+                  <UsersIcon className="w-6 text-gray-400" />
+                  <h2 className="text-gray-400 text-sm font-medium">
+                    You have no friends
+                  </h2>
+                </div>
+              )}
             </ScrollArea>
           </Loading>
           <Button type="submit" variant="outline" className="w-full py-1 mt-4 ">
