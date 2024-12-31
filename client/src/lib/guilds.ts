@@ -1,7 +1,7 @@
-const url = process.env.NEXT_PUBLIC_DEV_API_URL;
+import { url } from "./utils";
 
 export const getAllGuilds = async (token: string) => {
-  const response = await fetch(`${url}/api/guilds`, {
+  const response = await fetch(`${url()}/api/guilds`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -19,7 +19,7 @@ export const getAllGuilds = async (token: string) => {
 };
 
 export const getGuild = async (token: string, id: string) => {
-  const response = await fetch(`${url}/api/guilds/${id}`, {
+  const response = await fetch(`${url()}/api/guilds/${id}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -37,7 +37,7 @@ export const getGuild = async (token: string, id: string) => {
 };
 
 export const getChannel = async (token: string, id: string) => {
-  const response = await fetch(`${url}/api/channels/${id}`, {
+  const response = await fetch(`${url()}/api/channels/${id}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -55,7 +55,7 @@ export const getChannel = async (token: string, id: string) => {
 };
 
 export const getFirstChannel = async (token: string, guildId: string) => {
-  const response = await fetch(`${url}/api/channels/first/${guildId}`, {
+  const response = await fetch(`${url()}/api/channels/first/${guildId}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -76,7 +76,7 @@ export const getAllChannelMessages = async (
   token: string,
   channelId: string
 ) => {
-  const response = await fetch(`${url}/api/guild-messages/${channelId}`, {
+  const response = await fetch(`${url()}/api/guild-messages/${channelId}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -94,7 +94,7 @@ export const getAllChannelMessages = async (
 };
 
 export const getMember = async (token: string, guildId: string) => {
-  const response = await fetch(`${url}/api/members/${guildId}/single`, {
+  const response = await fetch(`${url()}/api/members/${guildId}/single`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -112,7 +112,7 @@ export const getMember = async (token: string, guildId: string) => {
 };
 
 export const getAllMembers = async (token: string, guildId: string) => {
-  const response = await fetch(`${url}/api/members/${guildId}`, {
+  const response = await fetch(`${url()}/api/members/${guildId}`, {
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
@@ -129,7 +129,7 @@ export const getAllMembers = async (token: string, guildId: string) => {
 };
 
 export const getPendingGuildReq = async (token: string) => {
-  const response = await fetch(`${url}/api/guild-requests`, {
+  const response = await fetch(`${url()}/api/guild-requests`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -147,7 +147,7 @@ export const getPendingGuildReq = async (token: string) => {
 };
 
 export const getUserChannelIds = async (token: string) => {
-  const response = await fetch(`${url}/api/users/channelids`, {
+  const response = await fetch(`${url()}/api/users/channelids`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -165,7 +165,7 @@ export const getUserChannelIds = async (token: string) => {
 };
 
 export const getUserGuildIds = async (token: string) => {
-  const response = await fetch(`${url}/api/users/guildIds`, {
+  const response = await fetch(`${url()}/api/users/guildIds`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -186,13 +186,16 @@ export const getActiveVoiceChannels = async (
   token: string,
   roomName: string
 ) => {
-  const response = await fetch(`${url}/api/livekit/participants/${roomName}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const response = await fetch(
+    `${url()}/api/livekit/participants/${roomName}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 
   const data = await response.json();
 

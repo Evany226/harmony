@@ -3,13 +3,14 @@
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { url } from "@/lib/utils";
 
 export async function createNewGuild(formData: FormData) {
   const { getToken } = auth();
   const token = await getToken();
 
   try {
-    const response = await fetch("http://localhost:3001/api/guilds", {
+    const response = await fetch(`${url()}/api/guilds`, {
       method: "POST",
       body: formData,
       headers: {
@@ -35,16 +36,13 @@ export async function updateGuild(formData: FormData) {
   const token = await getToken();
 
   try {
-    const response = await fetch(
-      `http://localhost:3001/api/guilds/upload-image`,
-      {
-        method: "PUT",
-        body: formData,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await fetch(`${url()}/api/guilds/upload-image`, {
+      method: "PUT",
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     const data = await response.json();
 
@@ -64,16 +62,13 @@ export async function deleteGuild(guildId: string) {
   const token = await getToken();
 
   try {
-    const response = await fetch(
-      `http://localhost:3001/api/guilds/${guildId}`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await fetch(`${url()}/api/guilds/${guildId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     const data = await response.json();
 
@@ -94,16 +89,13 @@ export async function leaveGuild(guildId: string) {
   const token = await getToken();
 
   try {
-    const response = await fetch(
-      `http://localhost:3001/api/guilds/${guildId}/leave`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await fetch(`${url()}/api/guilds/${guildId}/leave`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     const data = await response.json();
 
@@ -126,7 +118,7 @@ export async function createCategory(formdata: FormData) {
   const token = await getToken();
 
   try {
-    const response = await fetch("http://localhost:3001/api/categories", {
+    const response = await fetch(`${url()}/api/categories`, {
       method: "POST",
       body: JSON.stringify({
         guildId: formdata.get("guildId"),
@@ -156,19 +148,16 @@ export async function updateCategory(formdata: FormData, categoryId: string) {
   const token = await getToken();
 
   try {
-    const response = await fetch(
-      `http://localhost:3001/api/categories/${categoryId}`,
-      {
-        method: "PUT",
-        body: JSON.stringify({
-          name: formdata.get("name"),
-        }),
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await fetch(`${url()}/api/categories/${categoryId}`, {
+      method: "PUT",
+      body: JSON.stringify({
+        name: formdata.get("name"),
+      }),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     const data = await response.json();
 
@@ -188,7 +177,7 @@ export async function deleteCategory(id: string) {
   const token = await getToken();
 
   try {
-    const response = await fetch(`http://localhost:3001/api/categories/${id}`, {
+    const response = await fetch(`${url()}/api/categories/${id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -214,7 +203,7 @@ export async function createGuildRequest(username: string, guildId: string) {
   const token = await getToken();
 
   try {
-    const response = await fetch("http://localhost:3001/api/guild-requests", {
+    const response = await fetch(`${url()}/api/guild-requests`, {
       method: "POST",
       body: JSON.stringify({
         username: username,
@@ -245,16 +234,13 @@ export const acceptGuildRequest = async (id: string, guildId: string) => {
   const { getToken } = auth();
   const token = await getToken();
 
-  const response = await fetch(
-    `http://localhost:3001/api/guild-requests/${id}/accept`,
-    {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  const response = await fetch(`${url()}/api/guild-requests/${id}/accept`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
   const data = await response.json();
 
@@ -271,16 +257,13 @@ export const rejectGuildRequest = async (id: string) => {
   const { getToken } = auth();
   const token = await getToken();
 
-  const response = await fetch(
-    `http://localhost:3001/api/guild-requests/${id}/reject`,
-    {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  const response = await fetch(`${url()}/api/guild-requests/${id}/reject`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
   const data = await response.json();
 

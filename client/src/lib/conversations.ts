@@ -1,7 +1,7 @@
-const url = process.env.NEXT_PUBLIC_DEV_API_URL;
+import { url } from "./utils";
 
 export async function getAllConversations(token: string) {
-  const response = await fetch(`${url}/api/conversations`, {
+  const response = await fetch(`${url()}/api/conversations`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -19,7 +19,7 @@ export async function getAllConversations(token: string) {
 }
 
 export async function getConversation(token: string, id: string) {
-  const response = await fetch(`${url}/api/conversations/${id}`, {
+  const response = await fetch(`${url()}/api/conversations/${id}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -37,7 +37,7 @@ export async function getConversation(token: string, id: string) {
 }
 
 export async function getAllMessages(token: string, id: string) {
-  const response = await fetch(`${url}/api/messages/${id}`, {
+  const response = await fetch(`${url()}/api/messages/${id}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -55,7 +55,7 @@ export async function getAllMessages(token: string, id: string) {
 }
 
 export async function getAllUnreadMessages(token: string) {
-  const response = await fetch(`${url}/api/unread`, {
+  const response = await fetch(`${url()}/api/unread`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -77,7 +77,7 @@ export async function getLiveKitToken(
   roomName: string,
   userId: string
 ) {
-  const response = await fetch(`${url}/api/livekit/get-token`, {
+  const response = await fetch(`${url()}/api/livekit/get-token`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -103,7 +103,7 @@ export async function checkUserInRoom(
   roomName: string,
   participantName: string
 ) {
-  const response = await fetch(`${url}/api/livekit/user-in-room`, {
+  const response = await fetch(`${url()}/api/livekit/user-in-room`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -125,7 +125,7 @@ export async function checkUserInRoom(
 }
 
 export async function checkRoomEmpty(token: string, roomName: string) {
-  const response = await fetch(`${url}/api/livekit/room-empty`, {
+  const response = await fetch(`${url()}/api/livekit/room-empty`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,

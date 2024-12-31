@@ -3,6 +3,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { url } from "@/lib/utils";
 
 export async function createConversation(formData: FormData) {
   const selectedFriends = [];
@@ -18,7 +19,7 @@ export async function createConversation(formData: FormData) {
   const token = await getToken();
 
   try {
-    const response = await fetch("http://localhost:3001/api/conversations", {
+    const response = await fetch(`${url()}/api/conversations`, {
       method: "POST",
       body: JSON.stringify({ otherUserIds: selectedFriends }),
       headers: {
@@ -46,17 +47,14 @@ export async function updateLastViewed(conversationId: string) {
   const { getToken } = auth();
   const token = await getToken();
 
-  const response = await fetch(
-    `http://localhost:3001/api/unread/updateLastViewed`,
-    {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ conversationId }),
-    }
-  );
+  const response = await fetch(`${url()}/api/unread/updateLastViewed`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ conversationId }),
+  });
 
   const data = await response.json();
 
@@ -73,7 +71,7 @@ export async function editMessage(messageId: string, formData: FormData) {
   const { getToken } = auth();
   const token = await getToken();
 
-  const response = await fetch(`http://localhost:3001/api/messages/`, {
+  const response = await fetch(`${url()}/api/messages/`, {
     method: "PUT",
     body: JSON.stringify({
       messageId: messageId,
@@ -99,7 +97,7 @@ export async function createMessage(conversationId: string, message: string) {
   const token = await getToken();
 
   try {
-    const response = await fetch(`http://localhost:3001/api/messages`, {
+    const response = await fetch(`${url()}/api/messages`, {
       method: "POST",
       body: JSON.stringify({
         content: message,
