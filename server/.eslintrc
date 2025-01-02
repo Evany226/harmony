@@ -29,6 +29,7 @@
     ],
     "no-case-declarations": "off"
   },
+
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "project": "tsconfig.json",
