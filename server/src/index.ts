@@ -133,7 +133,10 @@ const httpServer = app.listen(PORT, () =>
 
 const io = new Server(httpServer, {
   cors: {
-    origin: "http://localhost:3000",
+    origin:
+      process.env.NODE_ENV === "production"
+        ? "https://team-sync-rho.vercel.app"
+        : "http://localhost:3000",
   },
 });
 
