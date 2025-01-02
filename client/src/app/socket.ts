@@ -1,8 +1,10 @@
 "use client";
 
 import { io } from "socket.io-client";
+import { url } from "@/lib/utils";
 
-const serverUrl = "http://localhost:3001";
+const serverUrl = "https://www.harmony-api.me/";
+// const serverUrl = "http://localhost:3001";
 
 export const socket = io(serverUrl, {
   reconnection: false,
