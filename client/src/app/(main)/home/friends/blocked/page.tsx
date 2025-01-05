@@ -1,5 +1,5 @@
 import FriendsWrapper from "@/components/dashboard/friends/FriendsCard";
-import friends from "../../../../../friends.json";
+import friends from "../../../../../../friends.json";
 
 export default function Blocked() {
   return (

@@ -68,11 +68,11 @@ export default function VoiceChannelOverlay() {
   return (
     <>
       {isConnected && room && (
-        <div className="absolute bottom-14 max-w-64 left-[5.25rem] z-50">
+        <div className="absolute bottom-14 w-64 left-[5.5rem] z-50 md:w-56 sm:min-w-[calc(100vw-5.5rem)] ">
           <LiveKitRoom room={room} token={token} serverUrl={serverUrl}>
-            <section className="bg-stone-900 w-64 flex flex-col items-center border border-zinc-800 ">
+            <section className="bg-stone-900 w-full flex flex-col items-center border border-zinc-800 ">
               <RoomAudioRenderer />
-              <div className="flex justify-between w-64  px-3 py-2 ">
+              <div className="flex justify-between w-full px-3 py-2 ">
                 <section className="flex-col">
                   <div className="flex items-center">
                     <WifiIcon className="w-4 h-4 text-green-500 mr-1" />

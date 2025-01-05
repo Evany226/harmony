@@ -8,9 +8,9 @@ export default function FriendsNavButton() {
 
   return (
     <button
-      onClick={() => router.push("/friends")}
+      onClick={() => router.push("/home/friends")}
       className={`flex items-center w-full p-2 rounded-sm border border-zinc-700 cursor-pointer ${
-        pathname.includes("/friends") ? "bg-zinc-700" : ""
+        pathname.includes("/home/friends") ? "bg-zinc-700" : ""
       }`}
     >
       <UserIcon className="w-6 text-gray-300" />

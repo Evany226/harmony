@@ -165,6 +165,8 @@ export default function ChannelPage({
         formData
       );
 
+      setMessages((prevMessages) => [...prevMessages, result]);
+
       socket.emit("channelMessage", result);
       formRef.current?.reset();
     } catch (error: any) {

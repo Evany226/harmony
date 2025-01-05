@@ -33,7 +33,7 @@ export default function ConvPageHeader({
   return (
     <header className="flex justify-between w-full h-12 bg-zinc-900 border-b border-zinc-800 px-3 py-3 items-center">
       <div className="flex space-x-3 items-center">
-        <Link href="/friends" className="hidden sm:block">
+        <Link href="/home/friends" className="hidden sm:block">
           <ArrowUturnLeftIcon className="w-6 h-6 text-gray-400 hover:text-gray-300 cursor-pointer" />
         </Link>
         {hasMultipleUsers ? (
