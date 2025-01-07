@@ -4,24 +4,11 @@ on:
   push:
     branches:
       - master
-  pull_request:
-    branches: [master]
-    types: [opened, synchronize]
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - run: cd /home/evan/team-sync
-      - uses: actions/checkout@v2
-      - name: Use Node.js 18
-        uses: actions/setup-node@v2
-        with:
-          node-version: '18'
-      - run: npm i
-      - run: npm run tsc
       - name: Deploy using ssh
-        if: ${{ github.event_name == 'push' }}
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
@@ -33,5 +20,6 @@ jobs:
             cd /home/evan/team-sync
             git pull origin master
             git status
-            npm install --only=prod
+            cd /server
+            npm i
             pm2 restart 0
