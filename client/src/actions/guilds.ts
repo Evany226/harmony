@@ -276,30 +276,30 @@ export const rejectGuildRequest = async (id: string) => {
   return data;
 };
 
-// export const uploadGuildImage = async (formData: FormData, guildId: string) => {
-//   const { getToken } = auth();
-//   const token = await getToken();
+export const uploadGuildImage = async (formData: FormData, guildId: string) => {
+  const { getToken } = auth();
+  const token = await getToken();
 
-//   try {
-//     const response = await fetch(`http://localhost:3001/upload`, {
-//       method: "POST",
-//       body: JSON.stringify({
-//         name: formData.get("file"),
-//       }),
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//       },
-//     });
+  try {
+    const response = await fetch(`http://localhost:3001/upload`, {
+      method: "POST",
+      body: JSON.stringify({
+        name: formData.get("file"),
+      }),
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-//     const data = await response.json();
+    const data = await response.json();
 
-//     if (!response.ok) {
-//       throw new Error(data.error || "Express error uploading guild image.");
-//     }
+    if (!response.ok) {
+      throw new Error(data.error || "Express error uploading guild image.");
+    }
 
-//     revalidatePath(`/guilds/${guildId}`);
-//   } catch (error) {
-//     console.error("Error uploading guild image:", error);
-//     throw error;
-//   }
-// };
+    revalidatePath(`/guilds/${guildId}`);
+  } catch (error) {
+    console.error("Error uploading guild image:", error);
+    throw error;
+  }
+};
