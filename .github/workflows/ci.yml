@@ -16,7 +16,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-      - run: cd /server
+      - run: cd server
       - name: Install node dependencies
         run: npm install
       - run: npm run tsc
