@@ -16,6 +16,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
+      - run: ls -l
       - run: cd server
       - run: ls -l
       - name: Install node dependencies
