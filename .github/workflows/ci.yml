@@ -19,5 +19,8 @@ jobs:
       - name: Install node dependencies
         run: npm install
         working-directory: ./team-sync/server
+      - name: install dependencies
+        run: npm install
+        working-directory: /server
       - run: npm run tsc
       - run: echo "PR is ready to be reviewed!"
