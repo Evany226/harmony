@@ -194,7 +194,7 @@ export default function ConvLinkWrapper({
                 <ConvLink
                   key={conversation.id}
                   users={allUsers}
-                  href={`/conversations/${conversation.id}`}
+                  href={`/home/conversations/${conversation.id}`}
                   status={onlineStatus}
                   id={conversation.id}
                   unreadMessages={unread ? unread.messages : []}

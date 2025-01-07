@@ -20,7 +20,7 @@ export default function SideNav({
 }) {
   const pathname = usePathname();
 
-  const mobileRoutes = ["/friends", "/guilds"];
+  const mobileRoutes = ["/home/friends", "/guilds"];
 
   const showOnMobile = mobileRoutes.some((route) => pathname.includes(route));
 
@@ -33,7 +33,7 @@ export default function SideNav({
       <section className="flex flex-col items-center w-full justify-center mt-2 -b">
         <h1 className="text-gray-300 text-sm font-semibold">Harmony</h1>
         <SideNavTooltip text="Direct Messages">
-          <Link href="/friends">
+          <Link href="/home/friends">
             <Image
               src="/images/logo-past.png"
               className="border-b border-zinc-600"

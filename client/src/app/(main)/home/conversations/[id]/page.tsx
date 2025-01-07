@@ -156,6 +156,7 @@ export default function ConversationPage({
 
     try {
       const result = await createMessage(params.id, inputValue);
+      setMessages((prevMessages) => [...prevMessages, result]);
       socket.emit("message", result);
       socket.emit("notification", result);
       setInputValue("");

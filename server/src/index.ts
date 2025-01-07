@@ -289,7 +289,7 @@ io.on("connection", (socket) => {
 
   socket.on("message", (data: Message) => {
     const { conversationId } = data;
-    io.to(conversationId).emit(`message ${conversationId}`, data);
+    socket.to(conversationId).emit(`message ${conversationId}`, data);
   });
 
   socket.on("editMessage", (data: Message) => {
@@ -343,7 +343,7 @@ io.on("connection", (socket) => {
   socket.on("channelMessage", (data: ChannelMessage) => {
     const { channelId } = data;
     console.log(channelId);
-    io.to(channelId).emit(`channelMessage ${channelId}`, data);
+    socket.to(channelId).emit(`channelMessage ${channelId}`, data);
   });
 
   socket.on("editChannelMessage", (data: ChannelMessage) => {

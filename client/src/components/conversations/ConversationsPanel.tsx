@@ -1,25 +1,20 @@
+"use client";
+
 import FriendsNavButton from "../dashboard/friends/FriendsNavButton";
 import GuildNavButton from "../dashboard/guild-requests/GuildNavButton";
 import ConvLinkWrapper from "./ConvLink";
 import ProfileCard from "../dashboard/profile/ProfileCard";
-import { getAllConversations } from "@/lib/conversations";
-import { auth, currentUser } from "@clerk/nextjs/server";
-import { Suspense } from "react";
-import { getAllUnreadMessages } from "@/lib/conversations";
+import { Conversation, UnreadMessage } from "@/types";
 
-export default async function ConversationsPanel({
+export default function ConversationsPanel({
+  conversations,
+  unreadMessages,
   showOnMobile,
 }: {
+  conversations: Conversation[];
+  unreadMessages: UnreadMessage[];
   showOnMobile: boolean;
 }) {
-  const { getToken } = auth();
-  const user = await currentUser();
-  const token = await getToken();
-
-  const data = await getAllConversations(token as string);
-
-  const unreadMessages = await getAllUnreadMessages(token as string);
-
   return (
     <div
       className={`flex flex-col min-w-64 h-full bg-neutral-900 border-r border-zinc-800 relative ${
@@ -36,7 +31,10 @@ export default async function ConversationsPanel({
       <div className="flex flex-col p-3 w-full">
         <FriendsNavButton />
         <GuildNavButton />
-        <ConvLinkWrapper conversations={data} unreadMessages={unreadMessages} />
+        <ConvLinkWrapper
+          conversations={conversations}
+          unreadMessages={unreadMessages}
+        />
       </div>
 
       <ProfileCard />

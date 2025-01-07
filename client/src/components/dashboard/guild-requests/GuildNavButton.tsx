@@ -8,9 +8,9 @@ export default function GuildNavButton() {
 
   return (
     <button
-      onClick={() => router.push("/guild-requests/pending")}
+      onClick={() => router.push("/home/guild-requests/pending")}
       className={`flex items-center w-full p-2 rounded-sm border border-zinc-700 cursor-pointer mt-2 ${
-        pathname.includes("/guild-requests") ? "bg-zinc-700" : ""
+        pathname.includes("/home/guild-requests") ? "bg-zinc-700" : ""
       }`}
     >
       <UsersIcon className="w-6 text-gray-300" />
