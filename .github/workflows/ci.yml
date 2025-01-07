@@ -19,5 +19,7 @@ jobs:
       - name: Install dependencies in server directory
         run: npm install
         working-directory: ./server
-      - run: npm run tsc
+      - name: Compile javascript from typescript
+        run: npm run tsc
+        working-directory: ./server
       - run: echo "PR is ready to be reviewed!"
