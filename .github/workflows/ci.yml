@@ -1,0 +1,25 @@
+# clones repo, installs dependencies and runs typescript compiler on pull request
+
+name: Node.js setup
+
+on:
+  pull_request:
+    branches: [master]
+    types: [opened, synchronize]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - name: Install dependencies in server directory
+        run: npm install
+        working-directory: ./server
+      - name: Compile javascript from typescript
+        run: npm run tsc
+        working-directory: ./server
+      - run: echo "PR is ready to be reviewed!"
