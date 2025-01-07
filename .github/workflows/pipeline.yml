@@ -12,6 +12,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - run: cd /home/evan/team-sync
       - uses: actions/checkout@v2
       - name: Use Node.js 18
         uses: actions/setup-node@v2
