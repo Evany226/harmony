@@ -16,8 +16,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-      - name: install dependencies
+      - name: Install dependencies in server directory
         run: npm install
-        working-directory: /server
-      - run: npm run tsc
+        working-directory: ./server
+      - name: Compile javascript from typescript
+        run: npm run tsc
+        working-directory: ./server
       - run: echo "PR is ready to be reviewed!"
