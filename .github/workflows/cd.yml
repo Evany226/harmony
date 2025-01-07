@@ -1,4 +1,4 @@
-name: Node.js deploy pipeline
+name: Node.js Deployment Pipeline
 
 on:
   push:
