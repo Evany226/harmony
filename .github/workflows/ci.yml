@@ -17,6 +17,7 @@ jobs:
         with:
           node-version: '18'
       - run: cd server
+      - run: ls -l
       - name: Install node dependencies
         run: npm install
       - run: npm run tsc
