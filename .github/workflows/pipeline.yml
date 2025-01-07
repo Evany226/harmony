@@ -21,6 +21,5 @@ jobs:
             git pull origin master
             git status
             cd server
-            source ~/.bashrc
             npm i
             pm2 restart 0
