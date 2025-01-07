@@ -16,10 +16,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-      - run: ls -l
-      - run: cd server
-      - run: ls -l
-      - name: Install node dependencies
+      - name: Install dependencies in server directory
         run: npm install
+        working-directory: ./team-sync/server
       - run: npm run tsc
       - run: echo "PR is ready to be reviewed!"
