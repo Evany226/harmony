@@ -22,7 +22,11 @@ declare global {
 
 export const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "https://team-sync-rho.vercel.app",
+  })
+);
 
 app.post(
   "/api/signUpUser",
