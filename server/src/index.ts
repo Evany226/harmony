@@ -24,7 +24,10 @@ export const app = express();
 
 app.use(
   cors({
-    origin: "https://team-sync-rho.vercel.app",
+    origin:
+      process.env.NODE_ENV === "production"
+        ? "https://team-sync-rho.vercel.app"
+        : "http://localhost:3000",
   })
 );
 

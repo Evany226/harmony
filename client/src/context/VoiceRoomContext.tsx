@@ -7,7 +7,7 @@ import { useGuild } from "./GuildContext";
 import { useUser } from "@clerk/nextjs";
 import { useVoiceCall } from "./VoiceCallContext";
 import { socket } from "@/app/socket";
-import useSound from "use-sound";
+import { useAudio } from "./AudioContext";
 import { checkUserInRoom } from "@/lib/conversations";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@clerk/nextjs";
@@ -56,8 +56,7 @@ export const VoiceRoomProvider = ({
   } = useGuild();
   const { user } = useUser();
 
-  const [playJoinSound] = useSound("/audio/join-call.mp3");
-  const [playLeaveSound] = useSound("/audio/leave-call.mp3");
+  const { playJoinSound, playLeaveSound } = useAudio();
 
   const { isVoiceCallOpen, setIsVoiceCallOpen } = useVoiceCall();
   const { getToken } = useAuth();

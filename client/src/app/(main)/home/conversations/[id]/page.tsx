@@ -5,7 +5,6 @@ import { getConversation, getAllMessages } from "@/lib/conversations";
 import { useAuth } from "@clerk/nextjs";
 import { User, Message, Participant } from "@/types/index.js";
 import { useUser } from "@clerk/nextjs";
-import useSound from "use-sound";
 
 import ChatInput from "@/components/global/ChatInput";
 import ChatHeader from "@/components/global/ChatHeader";
@@ -15,7 +14,7 @@ import ConvPageHeader from "@/components/conversations/ConvPageHeader";
 import ConvProfilePanel from "@/components/conversations/ConvProfilePanel";
 import VoiceCallOverlay from "@/components/conference/VoiceCallOverlay";
 import PendingVoiceCall from "@/components/conference/PendingVoiceCall";
-
+import { useAudio } from "@/context/AudioContext";
 import { socket } from "@/app/socket";
 
 import { createMessage } from "@/actions/conv";
@@ -51,7 +50,7 @@ export default function ConversationPage({
   const router = useRouter();
   const pathname = usePathname();
 
-  const [playJoinSound] = useSound("/audio/join-call.mp3");
+  const { playJoinSound } = useAudio();
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -70,11 +69,6 @@ export default function ConversationPage({
       const messages = await getAllMessages(token as string, params.id);
 
       setMessages(messages);
-
-      // const participants = conversationObject.participants.filter(
-      //   (participant: Participant) =>
-      //     currUser && participant.userId !== currUser.id
-      // );
 
       const participants = conversationObject.participants;
 

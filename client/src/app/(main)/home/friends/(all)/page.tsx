@@ -1,12 +1,10 @@
 import FriendsWrapper from "@/components/dashboard/friends/FriendsCard";
 import { auth } from "@clerk/nextjs/server";
 import { getAllFriends } from "@/lib/friends";
-import { currentUser } from "@clerk/nextjs/server";
 import { SignedIn } from "@clerk/nextjs";
 
 export default async function Dashboard() {
   const { getToken } = auth();
-  const user = await currentUser();
   const token = await getToken();
 
   if (!token) {

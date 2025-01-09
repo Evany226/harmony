@@ -120,28 +120,14 @@ const updateLastViewed = async (req: Request, res: Response) => {
   const userId = req.auth.userId;
   const { conversationId } = req.body as { conversationId: string };
   // const userId = "user_2kvgB9d6HPZNSZGsGDf02nYSx12";
-
   try {
-    const participant = await prisma.participant.findFirst({
-      where: {
-        userId: userId,
-        conversationId: conversationId,
-      },
-      include: {
-        user: true,
-      },
-    });
-
-    if (!participant) {
-      return res.status(404).json({ error: "Participant not found" });
-    }
-
-    console.log(participant);
-
     const updatedParticipant = await prisma.participant.update({
       where: {
-        id: participant.id,
-        conversationId: conversationId,
+        userId_conversationId: {
+          // Compound unique constraint is used here
+          userId: userId,
+          conversationId: conversationId,
+        },
       },
       data: {
         lastViewed: new Date(Date.now()),

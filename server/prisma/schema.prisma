@@ -39,6 +39,8 @@ model Participant {
   sentMessages  Message[]      @relation("SentMessages")
 
   lastViewed DateTime @default(now())
+
+  @@unique([userId, conversationId])
 }
 
 model Message {

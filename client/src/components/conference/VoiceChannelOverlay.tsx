@@ -4,7 +4,7 @@ import { useVoiceRoom } from "@/context/VoiceRoomContext";
 import { WifiIcon, PhoneXMarkIcon } from "@heroicons/react/24/solid";
 import { useState, useEffect } from "react";
 import { useGuild } from "@/context/GuildContext";
-import useSound from "use-sound";
+import { useAudio } from "@/context/AudioContext";
 import { useUser } from "@clerk/nextjs";
 import { socket } from "@/app/socket";
 import { MicIcon, MutedMicIcon } from "@/assets/MicIcon";
@@ -21,8 +21,7 @@ export default function VoiceChannelOverlay() {
   const serverUrl = "wss://harmony-zknfyk4k.livekit.cloud";
 
   const [isMuted, setIsMuted] = useState<boolean>(true);
-  const [playMuteSound] = useSound("/audio/mute-sound.mp3");
-  const [playUnmuteSound] = useSound("/audio/unmute-sound.mp3");
+  const { playMuteSound, playUnmuteSound } = useAudio();
 
   const { updateMuteStatus } = useGuild();
   const { user } = useUser();

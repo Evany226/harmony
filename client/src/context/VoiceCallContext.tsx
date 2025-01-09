@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { PhoneArrowDownLeftIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import { useRouter } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
-import useSound from "use-sound";
+import { useAudio } from "./AudioContext";
 import { socket } from "@/app/socket";
 
 interface VoiceCallContextProps {
@@ -33,10 +33,7 @@ export const VoiceCallProvider = ({
   const [image, setImage] = useState<string>("");
   const [isVoiceCallOpen, setIsVoiceCallOpen] = useState<boolean>(false);
   const [conversationId, setConversationId] = useState<string>("");
-  const [playCallSound, { stop: stopCallSound }] = useSound(
-    "/audio/call-sound.mp3"
-  );
-  const [playJoinSound] = useSound("/audio/join-call.mp3");
+  const { playCallSound, stopCallSound, playJoinSound } = useAudio();
 
   const createAlert = (
     username: string,

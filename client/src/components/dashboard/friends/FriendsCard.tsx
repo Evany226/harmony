@@ -20,7 +20,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useSocket } from "@/context/SocketContext";
 import ConnectionStatus from "@/components/global/ConnectionStatus";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import React, { useState } from "react";
 import { useFilteredFriends } from "@/hooks/useFilteredFriends";
 
 import {
