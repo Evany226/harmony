@@ -1,15 +1,8 @@
 "use client";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { PlusIcon, EnvelopeIcon } from "@heroicons/react/16/solid";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  Conversation,
-  User,
-  Participant,
-  Message,
-  UnreadMessage,
-} from "@/types/index";
+import { Conversation, User, Message, UnreadMessage } from "@/types/index";
 
 import ConvDropdown from "./ConvDropdown";
 import { Skeleton } from "../ui/skeleton";
@@ -98,44 +91,47 @@ export function ConvLink({
         className={`group flex items-center w-full bg-neutral-900 px-2 py-2 mt-1 rounded-sm hover:bg-neutral-800 cursor-pointer ${
           pathname == href ? "bg-zinc-700" : ""
         }`}
-        onClick={() => router.refresh()}
       >
-        <div className="relative min-w-10 h-10">
+        <div className="relative min-w-10 h-10 flex items-center justify-center">
           {isMultiUser ? (
             <>
-              <Avatar
-                className={`group-hover:border-neutral-800 w-7 h-7 absolute top-0 left-0 border-2 ${
+              <div
+                className={`rounded-full group-hover:border-neutral-800 w-8 h-8 absolute top-0 left-0 border-2 ${
                   pathname == href ? "border-zinc-700" : "border-neutral-900"
                 }`}
               >
-                <AvatarImage src={users[0].imageUrl} />
-                <AvatarFallback>
-                  <Skeleton className="w-full h-full" />
-                </AvatarFallback>
-              </Avatar>
+                <Image
+                  src={users[0].imageUrl}
+                  alt="Conv profile picture"
+                  fill
+                  className="rounded-full"
+                />
+              </div>
 
-              <Avatar
-                className={`group-hover:border-neutral-800 w-7 h-7 absolute bottom-0 right-0 border-2 ${
+              <div
+                className={`rounded-full group-hover:border-neutral-800 w-7 h-7 absolute bottom-0 right-0 border-2 ${
                   pathname == href ? "border-zinc-700" : "border-neutral-900"
                 }`}
               >
-                <AvatarImage src={users[1].imageUrl} />
-                <AvatarFallback>
-                  <Skeleton className="w-full h-full" />
-                </AvatarFallback>
-              </Avatar>
+                <Image
+                  src={users[1].imageUrl}
+                  alt="Conv profile picture"
+                  fill
+                  className="rounded-full"
+                />
+              </div>
               <ConnectionStatus isConnected={status} />
             </>
           ) : (
-            <>
-              <Avatar>
-                <AvatarImage src={singleAvatar} />
-                <AvatarFallback>
-                  <Skeleton className="w-full h-full" />
-                </AvatarFallback>
-              </Avatar>
+            <div className="w-9 h-9 absolute">
+              <Image
+                src={singleAvatar ?? ""}
+                alt="Conv profile picture"
+                fill
+                className="rounded-full"
+              />
               <ConnectionStatus isConnected={status} />
-            </>
+            </div>
           )}
         </div>
         <div className="flex items-center ml-3 w-full overflow-hidden relative">

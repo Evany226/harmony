@@ -121,7 +121,8 @@ const updateLastViewed = async (req: Request, res: Response) => {
   const { conversationId } = req.body as { conversationId: string };
   // const userId = "user_2kvgB9d6HPZNSZGsGDf02nYSx12";
   try {
-    const updatedParticipant = await prisma.participant.update({
+    const startTime = Date.now();
+    await prisma.participant.update({
       where: {
         userId_conversationId: {
           // Compound unique constraint is used here
@@ -130,14 +131,14 @@ const updateLastViewed = async (req: Request, res: Response) => {
         },
       },
       data: {
-        lastViewed: new Date(Date.now()),
-      },
-      include: {
-        user: true,
+        lastViewed: new Date(),
       },
     });
 
-    res.json(updatedParticipant);
+    const endTime = Date.now();
+    console.log(`Query took ${endTime - startTime} ms`);
+
+    res.status(200).json("Last viewed updated successfully");
   } catch (error) {
     console.error("Error updating last viewed:", error);
     res.status(500).json({ error: "Failed to update last viewed" });

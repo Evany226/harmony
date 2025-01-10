@@ -1,6 +1,5 @@
 import { PhoneArrowUpRightIcon } from "@heroicons/react/24/solid";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Skeleton } from "../ui/skeleton";
+import Image from "next/image";
 
 interface PendingVoiceCallProps {
   allImages: string[];
@@ -16,15 +15,17 @@ export default function PendingVoiceCall({
       <section className="w-full h-3/4 bg-neutral-900 rounded-md flex items-center justify-center">
         <div className="flex items-center">
           {allImages.map((image, index) => (
-            <Avatar
-              className="w-24 h-24 ml-2 border-4 border-neutral-900"
+            <div
+              className="w-24 h-24 ml-2 border-4 border-neutral-900 relative"
               key={index}
             >
-              <AvatarImage src={image} />
-              <AvatarFallback>
-                <Skeleton className="w-full h-full" />
-              </AvatarFallback>
-            </Avatar>
+              <Image
+                src={image}
+                alt={"Calling user profile picture"}
+                fill
+                className="rounded-full"
+              />
+            </div>
           ))}
         </div>
       </section>

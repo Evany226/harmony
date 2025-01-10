@@ -18,8 +18,7 @@ import { useSocket } from "@/context/SocketContext";
 import { createGuildRequest } from "@/actions/actions";
 import { ScrollArea } from "../ui/scroll-area";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Skeleton } from "../ui/skeleton";
+import Image from "next/image";
 
 import Loading from "../global/Loading";
 
@@ -44,12 +43,14 @@ function InviteDialogItem({
       className="w-full flex items-center flex-between group hover:bg-zinc-700 px-2 py-1 rounded-md cursor-pointer"
     >
       <div className="w-full flex items-center space-x-3">
-        <Avatar>
-          <AvatarImage src={imageUrl} />
-          <AvatarFallback>
-            <Skeleton className="w-full h-full" />
-          </AvatarFallback>
-        </Avatar>
+        <div className="min-w-8 min-h-8 relative">
+          <Image
+            src={imageUrl}
+            alt="Friendprofile picture"
+            fill
+            className="rounded-full"
+          />
+        </div>
         <label className="w-full text-base text-gray-300 group-hover:text-white outline-0 cursor-pointer">
           {friendName}
         </label>

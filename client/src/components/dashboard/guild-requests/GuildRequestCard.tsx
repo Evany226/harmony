@@ -2,7 +2,7 @@
 
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import Image from "next/image";
 import { TooltipWrapper } from "@/components/global/TooltipWrapper";
 import { GuildRequest, Guild } from "@/types";
 
@@ -74,12 +74,14 @@ function GuildRequestCard({ guild, requestId }: GuildRequestCardProps) {
       <main className="flex items-center w-full justify-between">
         <div className="flex items-center w-full py-3 px-2">
           <div className="relative">
-            <Avatar>
-              <AvatarImage src="https://github.com/shadcn.png" />
-              <AvatarFallback>
-                <Skeleton className="w-full h-full" />
-              </AvatarFallback>
-            </Avatar>
+            <div className="w-9 h-9">
+              <Image
+                src={guild.imageUrl}
+                alt="Guild profile picture"
+                fill
+                className="rounded-full"
+              />
+            </div>
           </div>
           <div>
             <h2 className="text-gray-400 ml-3">{guild.name}</h2>

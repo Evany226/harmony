@@ -1,10 +1,9 @@
 "use client";
 
 import { useState, useContext, createContext } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import Image from "next/image";
 import { PhoneArrowDownLeftIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import { useRouter } from "next/navigation";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useAudio } from "./AudioContext";
 import { socket } from "@/app/socket";
 
@@ -12,8 +11,6 @@ interface VoiceCallContextProps {
   createAlert(username: string, conversationId: string, imageUrl: string): void;
   isVoiceCallOpen: boolean;
   setIsVoiceCallOpen: (value: boolean) => void;
-  // isPendingOpen: boolean;
-  // setIsPendingOpen: (value: boolean) => void;
 }
 
 const VoiceCallContext = createContext<VoiceCallContextProps | undefined>(
@@ -83,12 +80,14 @@ export const VoiceCallProvider = ({
       {alert && (
         <main className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
           <div className="flex flex-col items-center justify-center px-8 py-4 rounded-md bg-zinc-950 animate-pulse">
-            <Avatar className="w-24 h-24">
-              <AvatarImage src={image} />
-              <AvatarFallback>
-                <Skeleton className="w-full h-full" />
-              </AvatarFallback>
-            </Avatar>
+            <div className="w-24 h-24 relative">
+              <Image
+                src={image}
+                alt="Calling user profile picture"
+                fill
+                className="rounded-full"
+              />
+            </div>
             <p className="text-gray-300 font-semibold text-lg mt-2">
               {username}
             </p>

@@ -54,6 +54,10 @@ export default function ConversationPage({
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
   //fetch
   useEffect(() => {
     const fetchData = async () => {
@@ -212,15 +216,11 @@ export default function ConversationPage({
 
   const isMultiUser = users.length - 1 > 1;
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
   useEffect(() => {
     if (!loading) {
       scrollToBottom();
     }
-  }, [loading]);
+  }, [loading, messages]);
 
   return (
     <>

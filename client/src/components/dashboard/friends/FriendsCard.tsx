@@ -1,6 +1,6 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import Image from "next/image";
 import {
   ChatBubbleOvalLeftIcon,
   EllipsisVerticalIcon,
@@ -116,12 +116,14 @@ export function Friends({ friend, pending, status }: FriendsProps) {
       <main className="flex items-center w-full justify-between">
         <div className="flex items-center w-full py-3 px-2">
           <div className="relative">
-            <Avatar>
-              <AvatarImage src={friend.imageUrl} />
-              <AvatarFallback>
-                <Skeleton className="w-full h-full" />
-              </AvatarFallback>
-            </Avatar>
+            <div className="w-9 h-9">
+              <Image
+                src={friend.imageUrl}
+                alt="Friend profile picture"
+                fill
+                className="rounded-full"
+              />
+            </div>
             <ConnectionStatus isConnected={status} />
           </div>
           <div>

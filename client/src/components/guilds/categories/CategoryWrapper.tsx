@@ -6,7 +6,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 
-import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
+import Image from "next/image";
 import { MutedMicIcon } from "@/assets/MicIcon";
 
 import CategoryContextMenu from "./CategoryContextMenu";
@@ -117,15 +117,19 @@ export default function CategoryWrapper({
                           key={index}
                           className="ml-4 mr-2 my-1 flex items-center p-1 rounded-sm cursor-pointer relative hover:bg-neutral-800 "
                         >
-                          <Avatar
-                            className={`w-7 h-7 ${
+                          <div
+                            className={`w-7 h-7 relative ${
                               participant.isSpeaking &&
                               "outline outline-2 outline-green-500"
                             }`}
                           >
-                            <AvatarImage src={participant.imageUrl} />
-                            <AvatarFallback>EY</AvatarFallback>
-                          </Avatar>
+                            <Image
+                              src={participant.imageUrl ?? ""}
+                              alt="Participant profile picture"
+                              fill
+                              className="rounded-full"
+                            />
+                          </div>
                           <p className="text-neutral-300 ml-2 font-medium text-sm">
                             {participant.username}
                           </p>

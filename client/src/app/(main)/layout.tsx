@@ -16,22 +16,20 @@ export default async function MainLayout({
   children: React.ReactNode;
 }) {
   return (
-    <SignedIn>
-      <AudioProvider>
-        <VoiceCallProvider>
-          <GuildProvider>
-            <VoiceRoomProvider>
-              <SocketProvider>
-                <main className="flex w-full h-[100vh] bg-gray-100 relative">
-                  <SideNavWrapper />
-                  <VoiceChannelOverlay />
-                  {children}
-                </main>
-              </SocketProvider>
-            </VoiceRoomProvider>
-          </GuildProvider>
-        </VoiceCallProvider>
-      </AudioProvider>
-    </SignedIn>
+    <AudioProvider>
+      <VoiceCallProvider>
+        <GuildProvider>
+          <VoiceRoomProvider>
+            <SocketProvider>
+              <main className="flex w-full h-[100vh] bg-gray-100 relative">
+                <SideNavWrapper />
+                <VoiceChannelOverlay />
+                {children}
+              </main>
+            </SocketProvider>
+          </VoiceRoomProvider>
+        </GuildProvider>
+      </VoiceCallProvider>
+    </AudioProvider>
   );
 }
