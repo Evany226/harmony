@@ -4,12 +4,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Conversation, User, Message, UnreadMessage } from "@/types/index";
 
-import ConvDropdown from "./ConvDropdown";
-import { Skeleton } from "../ui/skeleton";
+import dynamic from "next/dynamic";
 import ConnectionStatus from "../global/ConnectionStatus";
 import { useSocket } from "@/context/SocketContext";
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 import { useAuth } from "@clerk/nextjs";
@@ -156,6 +155,8 @@ export default function ConvLinkWrapper({
 }: ConvLinkWrapperProps) {
   const { onlineUsers } = useSocket();
   const { userId } = useAuth();
+
+  const ConvDropdown = dynamic(() => import("./ConvDropdown"), { ssr: false });
 
   return (
     <>

@@ -13,9 +13,8 @@ import {
   LiveKitRoom,
   RoomAudioRenderer,
   TrackToggle,
-  useTrackToggle,
 } from "@livekit/components-react";
-import { Room, Track } from "livekit-client";
+import { Track } from "livekit-client";
 
 export default function VoiceChannelOverlay() {
   const serverUrl = "wss://harmony-zknfyk4k.livekit.cloud";

@@ -12,8 +12,7 @@ import MessageCard from "@/components/global/MessageCard";
 import ConvPageSkeleton from "@/components/skeletons/ConvPageSkeleton";
 import ConvPageHeader from "@/components/conversations/ConvPageHeader";
 import ConvProfilePanel from "@/components/conversations/ConvProfilePanel";
-import VoiceCallOverlay from "@/components/conference/VoiceCallOverlay";
-import PendingVoiceCall from "@/components/conference/PendingVoiceCall";
+
 import { useAudio } from "@/context/AudioContext";
 import { socket } from "@/app/socket";
 
@@ -26,12 +25,21 @@ import { useVoiceRoom } from "@/context/VoiceRoomContext";
 import { useVoiceCall } from "@/context/VoiceCallContext";
 
 import { usePathname } from "next/navigation";
+import dynamic from "next/dynamic";
 
 export default function ConversationPage({
   params,
 }: {
   params: { id: string };
 }) {
+  const VoiceCallOverlay = dynamic(
+    () => import("@/components/conference/VoiceCallOverlay")
+  );
+
+  const PendingVoiceCall = dynamic(
+    () => import("@/components/conference/PendingVoiceCall")
+  );
+
   const [headerText, setHeaderText] = useState<string>("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [users, setUsers] = useState<User[]>([]);

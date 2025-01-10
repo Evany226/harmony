@@ -5,16 +5,22 @@ import { VoiceCallProvider } from "@/context/VoiceCallContext";
 import SideNavWrapper from "@/components/nav/SideNavWrapper";
 
 import { GuildProvider } from "@/context/GuildContext";
-import { SignedIn } from "@clerk/nextjs";
+
 import { VoiceRoomProvider } from "@/context/VoiceRoomContext";
-import VoiceChannelOverlay from "@/components/conference/VoiceChannelOverlay";
+
 import { AudioProvider } from "@/context/AudioContext";
+import dynamic from "next/dynamic";
 
 export default async function MainLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const VoiceChannelOverlay = dynamic(
+    () => import("@/components/conference/VoiceChannelOverlay"),
+    { ssr: false }
+  );
+
   return (
     <AudioProvider>
       <VoiceCallProvider>

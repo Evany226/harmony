@@ -18,10 +18,21 @@ const getAllChannelMessages = async (req: Request, res: Response) => {
       where: {
         channelId: channelId,
       },
-      include: {
+      select: {
+        id: true,
+        content: true,
+        edited: true,
+        createdAt: true,
+        isAlert: true,
         sender: {
-          include: {
-            user: true,
+          select: {
+            user: {
+              select: {
+                id: true,
+                username: true,
+                imageUrl: true,
+              },
+            },
           },
         },
       },

@@ -1,9 +1,7 @@
 "use client";
 
 import { useAuth } from "@clerk/nextjs";
-import { HashtagIcon } from "@heroicons/react/24/solid";
 import ChatInput from "@/components/global/ChatInput";
-import UserPanel from "@/components/guilds/users/UserPanel";
 
 import { getAllChannelMessages, getChannel, getAllMembers } from "@/lib/guilds";
 import { useEffect, useState, useRef } from "react";
@@ -19,12 +17,18 @@ import { GuildPageSkeleton } from "@/components/skeletons/GuildPageSkeleton";
 import { useGuild } from "@/context/GuildContext";
 import { getActiveVoiceChannels } from "@/lib/guilds";
 import GuildPageHeader from "@/components/guilds/GuildPageHeader";
+import dynamic from "next/dynamic";
 
 export default function ChannelPage({
   params,
 }: {
   params: { id: string; channelId: string };
 }) {
+  const UserPanel = dynamic(
+    () => import("@/components/guilds/users/UserPanel"),
+    { ssr: false }
+  );
+
   const { getToken } = useAuth();
   const { toast } = useToast();
   const router = useRouter();

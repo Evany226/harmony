@@ -10,6 +10,10 @@ interface UserPanelProps {
 }
 
 export default function UserPanel({ members, isPanelOpen }: UserPanelProps) {
+  if (!members) {
+    return <div className="text-gray-300 text-2xl">Loading</div>;
+  }
+
   return (
     <ScrollArea
       className={`h-full flex flex-col relative px-4 space-y-4 ${
