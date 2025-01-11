@@ -24,26 +24,26 @@ const getAllUnreadMessages = async (req: Request, res: Response) => {
     const unreadMessages = [];
 
     for (const participant of participants) {
-      const messages = await prisma.message.findMany({
-        where: {
-          conversationId: participant.conversationId,
-          sender: {
-            userId: {
-              not: userId, // Exclude messages sent by the current user
-            },
-          },
-          createdAt: {
-            gte: participant.lastViewed, // Only get messages after lastViewed
-          },
-        },
-        include: {
-          sender: {
-            include: {
-              user: true,
-            },
-          },
-        },
-      });
+      // const messages = await prisma.message.findMany({
+      //   where: {
+      //     conversationId: participant.conversationId,
+      //     sender: {
+      //       userId: {
+      //         not: userId, // Exclude messages sent by the current user
+      //       },
+      //     },
+      //     createdAt: {
+      //       gte: participant.lastViewed, // Only get messages after lastViewed
+      //     },
+      //   },
+      //   include: {
+      //     sender: {
+      //       include: {
+      //         user: true,
+      //       },
+      //     },
+      //   },
+      // });
 
       const conversation = await prisma.conversation.findUnique({
         where: {
@@ -51,20 +51,48 @@ const getAllUnreadMessages = async (req: Request, res: Response) => {
         },
         include: {
           participants: {
-            include: {
-              user: true,
+            select: {
+              user: {
+                select: {
+                  imageUrl: true,
+                },
+              },
+            },
+          },
+          messages: {
+            select: {
+              createdAt: true,
+              sender: {
+                select: {
+                  user: {
+                    select: {
+                      id: true,
+                      imageUrl: true,
+                      username: true,
+                    },
+                  },
+                },
+              },
             },
           },
         },
       });
 
-      if (messages.length > 0) {
-        unreadMessages.push({
-          participantId: participant.id,
-          messages: messages,
-          conversation: conversation,
-        });
+      if (!conversation) {
+        return res.status(404).json({ error: "Conversation not found" });
       }
+
+      const FilteredMessages = conversation.messages.filter(
+        (message) =>
+          message.sender !== null &&
+          message.sender.user.id !== userId &&
+          message.createdAt > participant.lastViewed
+      );
+
+      unreadMessages.push({
+        ...conversation,
+        messages: FilteredMessages,
+      });
     }
 
     res.json(unreadMessages);

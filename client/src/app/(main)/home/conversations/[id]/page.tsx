@@ -5,6 +5,7 @@ import { getConversation, getAllMessages } from "@/lib/conversations";
 import { useAuth } from "@clerk/nextjs";
 import { User, Message, Participant } from "@/types/index.js";
 import { useUser } from "@clerk/nextjs";
+import { updateLastViewed } from "@/actions/conv";
 
 import ChatInput from "@/components/global/ChatInput";
 import ChatHeader from "@/components/global/ChatHeader";
@@ -101,8 +102,7 @@ export default function ConversationPage({
 
       setHeaderText(header);
 
-      const isEmpty = await checkRoomEmpty(token as string, params.id);
-      setIsRoomEmpty(isEmpty.empty);
+      socket.emit("checkRoomEmpty", params.id);
 
       setLoading(false);
     };
@@ -137,6 +137,7 @@ export default function ConversationPage({
     socket.on(`message ${params.id}`, handleMessage);
     socket.on(`editMessage ${params.id}`, handleEdit);
     socket.on(`checkRoomEmpty ${params.id}`, updateRoom);
+    socket.on(`unread ${params.id}`, () => updateLastViewed(params.id));
 
     //cleans up by turning off functions when useEffect dismounts
     return () => {

@@ -2,29 +2,25 @@
 import { PlusIcon, EnvelopeIcon } from "@heroicons/react/16/solid";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Conversation, User, Message, UnreadMessage } from "@/types/index";
+import { Conversation, User } from "@/types/index";
 
 import dynamic from "next/dynamic";
 import ConnectionStatus from "../global/ConnectionStatus";
 import { useSocket } from "@/context/SocketContext";
 import Image from "next/image";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-
 import { useAuth } from "@clerk/nextjs";
-import { updateLastViewed } from "@/actions/actions";
+import { useNotification } from "@/context/NotificationContext";
 
 interface ConvLinkProps {
   users: User[];
   href: string;
   status: boolean;
   id: string;
-  unreadMessages?: Message[];
+  unreadMessages: number;
 }
 
 interface ConvLinkWrapperProps {
   conversations: Conversation[];
-  unreadMessages: UnreadMessage[];
 }
 
 export function ConvLink({
@@ -34,10 +30,8 @@ export function ConvLink({
   id,
   unreadMessages,
 }: ConvLinkProps) {
-  const { socket } = useSocket();
-  const pathname = usePathname();
   const { userId } = useAuth();
-  const router = useRouter();
+  const pathname = usePathname();
 
   //if its a dm between 2 people, header shows single image, if group chat, show multiple images
   const header =
@@ -50,38 +44,8 @@ export function ConvLink({
   const singleAvatar = otherUser?.imageUrl;
   const isMultiUser = users.length > 1 && users.length !== 2;
 
-  //handle sockets for notifications.
-  useEffect(() => {
-    const handleUnreadMessage = () => {
-      if (pathname === href) {
-        updateLastViewed(id);
-      } else {
-        router.refresh();
-      }
-    };
-
-    // Attach the socket event listener
-    socket.on(`unread ${id}`, handleUnreadMessage);
-
-    if (pathname === href) {
-      const update = async () => {
-        await updateLastViewed(id);
-      }; // Ensure it's called on conversation open
-
-      update();
-    }
-
-    return () => {
-      socket.off(`unread ${id}`, handleUnreadMessage);
-    };
-  }, [id, socket, pathname, href, router]);
-
   if (!users) {
     return <p>Failed to load users</p>;
-  }
-
-  if (!unreadMessages) {
-    return <p>Failed to load unread messages</p>;
   }
 
   return (
@@ -138,9 +102,9 @@ export function ConvLink({
             {header}
           </p>
 
-          {unreadMessages.length > 0 && (
+          {unreadMessages > 0 && (
             <div className="absolute right-0 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center border border-zinc-950">
-              <p className="text-white text-sm">{unreadMessages.length}</p>
+              <p className="text-white text-sm">{unreadMessages}</p>
             </div>
           )}
         </div>
@@ -151,10 +115,10 @@ export function ConvLink({
 
 export default function ConvLinkWrapper({
   conversations,
-  unreadMessages,
 }: ConvLinkWrapperProps) {
   const { onlineUsers } = useSocket();
   const { userId } = useAuth();
+  const { getCurrentUnreadMessages } = useNotification();
 
   const ConvDropdown = dynamic(() => import("./ConvDropdown"), { ssr: false });
 
@@ -183,10 +147,6 @@ export default function ConvLinkWrapper({
                 (user) => onlineUsers.includes(user.id) && user.id !== userId
               );
 
-              const unread = unreadMessages.find((unreadMessage) => {
-                return unreadMessage.participantId === currentParticipant?.id;
-              });
-
               return (
                 <ConvLink
                   key={conversation.id}
@@ -194,7 +154,7 @@ export default function ConvLinkWrapper({
                   href={`/home/conversations/${conversation.id}`}
                   status={onlineStatus}
                   id={conversation.id}
-                  unreadMessages={unread ? unread.messages : []}
+                  unreadMessages={getCurrentUnreadMessages(conversation.id)}
                 />
               );
             })

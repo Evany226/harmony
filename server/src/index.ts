@@ -306,8 +306,9 @@ io.on("connection", (socket) => {
 
   socket.on("notification", (data: Message) => {
     const { conversationId } = data;
+    console.log(data);
     socket.to(conversationId).emit(`notification`, data);
-    socket.to(conversationId).emit(`unread ${conversationId}`);
+    socket.to(conversationId).emit(`unread`, data);
   });
 
   socket.on("newVoiceCall", (conversationId: string, imageUrl: string) => {
@@ -327,24 +328,30 @@ io.on("connection", (socket) => {
   });
 
   socket.on("checkRoomEmpty", async (conversationId: string) => {
-    const rooms = await roomService.listRooms();
-    const room = rooms.find((room) => room.name === conversationId);
+    try {
+      const rooms = await roomService.listRooms();
+      const room = rooms.find((room) => room.name === conversationId);
 
-    let isEmpty;
+      let isEmpty;
 
-    if (!room) {
-      isEmpty = true;
+      if (!room) {
+        isEmpty = true;
+        io.to(conversationId).emit(`checkRoomEmpty ${conversationId}`, isEmpty);
+        return;
+      }
+
+      const result = await roomService.listParticipants(conversationId);
+
+      if (result.length === 0) {
+        isEmpty = true;
+      } else {
+        isEmpty = false;
+      }
+
+      io.to(conversationId).emit(`checkRoomEmpty ${conversationId}`, isEmpty);
+    } catch (error) {
+      console.log("Error checking room empty:", error);
     }
-
-    const result = await roomService.listParticipants(conversationId);
-
-    if (result.length === 0) {
-      isEmpty = true;
-    } else {
-      isEmpty = false;
-    }
-
-    io.to(conversationId).emit(`checkRoomEmpty ${conversationId}`, isEmpty);
   });
 
   socket.on("channelMessage", (data: ChannelMessage) => {

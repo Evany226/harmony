@@ -126,7 +126,7 @@ const checkRoomEmpty = async (req: Request, res: Response) => {
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    console.error("Error checking room:", error);
+    console.log("Error checking room:", error);
     res.status(500).json({ error: "Error checking room" });
   }
 };
