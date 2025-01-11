@@ -29,10 +29,17 @@ const getAllGuilds = async (req: Request, res: Response) => {
       orderBy: {
         createdAt: "desc",
       },
-      include: {
+      select: {
+        id: true,
+        name: true,
+        imageUrl: true,
         categories: {
-          include: {
-            channels: true,
+          select: {
+            channels: {
+              select: {
+                id: true,
+              },
+            },
           },
         },
       },
@@ -53,19 +60,24 @@ const getGuild = async (req: Request, res: Response) => {
       where: {
         id: guildId,
       },
-
-      include: {
-        members: {
-          include: {
-            user: true,
-          },
-        },
+      select: {
+        id: true,
+        name: true,
+        imageUrl: true,
         categories: {
           orderBy: {
             createdAt: "asc",
           },
-          include: {
-            channels: true,
+          select: {
+            id: true,
+            name: true,
+            channels: {
+              select: {
+                id: true,
+                name: true,
+                isVoice: true,
+              },
+            },
           },
         },
       },
@@ -100,7 +112,7 @@ const createGuild = async (req: Request, res: Response) => {
   }
 
   try {
-    const newGuild = await prisma.guild.create({
+    await prisma.guild.create({
       data: {
         name: name,
         imageUrl: file.location,
@@ -122,17 +134,9 @@ const createGuild = async (req: Request, res: Response) => {
           },
         },
       },
-      include: {
-        members: {
-          include: {
-            user: true,
-          },
-        },
-        categories: true,
-      },
     });
 
-    res.json(newGuild);
+    res.json("Guild created successfully");
   } catch (error) {
     console.error("Error creating guild:", error);
     res.status(500).json({ error: "Failed to create guild" });
@@ -144,10 +148,12 @@ const leaveGuild = async (req: Request, res: Response) => {
   const { guildId } = req.params as { guildId: string };
 
   try {
-    const isOwner = await prisma.member.findFirst({
+    const isOwner = await prisma.member.findUnique({
       where: {
-        userId: userId,
-        guildId: guildId,
+        userId_guildId: {
+          userId: userId,
+          guildId: guildId,
+        },
         role: "OWNER",
       },
     });
@@ -158,10 +164,12 @@ const leaveGuild = async (req: Request, res: Response) => {
       });
     }
 
-    await prisma.member.deleteMany({
+    await prisma.member.delete({
       where: {
-        userId: userId,
-        guildId: guildId,
+        userId_guildId: {
+          userId: userId,
+          guildId: guildId,
+        },
         role: {
           not: "OWNER",
         },
@@ -180,10 +188,12 @@ const deleteGuild = async (req: Request, res: Response) => {
   // const userId = "user_2l6xqjXoVzoqWB4Lm3w2iwCezWB";
   const { guildId } = req.params as { guildId: string };
 
-  const isOwner = await prisma.member.findFirst({
+  const isOwner = await prisma.member.findUnique({
     where: {
-      userId: userId,
-      guildId: guildId,
+      userId_guildId: {
+        userId: userId,
+        guildId: guildId,
+      },
       role: "OWNER",
     },
   });
@@ -217,10 +227,12 @@ const updateGuild = async (req: Request, res: Response) => {
 
   console.log(req.body);
 
-  const isOwnerAdmin = await prisma.member.findFirst({
+  const isOwnerAdmin = await prisma.member.findUnique({
     where: {
-      userId: userId,
-      guildId: guildId,
+      userId_guildId: {
+        userId: userId,
+        guildId: guildId,
+      },
       OR: [
         {
           role: "OWNER",

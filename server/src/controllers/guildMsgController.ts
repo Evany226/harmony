@@ -56,10 +56,12 @@ const createChannelMessage = async (req: Request, res: Response) => {
   };
 
   try {
-    const member = await prisma.member.findFirst({
+    const member = await prisma.member.findUnique({
       where: {
-        userId: userId,
-        guildId: guildId,
+        userId_guildId: {
+          userId: userId,
+          guildId: guildId,
+        },
       },
     });
 
@@ -73,10 +75,21 @@ const createChannelMessage = async (req: Request, res: Response) => {
         senderId: member.id,
         channelId: channelId,
       },
-      include: {
+      select: {
+        id: true,
+        content: true,
+        edited: true,
+        createdAt: true,
+        isAlert: true,
         sender: {
-          include: {
-            user: true,
+          select: {
+            user: {
+              select: {
+                id: true,
+                username: true,
+                imageUrl: true,
+              },
+            },
           },
         },
       },

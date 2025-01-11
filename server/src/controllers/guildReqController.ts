@@ -68,10 +68,12 @@ const createGuildRequest = async (req: Request, res: Response) => {
       return res.json(pendingFromGuild);
     }
 
-    const alreadyMember = await prisma.member.findFirst({
+    const alreadyMember = await prisma.member.findUnique({
       where: {
-        userId: friendId,
-        guildId: guildId,
+        userId_guildId: {
+          userId: friendId,
+          guildId: guildId,
+        },
       },
     });
 

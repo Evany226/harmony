@@ -16,10 +16,12 @@ const getMember = async (req: Request, res: Response) => {
   // const userId = "user_2kvgB9d6HPZNSZGsGDf02nYSx12";
 
   try {
-    const member = await prisma.member.findFirst({
+    const member = await prisma.member.findUnique({
       where: {
-        userId: userId,
-        guildId: guildId,
+        userId_guildId: {
+          userId: userId,
+          guildId: guildId,
+        },
       },
     });
 
@@ -37,8 +39,16 @@ const getAllMembers = async (req: Request, res: Response) => {
       where: {
         guildId: guildId,
       },
-      include: {
-        user: true,
+      select: {
+        id: true,
+        role: true,
+        user: {
+          select: {
+            id: true,
+            username: true,
+            imageUrl: true,
+          },
+        },
       },
     });
 

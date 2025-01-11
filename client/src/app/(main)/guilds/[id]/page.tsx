@@ -1,5 +1,4 @@
 import { HashtagIcon } from "@heroicons/react/24/solid";
-import { getGuild } from "@/lib/guilds";
 import { getAllMembers } from "@/lib/guilds";
 import { auth } from "@clerk/nextjs/server";
 import {
@@ -18,8 +17,6 @@ export default async function GuildPage({
 }) {
   const { getToken } = auth();
   const token = await getToken();
-  const guild = await getGuild(token as string, params.id);
-
   const members = await getAllMembers(token as string, params.id);
 
   return (
@@ -35,7 +32,7 @@ export default async function GuildPage({
           <div className="h-full w-full flex flex-col items-center justify-center overflow-y-scroll">
             <section className="flex flex-col items-center justify-center space-y-2 p-2">
               <h2 className="text-gray-300 font-bold text-3xl md:text-2xl">
-                Welcome to {guild.name}
+                Welcome to the guild.
               </h2>
               <p className="text-gray-400 text-normal font-semibold text-center md:text-sm">
                 This is your brand new shiny guild. You can chat, hangout{" "}
