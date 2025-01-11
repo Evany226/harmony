@@ -7,8 +7,7 @@ import Link from "next/link";
 import { Guild, Category, UnreadMessage } from "@/types";
 import CreateGuildDialog from "../guilds/CreateGuildDialog";
 import SideNavTooltip from "./SideNavTooltip";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Skeleton } from "../ui/skeleton";
+
 import { usePathname } from "next/navigation";
 
 export default function SideNav({
@@ -62,40 +61,43 @@ export default function SideNav({
               key={notification.participantId}
             >
               <Link
-                href={`/conversations/${notification.messages[0].conversationId}`}
+                href={`/home/conversations/${notification.messages[0].conversationId}`}
                 className="relative block"
               >
                 {isMultiUser ? (
                   <div className="relative min-w-12 h-12 ">
-                    <Avatar
+                    <div
                       className={`group-hover:border-neutral-800 w-8 h-8 absolute top-0 left-0 border-2 border-neutral-900
                       `}
                     >
-                      <AvatarImage src={convUsers[0].imageUrl} />
-                      <AvatarFallback>
-                        <Skeleton className="w-full h-full" />
-                      </AvatarFallback>
-                    </Avatar>
-                    <Avatar
+                      <Image
+                        src={convUsers[0].imageUrl}
+                        alt="Guild profile picture"
+                        fill
+                        className="rounded-full"
+                      />
+                    </div>
+                    <div
                       className={`group-hover:border-neutral-800 w-8 h-8 absolute bottom-0 right-0 border-2 border-neutral-900
                       }`}
                     >
-                      <AvatarImage src={convUsers[1].imageUrl} />
-                      <AvatarFallback>
-                        <Skeleton className="w-full h-full" />
-                      </AvatarFallback>
-                    </Avatar>
+                      <Image
+                        src={convUsers[1].imageUrl}
+                        alt="Guild profile picture"
+                        fill
+                        className="rounded-full"
+                      />
+                    </div>
                   </div>
                 ) : (
-                  <Avatar className="w-12 h-12">
-                    <AvatarImage
+                  <div className="w-12 h-12 relative">
+                    <Image
                       src={notification.messages[0].sender.user.imageUrl}
                       alt={notification.messages[0].sender.user.username}
+                      fill
+                      className="rounded-full"
                     />
-                    <AvatarFallback>
-                      <Skeleton className="h-12 w-12" />
-                    </AvatarFallback>
-                  </Avatar>
+                  </div>
                 )}
 
                 <div className="absolute right-0 bottom-0 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center ring-4 ring-zinc-900 ">
@@ -130,21 +132,23 @@ export default function SideNav({
                     : `/guilds/${guild.id}`
                 }
               >
-                {guild.imageUrl ? (
-                  <Avatar className="w-12 h-12">
-                    <AvatarImage src={guild.imageUrl} alt={guild.name} />
-                    <AvatarFallback>
-                      <Skeleton className="h-12 w-12" />
-                    </AvatarFallback>
-                  </Avatar>
-                ) : (
-                  <Image
-                    src="/images/logo-past.png"
-                    width={60}
-                    height={60}
-                    alt="Logo"
-                  />
-                )}
+                <div className="w-12 h-12 relative">
+                  {guild.imageUrl ? (
+                    <Image
+                      src={guild.imageUrl}
+                      fill
+                      alt={guild.name}
+                      className="rounded-full"
+                    />
+                  ) : (
+                    <Image
+                      src="/images/logo-past.png"
+                      width={50}
+                      height={50}
+                      alt="Logo"
+                    />
+                  )}
+                </div>
               </Link>
             </SideNavTooltip>
           );

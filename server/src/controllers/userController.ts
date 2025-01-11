@@ -44,6 +44,7 @@ const getUserChannelIds = async (req: Request, res: Response) => {
   // const userId = "user_2kvgB9d6HPZNSZGsGDf02nYSx12";
 
   try {
+    // Fetching only necessary data (guilds and their channels)
     const allGuilds = await prisma.guild.findMany({
       where: {
         members: {
@@ -52,27 +53,30 @@ const getUserChannelIds = async (req: Request, res: Response) => {
           },
         },
       },
-      include: {
+      select: {
         categories: {
-          include: {
-            channels: true,
+          select: {
+            channels: {
+              select: {
+                id: true, // Only selecting the channel ID
+              },
+            },
           },
         },
       },
     });
 
-    const channelIds = allGuilds.map((guild) => {
-      return guild.categories.map((category) => {
-        return category.channels.map((channel) => {
-          return channel.id;
-        });
-      });
-    });
+    // Flattening and extracting channel IDs in a single step
+    const channelIds = allGuilds.flatMap((guild) =>
+      guild.categories.flatMap((category) =>
+        category.channels.map((channel) => channel.id)
+      )
+    );
 
-    res.json(channelIds.flat(2));
+    res.json(channelIds);
   } catch (error) {
     console.error("Error fetching user channels:", error);
-    res.status(500).json({ error: "Failed to fetch user channels" + error });
+    res.status(500).json({ error: "Failed to fetch user channels" });
   }
 };
 

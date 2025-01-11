@@ -1,5 +1,5 @@
 import { getAllConversations } from "@/lib/conversations";
-import { auth, currentUser } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 import { getAllUnreadMessages } from "@/lib/conversations";
 import HomeWrapper from "@/components/layout/HomeWrapper";
 

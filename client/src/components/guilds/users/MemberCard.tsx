@@ -1,7 +1,6 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
-import { Skeleton } from "../../ui/skeleton";
+import Image from "next/image";
 import ConnectionStatus from "../../global/ConnectionStatus";
 import { User } from "@/types";
 import { useSocket } from "@/context/SocketContext";
@@ -14,12 +13,14 @@ export default function MemberCard({ member }: { member: User }) {
   return (
     <div className="flex items-center w-full bg-zinc-900 py-2 px-2 rounded-sm hover:bg-neutral-800 cursor-pointer">
       <div className="relative">
-        <Avatar className="w-8 h-8">
-          <AvatarImage src={member.imageUrl} />
-          <AvatarFallback>
-            <Skeleton className="w-full h-full" />
-          </AvatarFallback>
-        </Avatar>
+        <div className="w-8 h-8">
+          <Image
+            src={member.imageUrl}
+            alt="Guild profile picture"
+            fill
+            className="rounded-full"
+          />
+        </div>
         <ConnectionStatus isConnected={status} />
       </div>
       <div className="flex items-center ml-3 max-w-full no-wrap overflow-hidden">

@@ -1,8 +1,7 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Skeleton } from "../ui/skeleton";
 import { useState } from "react";
+import Image from "next/image";
 
 interface ConvDropdownItemProps {
   id: string;
@@ -23,12 +22,14 @@ export default function ConvDropdownItem({
       onClick={() => setChecked(!checked)}
     >
       <div className="w-full flex items-center space-x-3">
-        <Avatar>
-          <AvatarImage src={imageUrl} />
-          <AvatarFallback>
-            <Skeleton className="w-full h-full" />
-          </AvatarFallback>
-        </Avatar>
+        <div className="min-w-8 min-h-8 relative">
+          <Image
+            src={imageUrl}
+            alt="Friend profile picture"
+            fill
+            className="rounded-full"
+          />
+        </div>
         <label className="w-full text-base text-gray-300 group-hover:text-white outline-0 cursor-pointer">
           {username}
         </label>

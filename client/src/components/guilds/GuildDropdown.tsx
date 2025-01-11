@@ -19,8 +19,8 @@ import {
 
 import LeaveAlertDialog from "./LeaveAlertDialog";
 import GuildSettingsDialog from "./GuildSettingsDialog";
-import InviteDialog from "./InviteDialog";
 import { Guild, Member } from "@/types";
+import dynamic from "next/dynamic";
 
 import { useState } from "react";
 
@@ -35,6 +35,8 @@ export default function GuildDropdown({
   guild,
   currentMember,
 }: GuildSettingsProps) {
+  const InviteDialog = dynamic(() => import("./InviteDialog"), { ssr: false });
+
   const [settingsDialogOpen, setSettingsDialogOpen] = useState<boolean>(false);
   const [inviteDialogOpen, setInviteDialogOpen] = useState<boolean>(false);
   const [leaveServerAlert, setLeaveServerAlert] = useState<boolean>(false);

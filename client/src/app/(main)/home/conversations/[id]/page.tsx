@@ -5,7 +5,6 @@ import { getConversation, getAllMessages } from "@/lib/conversations";
 import { useAuth } from "@clerk/nextjs";
 import { User, Message, Participant } from "@/types/index.js";
 import { useUser } from "@clerk/nextjs";
-import useSound from "use-sound";
 
 import ChatInput from "@/components/global/ChatInput";
 import ChatHeader from "@/components/global/ChatHeader";
@@ -13,9 +12,8 @@ import MessageCard from "@/components/global/MessageCard";
 import ConvPageSkeleton from "@/components/skeletons/ConvPageSkeleton";
 import ConvPageHeader from "@/components/conversations/ConvPageHeader";
 import ConvProfilePanel from "@/components/conversations/ConvProfilePanel";
-import VoiceCallOverlay from "@/components/conference/VoiceCallOverlay";
-import PendingVoiceCall from "@/components/conference/PendingVoiceCall";
 
+import { useAudio } from "@/context/AudioContext";
 import { socket } from "@/app/socket";
 
 import { createMessage } from "@/actions/conv";
@@ -27,12 +25,21 @@ import { useVoiceRoom } from "@/context/VoiceRoomContext";
 import { useVoiceCall } from "@/context/VoiceCallContext";
 
 import { usePathname } from "next/navigation";
+import dynamic from "next/dynamic";
 
 export default function ConversationPage({
   params,
 }: {
   params: { id: string };
 }) {
+  const VoiceCallOverlay = dynamic(
+    () => import("@/components/conference/VoiceCallOverlay")
+  );
+
+  const PendingVoiceCall = dynamic(
+    () => import("@/components/conference/PendingVoiceCall")
+  );
+
   const [headerText, setHeaderText] = useState<string>("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [users, setUsers] = useState<User[]>([]);
@@ -51,9 +58,13 @@ export default function ConversationPage({
   const router = useRouter();
   const pathname = usePathname();
 
-  const [playJoinSound] = useSound("/audio/join-call.mp3");
+  const { playJoinSound } = useAudio();
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   //fetch
   useEffect(() => {
@@ -70,11 +81,6 @@ export default function ConversationPage({
       const messages = await getAllMessages(token as string, params.id);
 
       setMessages(messages);
-
-      // const participants = conversationObject.participants.filter(
-      //   (participant: Participant) =>
-      //     currUser && participant.userId !== currUser.id
-      // );
 
       const participants = conversationObject.participants;
 
@@ -218,15 +224,11 @@ export default function ConversationPage({
 
   const isMultiUser = users.length - 1 > 1;
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
   useEffect(() => {
     if (!loading) {
       scrollToBottom();
     }
-  }, [loading]);
+  }, [loading, messages]);
 
   return (
     <>

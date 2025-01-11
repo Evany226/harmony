@@ -1,7 +1,6 @@
 "use client";
 
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Skeleton } from "../ui/skeleton";
+import Image from "next/image";
 import { formatDateTime } from "@/lib/utils";
 import {
   PencilIcon,
@@ -97,12 +96,14 @@ export default function MessageCard({ message, variant }: MessageCardProps) {
         isEditing ? "bg-neutral-800" : ""
       }`}
     >
-      <Avatar className="w-10 h-10 sm:w-8 sm:h-8">
-        <AvatarImage src={sender.imageUrl} />
-        <AvatarFallback>
-          <Skeleton className="w-full h-full" />
-        </AvatarFallback>
-      </Avatar>
+      <div className="w-10 h-10 relative sm:w-8 sm:h-8">
+        <Image
+          src={sender.imageUrl}
+          alt="Sender profile picture"
+          fill
+          className="rounded-full"
+        />
+      </div>
       <div className="flex flex-col ml-4">
         <div className="flex items-center space-x-3">
           <p className="font-semibold text-gray-300 sm:text-sm">
@@ -134,7 +135,7 @@ export default function MessageCard({ message, variant }: MessageCardProps) {
       <div className="absolute -top-2 right-5 hidden group-hover:block">
         <div className="flex items-center bg-zinc-900 space-x-2 py-1 px-2 rounded-md border border-zinc-700">
           <FaceSmileIcon className="h-5 w-5 text-gray-300 cursor-pointer hover:text-gray-500" />
-          {message.sender.userId === userId && (
+          {sender.id === userId && (
             <PencilIcon
               onClick={() => setIsEditing(!isEditing)}
               className="h-5 w-5 text-gray-300 cursor-pointer hover:text-gray-500"

@@ -5,8 +5,6 @@ import { usePathname } from "next/navigation";
 
 import { Cog8ToothIcon, SpeakerWaveIcon } from "@heroicons/react/24/solid";
 
-import { useUser } from "@clerk/nextjs";
-
 import EditChannelDialog from "./EditChannelDialog";
 
 interface VoiceChannelLinkProps {
@@ -23,9 +21,6 @@ export default function VoiceChannelLink({
   handleJoinChannel,
 }: VoiceChannelLinkProps) {
   const pathname = usePathname();
-  const { user } = useUser();
-  const userName = user?.username;
-
   return (
     <>
       <div

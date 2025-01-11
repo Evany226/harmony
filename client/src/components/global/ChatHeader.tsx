@@ -1,6 +1,5 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "../ui/separator";
-import { Skeleton } from "../ui/skeleton";
+import Image from "next/image";
 
 interface ChatHeaderProps {
   name: string;
@@ -12,13 +11,14 @@ export default function ChatHeader({ name, imageUrl }: ChatHeaderProps) {
     <>
       {imageUrl ? (
         <div className="px-5">
-          <Avatar className="w-24 h-24 mt-4">
-            <AvatarImage src={imageUrl} />
-            <AvatarFallback>
-              {" "}
-              <Skeleton className="w-full h-full" />
-            </AvatarFallback>
-          </Avatar>
+          <div className="w-24 h-24 mt-4 relative">
+            <Image
+              src={imageUrl}
+              alt="Chat header mascot image"
+              fill
+              className="rounded-full"
+            />
+          </div>
           <h1 className="text-gray-200 text-3xl font-semibold mt-4 sm:text-2xl">
             {name}
           </h1>

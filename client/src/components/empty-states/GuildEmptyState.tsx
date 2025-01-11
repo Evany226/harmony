@@ -1,5 +1,4 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Skeleton } from "../ui/skeleton";
+import Image from "next/image";
 
 interface GuildEmptyStateProps {
   name: string;
@@ -15,13 +14,14 @@ export default function GuildEmptyState({
       {imageUrl ? (
         <div className="w-full h-full flex items-center justify-center">
           <section className="w-2/5 flex flex-col items-center">
-            <Avatar className="w-24 h-24 mt-4">
-              <AvatarImage src={imageUrl} />
-              <AvatarFallback>
-                {" "}
-                <Skeleton className="w-full h-full" />
-              </AvatarFallback>
-            </Avatar>
+            <div className="w-24 h-24 mt-4 relative">
+              <Image
+                src={imageUrl}
+                alt="Guild header mascot image"
+                fill
+                className="rounded-full"
+              />
+            </div>
             <h1 className="text-gray-300 text-3xl font-semibold mt-4 md:text-2xl md:text-center">
               Welcome to #{name}
             </h1>

@@ -10,8 +10,6 @@ import {
 } from "@/components/ui/dialog";
 import { deleteChannel, updateChannel } from "@/actions/actions";
 import TextareaAutosize from "react-textarea-autosize";
-import { TrashIcon } from "@heroicons/react/24/solid";
-import { useAuth } from "@clerk/nextjs";
 import { Separator } from "@/components/ui/separator";
 
 import { useState } from "react";

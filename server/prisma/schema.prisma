@@ -39,6 +39,8 @@ model Participant {
   sentMessages  Message[]      @relation("SentMessages")
 
   lastViewed DateTime @default(now())
+
+  @@unique([userId, conversationId])
 }
 
 model Message {
@@ -102,6 +104,8 @@ model Member {
   guild   Guild  @relation("GuildMembers", fields: [guildId], references: [id], onDelete: Cascade)
 
   sentMessages ChannelMessages[] @relation("SentChannelMessages")
+
+  @@unique([userId, guildId])
 }
 
 model GuildRequests {

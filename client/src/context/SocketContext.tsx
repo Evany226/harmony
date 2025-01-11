@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+} from "react";
 import { socket } from "@/app/socket";
 import { getAllConversations } from "@/lib/conversations";
 import { useAuth } from "@clerk/nextjs";
@@ -13,7 +19,7 @@ import { useUser } from "@clerk/nextjs";
 import { useVoiceCall } from "./VoiceCallContext";
 import { useGuild } from "./GuildContext";
 import { useVoiceRoom } from "./VoiceRoomContext";
-import useSound from "use-sound";
+import { useAudio } from "./AudioContext";
 
 interface SocketContextProps {
   socket: typeof socket;
@@ -31,32 +37,38 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const { addParticipant, removeParticipant, updateMuteStatus } = useGuild();
   const { isConnected: isVoiceChannelOpen, room } = useVoiceRoom();
   const router = useRouter();
-  const [playLeaveSound] = useSound("/audio/leave-call.mp3");
-  const [playJoinSound] = useSound("/audio/join-call.mp3");
+  const { playLeaveSound, playJoinSound } = useAudio();
 
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
+  const [hasFetchedConversations, setHasFetchedConversations] = useState(false);
+
+  const fetchConversations = useCallback(async () => {
+    if (!user) return;
+
+    const token = await getToken();
+    const [conversationsData, channelIds, guildIds] = await Promise.all([
+      getAllConversations(token as string),
+      getUserChannelIds(token as string),
+      getUserGuildIds(token as string),
+    ]);
+    const ids = conversationsData.map(
+      (conversation: Conversation) => conversation.id
+    );
+
+    socket.emit("joinRoom", ids);
+    socket.emit("joinRoom", channelIds);
+    socket.emit("joinRoom", guildIds);
+  }, [user, getToken]);
 
   useEffect(() => {
     if (!user) return;
+
     socket.connect();
 
-    const fetchConversations = async () => {
-      const token = await getToken();
-      const data = await getAllConversations(token as string);
-      const ids = data.map((conversation: Conversation) => conversation.id);
-
-      const channelIds = await getUserChannelIds(token as string);
-
-      const guildIds = await getUserGuildIds(token as string);
-
-      socket.emit("joinRoom", ids);
-      socket.emit("joinRoom", channelIds);
-      socket.emit("joinRoom", guildIds);
-    };
-
-    if (user) {
+    if (!hasFetchedConversations) {
       fetchConversations();
+      setHasFetchedConversations(true); // flag to prevent re-fetching
     }
 
     socket.on("connect", () => {
@@ -94,7 +106,6 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
 
     socket.on("onlineUsers", (data: string[]) => {
       setOnlineUsers(data);
-      router.refresh();
     });
 
     socket.on(
@@ -176,6 +187,8 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     isVoiceChannelOpen,
     room,
     updateMuteStatus,
+    fetchConversations,
+    hasFetchedConversations,
   ]);
 
   return (

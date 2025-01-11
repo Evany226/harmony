@@ -1,14 +1,12 @@
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
   QuestionMarkCircleIcon,
   MagnifyingGlassIcon,
   PhoneArrowUpRightIcon,
-  VideoCameraIcon,
   UserCircleIcon,
   ArrowUturnLeftIcon,
 } from "@heroicons/react/24/solid";
 import { TooltipWrapper } from "../global/TooltipWrapper";
-import { Tooltip } from "@radix-ui/react-tooltip";
+import Image from "next/image";
 import Link from "next/link";
 
 interface ConvPageHeaderProps {
@@ -36,23 +34,37 @@ export default function ConvPageHeader({
         <Link href="/home/friends" className="hidden sm:block">
           <ArrowUturnLeftIcon className="w-6 h-6 text-gray-400 hover:text-gray-300 cursor-pointer" />
         </Link>
-        {hasMultipleUsers ? (
-          <div className="w-10 h-10 relative ml-2">
-            <Avatar className="w-7 h-7 absolute top-0 left-0 border-2 border-neutral-900">
-              <AvatarImage src={image1} />
-              <AvatarFallback />
-            </Avatar>
-            <Avatar className="w-7 h-7 absolute right-0 bottom-0 border-2 border-neutral-900">
-              <AvatarImage src={image2} />
-              <AvatarFallback />
-            </Avatar>
-          </div>
-        ) : (
-          <Avatar className="w-7 h-7 ml-2">
-            <AvatarImage src={image1} />
-            <AvatarFallback />
-          </Avatar>
-        )}
+        <div className="w-10 h-10 relative flex items-center justify-center">
+          {hasMultipleUsers ? (
+            <>
+              <div className="w-7 h-7 absolute top-0 left-0 border-2 border-neutral-900 rounded-full">
+                <Image
+                  src={image1}
+                  alt="Conv profile picture"
+                  fill
+                  className="rounded-full"
+                />
+              </div>
+              <div className="w-7 h-7 absolute right-0 bottom-0 border-2 border-neutral-900 rounded-full">
+                <Image
+                  src={image2 ?? ""}
+                  alt="Conv profile picture"
+                  fill
+                  className="rounded-full"
+                />
+              </div>
+            </>
+          ) : (
+            <div className="w-8 h-8 absolute">
+              <Image
+                src={image1}
+                alt="Conv profile picture"
+                className="rounded-full"
+                fill
+              />
+            </div>
+          )}
+        </div>
         <h1 className="text-gray-300 font-semibold">{headerText}</h1>
       </div>
 

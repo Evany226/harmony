@@ -20,10 +20,21 @@ const getAllMessages = async (req: Request, res: Response) => {
       where: {
         conversationId: conversationId,
       },
-      include: {
+      select: {
+        id: true,
+        content: true,
+        edited: true,
+        createdAt: true,
+        isAlert: true,
         sender: {
-          include: {
-            user: true,
+          select: {
+            user: {
+              select: {
+                id: true,
+                username: true,
+                imageUrl: true,
+              },
+            },
           },
         },
       },
@@ -48,10 +59,12 @@ const createMessage = async (req: Request, res: Response) => {
   };
 
   try {
-    const participant = await prisma.participant.findFirst({
+    const participant = await prisma.participant.findUnique({
       where: {
-        userId: userId,
-        conversationId: conversationId,
+        userId_conversationId: {
+          userId: userId,
+          conversationId: conversationId,
+        },
       },
     });
 
@@ -74,15 +87,17 @@ const createMessage = async (req: Request, res: Response) => {
       },
     });
 
-    await prisma.participant.update({
-      where: {
-        id: participant.id,
-        conversationId: conversationId,
-      },
-      data: {
-        lastViewed: new Date(),
-      },
-    });
+    // await prisma.participant.update({
+    //   where: {
+    //     userId_conversationId: {
+    //       userId: userId,
+    //       conversationId: conversationId,
+    //     },
+    //   },
+    //   data: {
+    //     lastViewed: new Date(),
+    //   },
+    // });
 
     res.json(newMessage);
   } catch (error) {

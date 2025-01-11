@@ -27,11 +27,18 @@ const getAllConversations = async (req: Request, res: Response) => {
       },
       include: {
         participants: {
-          include: {
-            user: true,
+          select: {
+            user: {
+              select: {
+                id: true,
+                username: true,
+                imageUrl: true,
+              },
+            },
           },
         },
       },
+
       orderBy: {
         createdAt: "asc",
       },
@@ -55,8 +62,14 @@ const getConversation = async (req: Request, res: Response) => {
       },
       include: {
         participants: {
-          include: {
-            user: true,
+          select: {
+            user: {
+              select: {
+                id: true,
+                username: true,
+                imageUrl: true,
+              },
+            },
           },
         },
       },

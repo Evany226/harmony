@@ -1,8 +1,8 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "../ui/skeleton";
 import { ScrollArea } from "../ui/scroll-area";
 import MemberCard from "../guilds/users/MemberCard";
 import { User } from "@/types";
+import Image from "next/image";
 
 interface ConvProfilePanelProps {
   imageUrl: string;
@@ -41,13 +41,14 @@ export default function ConvProfilePanel({
       ) : (
         <>
           <div className="w-full h-28 bg-purple-900 relative"></div>
-          <Avatar className="w-24 h-24 absolute top-28 ml-2 border-4 border-neutral-900">
-            <AvatarImage src={imageUrl} />
-            <AvatarFallback>
-              {" "}
-              <Skeleton className="w-full h-full" />
-            </AvatarFallback>
-          </Avatar>
+          <div className="w-24 h-24 absolute top-28 ml-2 border-4 border-neutral-900 rounded-full">
+            <Image
+              src={imageUrl}
+              alt="Friend profile picture"
+              fill
+              className="rounded-full"
+            />
+          </div>
           <div className="w-full h-[calc(100%-7rem)] pt-12 px-2 space-y-4 relative">
             <p className="text-gray-300 text-lg font-semibold ml-1">{name}</p>
 

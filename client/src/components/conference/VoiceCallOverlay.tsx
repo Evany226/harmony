@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import { useVoiceCall } from "@/context/VoiceCallContext";
 import { socket } from "@/app/socket";
-import useSound from "use-sound";
+import { useAudio } from "@/context/AudioContext";
 import { useAuth } from "@clerk/nextjs";
 
 import {
@@ -31,7 +31,7 @@ export default function VoiceCallOverlay({ convId }: VoiceCallOverlayProps) {
   const [token, setToken] = useState("");
   const { user } = useUser();
   const { isVoiceCallOpen, setIsVoiceCallOpen } = useVoiceCall();
-  const [playLeaveCall] = useSound("/audio/leave-call.mp3");
+  const { playLeaveSound } = useAudio();
   const { getToken } = useAuth();
 
   const userName = user?.username;
@@ -61,7 +61,7 @@ export default function VoiceCallOverlay({ convId }: VoiceCallOverlayProps) {
 
   const handleLeaveRoom = () => {
     if (isVoiceCallOpen) {
-      playLeaveCall();
+      playLeaveSound();
       setIsVoiceCallOpen(false);
       socket.emit("checkRoomEmpty", convId);
       socket.emit("leaveVoiceCall", convId);
