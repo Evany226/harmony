@@ -316,7 +316,7 @@ io.on("connection", (socket) => {
       .to(conversationId)
       .emit(`incomingVoiceCall`, conversationId, imageUrl);
 
-    io.to(conversationId).emit(`checkRoomEmpty ${conversationId}`, false);
+    socket.to(conversationId).emit(`checkRoomEmpty ${conversationId}`, false);
   });
 
   socket.on("joinVoiceCall", (conversationId: string) => {

@@ -120,7 +120,9 @@ export default function ConvLinkWrapper({
   const { userId } = useAuth();
   const { getCurrentUnreadMessages } = useNotification();
 
-  const ConvDropdown = dynamic(() => import("./ConvDropdown"), { ssr: false });
+  const ConvDropdown = dynamic(() => import("./ConvDropdown"), {
+    ssr: false,
+  });
 
   return (
     <>
