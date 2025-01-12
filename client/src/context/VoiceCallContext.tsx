@@ -52,7 +52,7 @@ export const VoiceCallProvider = ({
 
   const handleAcceptCall = () => {
     clearTimeout(timeoutId as NodeJS.Timeout);
-    router.push(`/conversations/${conversationId}`);
+    router.push(`/home/conversations/${conversationId}`);
     setIsVoiceCallOpen(true);
     setAlert(false);
     stopCallSound();

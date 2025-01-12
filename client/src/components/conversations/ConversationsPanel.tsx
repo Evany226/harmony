@@ -4,15 +4,13 @@ import FriendsNavButton from "../dashboard/friends/FriendsNavButton";
 import GuildNavButton from "../dashboard/guild-requests/GuildNavButton";
 import ConvLinkWrapper from "./ConvLink";
 import ProfileCard from "../dashboard/profile/ProfileCard";
-import { Conversation, UnreadMessage } from "@/types";
+import { Conversation } from "@/types";
 
 export default function ConversationsPanel({
   conversations,
-  unreadMessages,
   showOnMobile,
 }: {
   conversations: Conversation[];
-  unreadMessages: UnreadMessage[];
   showOnMobile: boolean;
 }) {
   return (
@@ -31,10 +29,7 @@ export default function ConversationsPanel({
       <div className="flex flex-col p-3 w-full">
         <FriendsNavButton />
         <GuildNavButton />
-        <ConvLinkWrapper
-          conversations={conversations}
-          unreadMessages={unreadMessages}
-        />
+        <ConvLinkWrapper conversations={conversations} />
       </div>
 
       <ProfileCard />

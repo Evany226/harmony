@@ -11,7 +11,7 @@ import MessageCard from "@/components/global/MessageCard";
 import ChatHeader from "@/components/global/ChatHeader";
 import { createChannelMessage } from "@/actions/actions";
 import { useToast } from "@/components/ui/use-toast";
-import { useSocket } from "@/context/SocketContext";
+import { socket } from "@/app/socket";
 import { useRouter } from "next/navigation";
 import { GuildPageSkeleton } from "@/components/skeletons/GuildPageSkeleton";
 import { useGuild } from "@/context/GuildContext";
@@ -40,7 +40,6 @@ export default function ChannelPage({
   const [isPanelOpen, setIsPanelOpen] = useState<boolean>(false);
   // const [members, setMembers] = useState<Member[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const { socket, isConnected } = useSocket();
 
   const {
     guildMembers: members,
@@ -52,22 +51,16 @@ export default function ChannelPage({
     const fetchData = async () => {
       const token = await getToken();
 
-      const messages = await getAllChannelMessages(
-        token as string,
-        params.channelId
-      );
+      const [messages, channel, members, participants] = await Promise.all([
+        getAllChannelMessages(token as string, params.channelId),
+        getChannel(token as string, params.channelId),
+        getAllMembers(token as string, params.id),
+        getActiveVoiceChannels(token as string, params.id),
+      ]);
+
       setMessages(messages);
-
-      const channel = await getChannel(token as string, params.channelId);
       setChannel(channel);
-
-      const members = await getAllMembers(token as string, params.id);
       updateGuildMembers(members);
-
-      const participants = await getActiveVoiceChannels(
-        token as string,
-        params.id
-      );
       updateActiveVoiceChannels(participants, members);
 
       setLoading(false);
@@ -120,7 +113,7 @@ export default function ChannelPage({
       setMessages(messages);
     });
 
-    socket.on(`deleteChannel ${params.channelId}`, (channelId) => {
+    socket.on(`deleteChannel ${params.channelId}`, () => {
       router.push(`/guilds/${params.id}`);
     });
 
@@ -133,7 +126,6 @@ export default function ChannelPage({
     };
   }, [
     params.channelId,
-    socket,
     toast,
     router,
     params.id,

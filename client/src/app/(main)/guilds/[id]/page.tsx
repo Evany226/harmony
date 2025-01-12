@@ -7,14 +7,19 @@ import {
   ChatBubbleBottomCenterTextIcon,
   SpeakerWaveIcon,
 } from "@heroicons/react/24/solid";
-
-import UserPanel from "@/components/guilds/users/UserPanel";
+import dynamic from "next/dynamic";
 
 export default async function GuildPage({
   params,
 }: {
   params: { id: string };
 }) {
+  const UserPanel = dynamic(
+    () => import("@/components/guilds/users/UserPanel"),
+    {
+      ssr: false,
+    }
+  );
   const { getToken } = auth();
   const token = await getToken();
   const members = await getAllMembers(token as string, params.id);

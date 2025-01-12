@@ -105,32 +105,6 @@ const checkUserInRoom = async (req: Request, res: Response) => {
   }
 };
 
-const checkRoomEmpty = async (req: Request, res: Response) => {
-  const { roomName } = req.body as { roomName: string };
-
-  try {
-    const rooms = await roomService.listRooms();
-    const room = rooms.find((room) => room.name === roomName);
-
-    if (!room) {
-      res.json({ empty: true });
-      return;
-    }
-
-    const result = await roomService.listParticipants(roomName);
-
-    if (result.length === 0) {
-      return res.json({ empty: true });
-    } else {
-      return res.json({ empty: false });
-    }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
-    console.error("Error checking room:", error);
-    res.status(500).json({ error: "Error checking room" });
-  }
-};
-
 const getActiveVoiceChannels = async (req: Request, res: Response) => {
   const { guildId } = req.params;
 
@@ -233,9 +207,4 @@ const getActiveVoiceChannels = async (req: Request, res: Response) => {
   // res.json(result.map((p) => p.identity));
 };
 
-export {
-  getLivekitToken,
-  checkRoomEmpty,
-  getActiveVoiceChannels,
-  checkUserInRoom,
-};
+export { getLivekitToken, getActiveVoiceChannels, checkUserInRoom };

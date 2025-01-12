@@ -1,6 +1,6 @@
 import { getAllConversations } from "@/lib/conversations";
 import { auth } from "@clerk/nextjs/server";
-import { getAllUnreadMessages } from "@/lib/conversations";
+
 import HomeWrapper from "@/components/layout/HomeWrapper";
 
 export default async function HomeLayout({
@@ -13,11 +13,5 @@ export default async function HomeLayout({
 
   const data = await getAllConversations(token as string);
 
-  const unreadMessages = await getAllUnreadMessages(token as string);
-
-  return (
-    <HomeWrapper conversations={data} unreadMessages={unreadMessages}>
-      {children}
-    </HomeWrapper>
-  );
+  return <HomeWrapper conversations={data}>{children}</HomeWrapper>;
 }

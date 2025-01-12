@@ -37,9 +37,9 @@ export interface Participant {
 }
 
 export interface UnreadMessage {
-  participantId: string;
+  id: string;
   messages: Message[];
-  conversation: Conversation;
+  participants: Participant[];
 }
 
 export interface Message {

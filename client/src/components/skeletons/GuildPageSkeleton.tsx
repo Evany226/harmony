@@ -2,19 +2,6 @@ import { Skeleton } from "../ui/skeleton";
 import ChatInput from "../global/ChatInput";
 import { MessageSkeleton } from "./MessageSkeleton";
 
-function UserSkeleton() {
-  return (
-    <div className="flex items-center space-x-2">
-      <Skeleton className="w-8 h-8 rounded-full bg-neutral-600" />
-
-      <div className="flex-col ml-4 space-y-2">
-        <Skeleton className="w-36 h-3 mb-1 bg-neutral-600" />
-        <Skeleton className="w-28 h-2 mr-1" />
-      </div>
-    </div>
-  );
-}
-
 export function GuildPageSkeleton() {
   return (
     <>
@@ -24,7 +11,7 @@ export function GuildPageSkeleton() {
       </header>
 
       <main className="w-full h-[calc(100%-3rem)] flex ">
-        <article className="w-[calc(100%-13rem)] h-full border-r border-zinc-800 flex flex-col relative px-5 md:w-full">
+        <article className="w-full h-full flex flex-col relative px-5 md:w-full">
           <div className="h-full w-full flex flex-col my-6 space-y-6 overflow-hidden">
             <MessageSkeleton variant="short" />
             <MessageSkeleton variant="long" />
@@ -42,16 +29,6 @@ export function GuildPageSkeleton() {
             <MessageSkeleton variant="short" />
           </div>
           <ChatInput />
-        </article>
-
-        <article className="w-56 h-full border-r border-zinc-800 flex flex-col relative px-4 space-y-6 py-4 md:w-0 md:hidden">
-          <UserSkeleton />
-          <UserSkeleton />
-          <UserSkeleton />
-          <UserSkeleton />
-          <UserSkeleton />
-          <UserSkeleton />
-          <UserSkeleton />
         </article>
       </main>
     </>

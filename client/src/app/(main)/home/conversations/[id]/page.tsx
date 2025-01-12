@@ -5,6 +5,7 @@ import { getConversation, getAllMessages } from "@/lib/conversations";
 import { useAuth } from "@clerk/nextjs";
 import { User, Message, Participant } from "@/types/index.js";
 import { useUser } from "@clerk/nextjs";
+import { updateLastViewed } from "@/actions/conv";
 
 import ChatInput from "@/components/global/ChatInput";
 import ChatHeader from "@/components/global/ChatHeader";
@@ -25,21 +26,14 @@ import { useVoiceRoom } from "@/context/VoiceRoomContext";
 import { useVoiceCall } from "@/context/VoiceCallContext";
 
 import { usePathname } from "next/navigation";
-import dynamic from "next/dynamic";
+import PendingVoiceCall from "@/components/conference/PendingVoiceCall";
+import VoiceCallOverlay from "@/components/conference/VoiceCallOverlay";
 
 export default function ConversationPage({
   params,
 }: {
   params: { id: string };
 }) {
-  const VoiceCallOverlay = dynamic(
-    () => import("@/components/conference/VoiceCallOverlay")
-  );
-
-  const PendingVoiceCall = dynamic(
-    () => import("@/components/conference/PendingVoiceCall")
-  );
-
   const [headerText, setHeaderText] = useState<string>("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [users, setUsers] = useState<User[]>([]);
@@ -70,15 +64,16 @@ export default function ConversationPage({
   useEffect(() => {
     const fetchData = async () => {
       const token = await getToken();
-      const conversationObject = await getConversation(
-        token as string,
-        params.id
-      );
+      const [conversationObject, messages] = await Promise.all([
+        getConversation(token as string, params.id),
+        getAllMessages(token as string, params.id),
+      ]);
 
+      //if conversationObject is null, redirect to 404 page
       if (!conversationObject) {
         router.push("/404");
+        return;
       }
-      const messages = await getAllMessages(token as string, params.id);
 
       setMessages(messages);
 
@@ -101,8 +96,7 @@ export default function ConversationPage({
 
       setHeaderText(header);
 
-      const isEmpty = await checkRoomEmpty(token as string, params.id);
-      setIsRoomEmpty(isEmpty.empty);
+      socket.emit("checkRoomEmpty", params.id);
 
       setLoading(false);
     };
@@ -137,6 +131,7 @@ export default function ConversationPage({
     socket.on(`message ${params.id}`, handleMessage);
     socket.on(`editMessage ${params.id}`, handleEdit);
     socket.on(`checkRoomEmpty ${params.id}`, updateRoom);
+    socket.on(`unread ${params.id}`, () => updateLastViewed(params.id));
 
     //cleans up by turning off functions when useEffect dismounts
     return () => {
@@ -177,6 +172,7 @@ export default function ConversationPage({
   const startVoiceCall = () => {
     if (isVoiceChannelOpen) {
       disconnect();
+      return;
     }
 
     if (!isVoiceCallOpen && isRoomEmpty) {
@@ -188,11 +184,12 @@ export default function ConversationPage({
         variant: "destructive",
         title: "Failed to start voice call.",
         description: `${
-          pathname === `/conversations/${params.id}`
+          pathname === `/home/conversations/${params.id}`
             ? "There is already an ongoing voice call in this conversation."
             : "You cannot start a new voice call while already in one. Please leave first."
         }`,
       });
+      return;
     }
   };
 
@@ -210,11 +207,12 @@ export default function ConversationPage({
         variant: "destructive",
         title: "Already in a voice call.",
         description: `${
-          pathname === `/conversations/${params.id}`
+          pathname === `/home/conversations/${params.id}`
             ? "You are already in this voice call."
             : "You cannot start a new voice call while already in one. Please leave first."
         }`,
       });
+      return;
     }
   };
 
