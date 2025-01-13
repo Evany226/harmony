@@ -18,29 +18,17 @@ import { useToast } from "../ui/use-toast";
 import { socket } from "@/app/socket";
 import { ScrollArea } from "../ui/scroll-area";
 import Loading from "../global/Loading";
+import { useFriend } from "@/context/FriendContext";
 
 export default function ConvDropdown({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [friends, setFriends] = useState<Friend[]>([]);
+  const { friends } = useFriend();
   const [modalOpen, setModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { getToken } = useAuth();
   const { toast } = useToast();
-
-  useEffect(() => {
-    const fetchFriends = async () => {
-      setIsLoading(true);
-      const token = await getToken();
-      const response = await getAllFriends(token as string);
-      setFriends(response);
-      setIsLoading(false);
-    };
-
-    fetchFriends();
-  }, [getToken]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

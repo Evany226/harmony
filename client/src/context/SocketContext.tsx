@@ -8,12 +8,12 @@ import {
   useCallback,
 } from "react";
 import { socket } from "@/app/socket";
-import { getAllConversations } from "@/lib/conversations";
 import { useAuth } from "@clerk/nextjs";
 import { Conversation, Message } from "@/types";
 import { useToast } from "@/components/ui/use-toast";
 import { formatTimestamp } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import { getAllConversationIds } from "@/lib/conversations";
 import { getUserChannelIds, getUserGuildIds } from "@/lib/guilds";
 import { useUser } from "@clerk/nextjs";
 import { useVoiceCall } from "./VoiceCallContext";
@@ -47,16 +47,13 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     if (!user) return;
 
     const token = await getToken();
-    const [conversationsData, channelIds, guildIds] = await Promise.all([
-      getAllConversations(token as string),
+    const [conversationIds, channelIds, guildIds] = await Promise.all([
+      getAllConversationIds(token as string),
       getUserChannelIds(token as string),
       getUserGuildIds(token as string),
     ]);
-    const ids = conversationsData.map(
-      (conversation: Conversation) => conversation.id
-    );
 
-    socket.emit("joinRoom", ids);
+    socket.emit("joinRoom", conversationIds);
     socket.emit("joinRoom", channelIds);
     socket.emit("joinRoom", guildIds);
   }, [user, getToken]);

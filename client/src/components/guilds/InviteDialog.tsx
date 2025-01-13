@@ -8,10 +8,8 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "../ui/button";
 
-import { useEffect, useState } from "react";
-import { Friend } from "@/types";
-import { getAllFriends } from "@/lib/friends";
-import { useAuth } from "@clerk/nextjs";
+import { useState } from "react";
+import { useFriend } from "@/context/FriendContext";
 import { useToast } from "../ui/use-toast";
 import { useSocket } from "@/context/SocketContext";
 
@@ -61,6 +59,7 @@ function InviteDialogItem({
         checked={username === friendName}
         onChange={() => setUsername(friendName)}
         className="w-4 h-4 accent-blue-500 border-gray-300 rounded-md"
+        readOnly
       />
     </div>
   );
@@ -73,25 +72,13 @@ export default function InviteDialog({
   guildId: string;
   setDialogOpen: (arg: boolean) => void;
 }) {
-  const { getToken } = useAuth();
   const { toast } = useToast();
   const { socket } = useSocket();
-  const [friends, setFriends] = useState<Friend[]>([]);
+
   const [username, setUsername] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  useEffect(() => {
-    const fetchFriends = async () => {
-      setIsLoading(true);
-      const token = await getToken();
-      const response = await getAllFriends(token as string);
-
-      setFriends(response);
-      setIsLoading(false);
-    };
-
-    fetchFriends();
-  }, [getToken]);
+  const { friends } = useFriend();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

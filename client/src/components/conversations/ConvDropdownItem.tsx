@@ -40,6 +40,7 @@ export default function ConvDropdownItem({
         checked={checked}
         value={checked.toString()}
         className="w-4 h-4 accent-blue-500 border-gray-300 rounded-md"
+        readOnly
       />
     </div>
   );

@@ -1,8 +1,8 @@
 "use server";
 
 import { auth } from "@clerk/nextjs/server";
-import { revalidatePath } from "next/cache";
 import { url } from "@/lib/utils";
+import { revalidatePath } from "next/cache";
 
 export async function createFriendRequest(username: string) {
   const { getToken } = auth();
@@ -26,7 +26,7 @@ export async function createFriendRequest(username: string) {
       throw new Error(data.error || "Express error creating guild request.");
     }
 
-    revalidatePath("/guilds");
+    revalidatePath("/home/friends");
 
     return data;
   } catch (error) {
@@ -49,7 +49,7 @@ export async function acceptFriendRequest(id: string) {
 
   const data = await response.json();
 
-  revalidatePath("/friends");
+  revalidatePath("/home/friends");
 
   if (!response.ok) {
     throw new Error(data.error);
@@ -72,7 +72,7 @@ export async function rejectFriendRequest(id: string) {
 
   const data = await response.json();
 
-  revalidatePath("/friends");
+  revalidatePath("/home/friends/pending");
 
   if (!response.ok) {
     throw new Error(data.error);
@@ -94,7 +94,7 @@ export async function removeFriend(id: string) {
   });
 
   const data = await response.json();
-  revalidatePath("/friends");
+  revalidatePath("/home/friends");
 
   if (!response.ok) {
     throw new Error(data.error);

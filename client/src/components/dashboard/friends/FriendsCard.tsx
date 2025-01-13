@@ -16,7 +16,7 @@ import { TooltipWrapper } from "../../global/TooltipWrapper";
 import { useToast } from "../../ui/use-toast";
 import { useRouter } from "next/navigation";
 import { Dropdown } from "../../global/Dropdown";
-import { Skeleton } from "@/components/ui/skeleton";
+import { useFriend } from "@/context/FriendContext";
 import { useSocket } from "@/context/SocketContext";
 import ConnectionStatus from "@/components/global/ConnectionStatus";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -44,10 +44,13 @@ export function Friends({ friend, pending, status }: FriendsProps) {
   const { toast } = useToast();
   const router = useRouter();
   const { socket } = useSocket();
+  const { updateAfterAccept, updateAfterRemove } = useFriend();
 
   const handleAccept = async (id: string) => {
     try {
       const result = await acceptFriendRequest(id);
+      updateAfterAccept(friend);
+
       socket.emit("inviteRefresh", friend.id);
       router.refresh();
       toast({
@@ -92,6 +95,7 @@ export function Friends({ friend, pending, status }: FriendsProps) {
   const handleDelete = async (id: string) => {
     try {
       const result = await removeFriend(id);
+      updateAfterRemove(friend);
       router.refresh();
       socket.emit("inviteRefresh", friend.id);
       toast({
@@ -180,8 +184,12 @@ export default function FriendsWrapper({
 }: FriendsWrapperProps) {
   const { onlineUsers } = useSocket();
 
-  const { searchTerm, filteredFriends, filteredOnlineFriends, handleUsers } =
-    useFilteredFriends(friends);
+  const {
+    searchTerm,
+    filteredFriends,
+    filteredOnlineFriends,
+    handleSearchTerm,
+  } = useFilteredFriends(friends);
 
   const displayedFriends =
     variant === "Online" ? filteredOnlineFriends : filteredFriends;
@@ -192,7 +200,7 @@ export default function FriendsWrapper({
         <input
           className="outline-0 w-full text-sm bg-zinc-800 py-2 text-gray-300"
           placeholder="Search"
-          onChange={handleUsers}
+          onChange={handleSearchTerm}
           value={searchTerm}
         ></input>
         <MagnifyingGlassIcon className="w-6 text-gray-400 " />

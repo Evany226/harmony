@@ -1,7 +1,4 @@
 import FriendNavLinks from "@/components/dashboard/friends/FriendNavLinks";
-import ConversationsPanel from "@/components/conversations/ConversationsPanel";
-import { Suspense } from "react";
-import PanelSkeleton from "@/components/skeletons/PanelSkeleton";
 
 export default function DashboardLayout({
   children,

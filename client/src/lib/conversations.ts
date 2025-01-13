@@ -18,6 +18,24 @@ export async function getAllConversations(token: string) {
   return data;
 }
 
+export async function getAllConversationIds(token: string) {
+  const response = await fetch(`${url()}/api/users/conversationIds`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.error);
+  }
+
+  return data;
+}
+
 export async function getConversation(token: string, id: string) {
   const response = await fetch(`${url()}/api/conversations/${id}`, {
     method: "GET",

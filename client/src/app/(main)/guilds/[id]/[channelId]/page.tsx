@@ -103,13 +103,13 @@ export default function ChannelPage({
       //revalidates the other clients when a new member joins
       console.log("revalidating");
       const token = await getToken();
-      const members = await getAllMembers(token as string, params.id);
-      updateGuildMembers(members);
 
-      const messages = await getAllChannelMessages(
-        token as string,
-        params.channelId
-      );
+      const [members, messages] = await Promise.all([
+        getAllMembers(token as string, params.id),
+        getChannel(token as string, params.channelId),
+      ]);
+
+      updateGuildMembers(members);
       setMessages(messages);
     });
 
