@@ -12,6 +12,35 @@ declare global {
   }
 }
 
+const getUserConversationIds = async (req: Request, res: Response) => {
+  const userId = req.auth.userId;
+  // const userId = "user_2kvgB9d6HPZNSZGsGDf02nYSx12";
+
+  try {
+    const allConversations = await prisma.conversation.findMany({
+      where: {
+        participants: {
+          some: {
+            userId: userId,
+          },
+        },
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    const conversationIds = allConversations.map(
+      (conversation) => conversation.id
+    );
+
+    res.json(conversationIds);
+  } catch (error) {
+    console.error("Error fetching conversations:", error);
+    res.status(500).json({ error: "Failed to fetch conversations" });
+  }
+};
+
 const getUserGuildIds = async (req: Request, res: Response) => {
   const userId = req.auth.userId;
   // const userId = "user_2kvgB9d6HPZNSZGsGDf02nYSx12";
@@ -80,4 +109,4 @@ const getUserChannelIds = async (req: Request, res: Response) => {
   }
 };
 
-export { getUserGuildIds, getUserChannelIds };
+export { getUserGuildIds, getUserChannelIds, getUserConversationIds };

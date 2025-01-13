@@ -13,6 +13,8 @@ import dynamic from "next/dynamic";
 import { getAllUnreadMessages } from "@/lib/conversations";
 import { NotificationProvider } from "@/context/NotificationContext";
 import { auth } from "@clerk/nextjs/server";
+import { getAllFriends } from "@/lib/friends";
+import { FriendProvider } from "@/context/FriendContext";
 
 export default async function MainLayout({
   children,
@@ -27,7 +29,11 @@ export default async function MainLayout({
   const { getToken } = auth();
 
   const token = await getToken();
-  const unreadMessages = await getAllUnreadMessages(token as string);
+
+  const [unreadMessages, allFriends] = await Promise.all([
+    getAllUnreadMessages(token as string),
+    getAllFriends(token as string),
+  ]);
 
   return (
     <AudioProvider>
@@ -35,13 +41,15 @@ export default async function MainLayout({
         <GuildProvider>
           <VoiceRoomProvider>
             <SocketProvider>
-              <NotificationProvider initialMessages={unreadMessages}>
-                <main className="flex w-full h-[100vh] bg-gray-100 relative">
-                  <SideNavWrapper />
-                  <VoiceChannelOverlay />
-                  {children}
-                </main>
-              </NotificationProvider>
+              <FriendProvider initialFriends={allFriends}>
+                <NotificationProvider initialMessages={unreadMessages}>
+                  <main className="flex w-full h-[100vh] bg-gray-100 relative">
+                    <SideNavWrapper />
+                    <VoiceChannelOverlay />
+                    {children}
+                  </main>
+                </NotificationProvider>
+              </FriendProvider>
             </SocketProvider>
           </VoiceRoomProvider>
         </GuildProvider>

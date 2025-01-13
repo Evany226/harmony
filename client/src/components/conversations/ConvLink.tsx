@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Conversation, User } from "@/types/index";
 
-import dynamic from "next/dynamic";
+import ConvDropdown from "./ConvDropdown";
 import ConnectionStatus from "../global/ConnectionStatus";
 import { useSocket } from "@/context/SocketContext";
 import Image from "next/image";
@@ -119,10 +119,6 @@ export default function ConvLinkWrapper({
   const { onlineUsers } = useSocket();
   const { userId } = useAuth();
   const { getCurrentUnreadMessages } = useNotification();
-
-  const ConvDropdown = dynamic(() => import("./ConvDropdown"), {
-    ssr: false,
-  });
 
   return (
     <>

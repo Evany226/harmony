@@ -31,10 +31,10 @@ model Participant {
   id   String @id @default(uuid())
 
   userId String
-  user User   @relation("UserParticipant", fields: [userId], references: [id])
+  user User   @relation("UserParticipant", fields: [userId], references: [id], onDelete: Cascade)
 
   conversationId String
-  conversation Conversation @relation("ParticipantConversation",fields: [conversationId], references: [id])
+  conversation Conversation @relation("ParticipantConversation",fields: [conversationId], references: [id], onDelete: Cascade)
 
   sentMessages  Message[]      @relation("SentMessages")
 
@@ -50,10 +50,10 @@ model Message {
   isAlert Boolean @default(false)
 
   senderId String?
-  sender   Participant?   @relation("SentMessages", fields: [senderId], references: [id])
+  sender   Participant?   @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
 
   conversationId String
-  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
 }
@@ -64,11 +64,8 @@ model Conversation {
   messages Message[]
   participants Participant[] @relation("ParticipantConversation")
 
-  
   createdAt DateTime @default(now())
 }
-
-
 
 model Guild {
   id   String @id @default(uuid())
