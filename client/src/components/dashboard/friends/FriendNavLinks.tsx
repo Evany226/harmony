@@ -49,7 +49,7 @@ export default function FriendNavLinks() {
 
         <Button
           onClick={() => {
-            router.push("/friends/add-friends");
+            router.push("/home/friends/add-friends");
           }}
           variant="outline"
           size="default"
