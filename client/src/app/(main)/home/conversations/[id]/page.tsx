@@ -79,9 +79,15 @@ export default function ConversationPage({
 
       const participants = conversationObject.participants;
 
-      const users = participants.map((participant: Participant) => {
+      let users = participants.map((participant: Participant) => {
         return participant.user;
       });
+
+      console.log("Before ", users);
+
+      users = users.filter((user: User) => user.id !== userId);
+
+      console.log("After ", users);
 
       setUsers(users);
       console.log(users);
@@ -220,7 +226,7 @@ export default function ConversationPage({
     setIsPanelOpen(!isPanelOpen);
   };
 
-  const isMultiUser = users.length - 1 > 1;
+  const isMultiUser = users.length > 1;
 
   useEffect(() => {
     if (!loading) {
@@ -230,7 +236,7 @@ export default function ConversationPage({
 
   return (
     <>
-      {users.length > 1 ? (
+      {users.length > 0 ? (
         <>
           <ConvPageHeader
             headerText={headerText}
@@ -260,7 +266,7 @@ export default function ConversationPage({
                   isVoiceCallOpen ? "h-1/2" : "h-full"
                 }`}
               >
-                <ChatHeader name={headerText} imageUrl={users[0].imageUrl} />
+                <ChatHeader name={headerText} imageUrl={allImages[0]} />
 
                 {messages.map((message: Message) => {
                   return (

@@ -22,13 +22,14 @@ export const config = {
     "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
     // Always run for API routes
     "/(api|trpc)(.*)",
-    "/home/conversations/[id]",
+    "/home/conversations",
+    "/home/conversations/:id*",
     "/home/friends",
     "/home/friends/add-friends",
     "/home/friends/blocked",
     "/home/friends/online",
     "/home/friends/pending",
     "/home/guild-requests/pending",
-    "/guilds/[id]/[channelId]",
+    "/guilds/:id*/:channelId*",
   ],
 };

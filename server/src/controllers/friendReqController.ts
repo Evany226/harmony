@@ -38,6 +38,7 @@ const getPendingFriends = async (req: Request, res: Response) => {
 
 const createFriendRequest = async (req: Request, res: Response) => {
   const { username } = req.body as { username: string };
+  const currUserId = req.auth.userId;
 
   console.log(username);
 
@@ -55,7 +56,15 @@ const createFriendRequest = async (req: Request, res: Response) => {
       });
     }
 
+
     const friendId = users[0].id;
+
+    //check if username is your own
+    if (friendId === currUserId) {
+      return res.status(400).json({
+        error: "You cannot send a friend request to yourself",
+      });
+    }
 
     //checks if the user has already sent a friend request to the friend
     const pendingFromUserObject = {
